@@ -1,0 +1,55 @@
+<?php
+// module/Album/view/album/album/index.phtml:
+$title = 'My albums';
+$jquerySrc =   'http://code.jquery.com/jquery-1.9.1.js';
+$jqueryUiSrc =   'http://code.jquery.com/ui/1.10.3/jquery-ui.js';
+$this->headTitle($title);
+$this->headScript()->prependFile($jqueryUiSrc);
+$this->headScript()->prependFile($jquerySrc);
+$this->headScript()->appendFile( "/js/sortableTest.js", $type = 'text/javascript' );
+
+$this->headLink()->appendStylesheet('/css/style.css');
+?>
+<h1><?php echo $this->escapeHtml($title); ?></h1>
+<p>
+    <a href="<?php echo $this->url('album', array('action'=>'add'));?>">Add new album</a>
+</p>
+
+<table class="table">
+<tr>
+    <th>Title</th>
+    <th>Artist</th>
+    <th>&nbsp;</th>
+</tr>
+<?php foreach ($albums as $album) : ?>
+<tr>
+    <td><?php echo $this->escapeHtml($album->title);?></td>
+    <td><?php echo $this->escapeHtml($album->artist);?></td>
+    <td>
+        <a href="<?php echo $this->url('album',
+            array('action'=>'edit', 'id' => $album->id));?>">Edit</a>
+        <a href="<?php echo $this->url('album',
+            array('action'=>'delete', 'id' => $album->id));?>">Delete</a>
+    </td>
+</tr>
+<?php endforeach; ?>
+</table>
+
+<form name="upload-form" id="upload-form" method="post" enctype="multipart/form-data">
+    <div class="form-element">
+        <label for="image-file">Avatar Image Upload</label>
+        <input type="file" name="image-file" id="image-file">
+    </div>
+
+    <button>Submit</button>
+</form>
+
+<ul id="sortable">
+  <li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 1</li>
+  <li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 2</li>
+  <li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 3</li>
+  <li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 4</li>
+  <li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 5</li>
+  <li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 6</li>
+  <li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 7</li>
+</ul>

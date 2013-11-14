@@ -1,0 +1,39 @@
+<?php
+// module/Album/view/album/album/index.phtml:
+// File: upload-form.phtml
+$title = 'My Uploader';
+$jquerySrc =   'http://code.jquery.com/jquery-1.9.1.js';
+$jqueryUiSrc =   'http://code.jquery.com/ui/1.10.3/jquery-ui.js';
+$this->headTitle($title);
+$this->headScript()->prependFile($jqueryUiSrc);
+$this->headScript()->prependFile($jquerySrc);
+$this->headScript()->appendFile( "/js/sortableTest.js", $type = 'text/javascript' );
+
+$this->headLink()->appendStylesheet('/css/style.css');
+?>
+<h1><?php echo $this->escapeHtml($title); ?></h1>
+
+<?php $form->prepare(); // The correct enctype is set here ?>
+<?php echo $this->form()->openTag($form); ?>
+
+    <div class="form-element">
+        <?php $fileElement = $form->get('image-file'); ?>
+        <?php echo $this->formLabel($fileElement); ?>
+        <?php echo $this->formFile($fileElement); ?>
+        <?php echo $this->formElementErrors($fileElement); ?>
+    </div>
+
+    <button>Submit</button>
+
+<?php echo $this->form()->closeTag(); ?>
+<?php echo 'hell world'; ?>
+
+<ul id="sortable">
+  <li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 1</li>
+  <li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 2</li>
+  <li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 3</li>
+  <li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 4</li>
+  <li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 5</li>
+  <li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 6</li>
+  <li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 7</li>
+</ul>

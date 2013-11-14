@@ -1,0 +1,72 @@
+<?php
+// module/Album/view/album/album/index.phtml:
+// File: upload-form.phtml
+$title = 'Issues analyzer';
+$jquerySrc =   'http://code.jquery.com/jquery-1.9.1.js';
+$jqueryUiSrc =   'http://code.jquery.com/ui/1.10.3/jquery-ui.js';
+$this->headTitle($title);
+$this->headScript()->prependFile($jqueryUiSrc);
+$this->headScript()->prependFile($jquerySrc);
+$this->headScript()->appendFile( "/js/dynamicForm.js", $type = 'text/javascript' );
+
+// $this->headLink()->appendStylesheet('/bootstrap-3.0.1/css/bootstrap.css');
+$this->headLink()->appendStylesheet('/css/custom_eric.css');
+$this->headLink()->appendStylesheet('/css/themes/base/jquery-ui.css');
+// $this->headLink()->appendStylesheet('/css/view.css');
+?>
+<h2><?php echo $this->escapeHtml($title); ?></h2>
+<p class="lead"> This page is for processing a spreadsheet to break down the PLM issues app by app</p>
+
+<div id="demo"> test area </div>
+
+<div class="form-block">
+<?php $form->prepare(); // The correct enctype is set here ?>
+	<?php echo $this->form()->openTag($form); ?>
+		<?php echo $this->formRow($form->get('TmoTV')); ?>
+
+			<div id="tabs">
+				<ul>
+				    <li><a href="#tabs-1">Manual input</a></li>
+				    <li><a href="#tabs-2">Using template</a></li>
+				</ul>
+				<div id="tabs-1">
+					<div class="form-table-group">
+					<?php 
+			// 			echo $this->formCollection($form->get('searchTerm'));
+			// 			echo '<fieldset><legend>Please input search term</legend>';
+						$collections = $form->get('searchTerm');
+						echo '<table class="table collectionTable"> 
+								<tr> <th>App Name</th> <th>Search terms</th> <th>Delete</th> </tr> ';
+						foreach ($collections as $col) : 
+						?>
+							<tr> 
+								<td> <?php echo $this->forminput($col->get('appName'));?> </td>
+								<td> <?php echo $this->forminput($col->get('regexPattern'));?> </td>
+								<td> <?php echo '<button type="button" class="btn btn-danger btn-sm" id="del-button"><span class="glyphicon glyphicon-trash"></span></button>';?></td>
+							</tr>
+					<?php  
+						endforeach;
+						echo '</table>'; 
+			// 			echo '</fieldset>'; 
+						?>
+					<!-- add button -->
+					<button class="addbtn">Add a new category</button>
+					</div>
+				</div>
+				<div id="tabs-2">
+					<div class="form-group1">
+					<?php echo $this->formRow($form->get('uploadTmp')); ?>
+					</div>
+				</div>
+			</div>
+
+		<div class="form-group1">
+		<?php echo $this->formRow($form->get('uploadExl')); ?>
+		</div>
+		<div class="form-group1">
+		<?php echo $this->formElement($form->get('submit')); ?>
+		</div>
+		<?php echo $this->form()->closeTag(); ?>
+</div>
+
+

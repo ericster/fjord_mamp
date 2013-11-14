@@ -1,0 +1,65 @@
+<?php
+// module/Album/view/album/album/python.phtml:
+$title = 'My albums';
+$jquerySrc =   'http://code.jquery.com/jquery-1.9.1.js';
+$jqueryUiSrc =   'http://code.jquery.com/ui/1.10.3/jquery-ui.js';
+$this->headTitle($title);
+$this->headScript()->prependFile($jqueryUiSrc);
+$this->headScript()->prependFile($jquerySrc);
+$this->headScript()->appendFile( "/js/sortableTest.js", $type = 'text/javascript' );
+
+$this->headLink()->appendStylesheet('/css/style.css');
+?>
+<h1><?php echo $this->escapeHtml($title); ?></h1>
+<p>
+    <a href="<?php echo $this->url('album', array('action'=>'add'));?>">Add new album</a>
+</p>
+
+<?php
+$appProc = 'python /Users/Eric/Documents/workspace/TCforTestLink/TestLink/appPattern.py';
+//exec($appProc, $output, $return);
+$sysout = system($appProc, $return);
+echo "Dir returned $return, and output:\n";
+//Zend_Debug::dump($output, $label = null, $echo = true);
+//echo "$return \n";
+echo "============ var_dump ===================\n";
+$arr1 = var_dump($output);
+$arr2 = print_r($output);
+
+function pp($arr){
+    $retStr = '<ul>';
+    if (is_array($arr)){
+        foreach ($arr as $key=>$val){
+            if (is_array($val)){
+                $retStr .= '<li>' . $key . ' => ' . pp($val) . '</li>';
+            }else{
+                $retStr .= '<li>' . $key . ' => ' . $val . '</li>';
+            }
+        }
+    }
+    $retStr .= '</ul>';
+    return $retStr;
+}
+
+$arrS = array(0 => array(id=>1,name=>"cat 1"),
+             1 => array(id=>2,name=>"cat 2"),
+             2 => array(id=>3,name=>"cat 1"));
+$array = is_array($sysout) ? "yes" : "no";
+$string = is_string($sysout) ? "yes" : "no";
+$obj = is_object($sysout) ? "yes" : "no";
+echo 'var_dump is array?', $array;
+echo 'var_dump is string?', $string;
+echo 'var_dump is object?', $obj;
+$csvString = explode(',', $sysout);
+print pp($csvString);
+?>
+
+<ul id="sortable">
+  <li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 1</li>
+  <li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 2</li>
+  <li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 3</li>
+  <li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 4</li>
+  <li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 5</li>
+  <li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 6</li>
+  <li class="ui-state-default"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>Item 7</li>
+</ul>
