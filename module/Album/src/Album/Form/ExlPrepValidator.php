@@ -35,25 +35,25 @@ class ExlPrepValidator implements InputFilterAwareInterface
 					]));
 
 
-			$inputFilter->add($factory->createInput([
-					'name' => 'uploadTmp',
-					'filters' => array(
-							array('name' => 'StripTags'),
-							array('name' => 'StringTrim'),
-							array('name' => 'filerenameupload',
-									'options' => array(
-// 											'target'    => '/usr/local/zend/apache2/htdocs/myapp/public/data/uploads/',
-											'target'    => './public/data/uploads/',
-											'overwrite' => true,
-											'use_upload_name' => true)),
-					),
-					'validators' => array(
-							array(
-									'name' => 'File\Extension',
-									'extension' => array('txt', ),
-							)
-					),
-					]));
+// 			$inputFilter->add($factory->createInput([
+// 					'name' => 'uploadTmp',
+// 					'filters' => array(
+// 							array('name' => 'StripTags'),
+// 							array('name' => 'StringTrim'),
+// 							array('name' => 'filerenameupload',
+// 									'options' => array(
+// // 											'target'    => '/usr/local/zend/apache2/htdocs/myapp/public/data/uploads/',
+// 											'target'    => './public/data/uploads/',
+// 											'overwrite' => true,
+// 											'use_upload_name' => true)),
+// 					),
+// 					'validators' => array(
+// 							array(
+// 									'name' => 'File\Extension',
+// 									'extension' => array('txt', ),
+// 							)
+// 					),
+// 					]));
 
 			$inputFilter->add($factory->createInput([
 					'name' => 'uploadExl',

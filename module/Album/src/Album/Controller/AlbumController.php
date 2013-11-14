@@ -9,6 +9,7 @@ use Album\Model\Album;          // <-- Add this import
 use Album\Form\AlbumForm;       // <-- Add this import
 use Album\Form\UploadForm;       // <-- Add this import
 use Album\Form\ExlprepForm;       // <-- Add this import
+use Album\Form\ExlprepsubForm;       // <-- Add this import
 use Album\Form\ExlPrepValidator;       // <-- Add this import
 
 class AlbumController extends AbstractActionController
@@ -147,6 +148,140 @@ public function getAlbumTable()
 //     	$viewModel->setTerminal(true);
 //     	return new ViewModel();
     	return array('form' => $form);
+
+// 		return new ViewModel(array(
+// 	            'albums' => $this->getAlbumTable()->fetchAll(),
+// 	        ));
+    }
+    
+
+    public function exlprep2formsAction()
+    {
+    	$form = new ExlprepForm('exldata');
+    	$formsub = new ExlprepsubForm('exldatasub');
+//     	$form = new UploadForm('upload-form');
+    
+    	$request = $this->getRequest();
+    	if ($request->isPost()) {
+    		$postData = $request->getFiles()->toArray();
+    		print_r($postData);
+    		if(isset($postData['uploadTmp'])){
+	    		print_r("exldatasub form submitted!\n");
+// 				$file_loc = '/Users/Eric/Downloads/';
+				$file_loc = '/usr/local/zend/apache2/htdocs/myapp/public/data/uploads/';
+    			$myFile = $file_loc . "TmoApps.txt";
+    			$fh = fopen($myFile, 'r') or die("can't open file");
+    			$regexstr = "";
+	    		print_r("regex starts\n");
+    			while ($line = fgets($fh)) {
+    				// <... Do You work with the line ...>
+    				$line_conv = str_replace("|", ",", $line);
+    				$regexstr = $regexstr . $line_conv . "\n"; 
+    			}
+    			fclose($fh);
+	    		print_r("regex ready\n");
+	    		print_r($regexstr);
+
+// 	    		print_r("regex starts\n");
+// 				$file_loc = '/usr/local/zend/apache2/htdocs/myapp/public/data/appRegex/';
+//     			$myFile = $file_loc . "testFile.txt";
+//     			$fh = fopen($myFile, 'w') or die("can't open file");
+//     			$stringData = "Floppy Jalopy\n";
+//     			fwrite($fh, $stringData);
+//     			$stringData = "Pointy Pinto\n";
+//     			fwrite($fh, $stringData);
+//     			fclose($fh);
+// 	    		print_r("regex ready\n");
+    		}
+    		/*
+    		else{
+	    		// Validator
+	//     		$formValidator = new UploadForm();
+				$x = 10/2;
+				$result = "result is = " . $x . "\n";
+	
+				try { 
+		    	    $formValidator = new ExlPrepValidator();
+	// 	    	    var_dump($formValidator);
+				}
+				catch (Exception $e) {
+					$excp = "Exception is : " . $e->getMessage() . "\n";
+				}
+				print_r($excp);
+	// 			print_r($result);
+	    		$form->setInputFilter($formValidator->getInputFilter());
+	//     		var_dump($form);
+	//     		$validator = new \Zend\Validator\File\Extension(array('php', 'exe'));
+	
+	    		// Make certain to merge the files info!
+	    		$post = array_merge_recursive(
+	    				$request->getPost()->toArray(),
+	    				$request->getFiles()->toArray()
+	    		);
+	    		$form->setData($post);
+	    		
+	    		// Fine moved to new location: considered to be having this option in the filter
+	    		// BUG: how to handle an array?
+	    		$files   = $request->getFiles()->toArray();
+	//     		$file = $fileArr['uploadExl'];
+	    		print_r($files);
+	//     		$filter = new \Zend\Filter\File\RenameUpload("/Applications/MAMP/htdocs/myapp/public/data/uploads/");
+	//     		$filter->setUseUploadName(true);
+	//     		echo $filter->filter($files['uploadExl']);
+	//     		print_r($files);
+	
+	//     		var_dump($form);
+	    		if ($form->isValid()) {
+	    			$data = $form->getData();
+	    			// Form is valid, save the form!
+	    			print_r("success!\n");
+	    			print_r($data);
+	//     			return $this->redirect()->toRoute('album');
+	
+	    			// Regex pattern from form to write
+	// 				$file_loc = '/Applications/MAMP/htdocs/myapp/public/data/appRegex/';
+					$file_loc = '/usr/local/zend/apache2/htdocs/myapp/public/data/appRegex/';
+	    			$myFile = $file_loc . "testFile.txt";
+	    			$fh = fopen($myFile, 'w') or die("can't open file");
+	    			$stringData = "Floppy Jalopy\n";
+	    			fwrite($fh, $stringData);
+	    			$stringData = "Pointy Pinto\n";
+	    			fwrite($fh, $stringData);
+	    			
+	    			$searchTerms = $data['searchTerm'];
+					print_r($searchTerms);
+	    			foreach( $searchTerms as $app ) {
+	    				$stringData = $app[appName] . ": " . $app[regexPattern] . "\n";
+	    				print_r($stringData);
+		    			fwrite($fh, $stringData);
+	    			}
+	    			fclose($fh);
+	    		}
+	    		else {
+	    			print_r($form->getMessages()); //stringLengthTooLong error will show
+	    			$data = $form->getData();
+	    			print_r("fail!\n");
+	    			print_r($data);
+	//     			return $this->redirect()->toRoute('album');
+	//     			var_dump($form->getMessages()); //stringLengthTooLong error will show
+	//     			print_r($form->getErrors()); //stringLengthTooLong error will show
+	//     			return $this->redirect()->toRoute('album', array(
+	//     					'controller' => 'Album\Controller\Album',
+	//     					'action'     => 'python',
+	// 				));
+	    		}
+    		}
+    		*/
+    	}
+    
+//     	$viewModel = new ViewModel();
+//     	$viewModel->setTerminal(true);
+//     	return new ViewModel();
+//     	return array('form' => $form);
+    	return array(
+    			'form' => $form,
+    			'formsub' => $formsub
+    	);
 
 // 		return new ViewModel(array(
 // 	            'albums' => $this->getAlbumTable()->fetchAll(),

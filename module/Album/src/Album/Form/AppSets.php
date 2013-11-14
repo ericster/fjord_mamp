@@ -13,10 +13,11 @@ class AppSets extends Fieldset implements InputFilterProviderInterface
 		$this->add(array(
 				'name' => 'appName',
 				'options' => array(
-						'label' => 'App Name'
+// 						'label' => 'App Name'
 				),
 				'attributes' => array(
 						'required' => 'required',
+        				'placeholder' => 'T-mobile TV',
         				'class' => 'appname input-normal'
 				)
 		));
@@ -25,10 +26,11 @@ class AppSets extends Fieldset implements InputFilterProviderInterface
 				'name' => 'regexPattern',
 // 				'type' => 'Zend\Form\Element\Text',
 				'options' => array(
-						'label' => 'Search Pattern'
+// 						'label' => 'Search Pattern'
 				),
 				'attributes' => array(
 						'required' => 'required',
+        				'placeholder' => 'T-mobile TV, TV, Tmobile TV',
         				'class' => 'appregex input-xxlarge',
 // 						'maxlength' => '255'
 				)

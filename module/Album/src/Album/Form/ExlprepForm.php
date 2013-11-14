@@ -23,14 +23,14 @@ class ExlprepForm extends Form
 //         ));
 
         $this->add(array(
-        		'name' => 'TmoTV',
+        		'name' => 'taskName',
         		'type' => 'Zend\Form\Element\Text',
         		'attributes' => array(
-        				'placeholder' => 'Type something...',
+        				'placeholder' => 'TMO_Garda_T399',
         				'required' => 'required',
         		),
         		'options' => array(
-        				'label' => 'TMO TV',
+//         				'label' => 'TMO TV',
         		),
         ));
 
@@ -65,16 +65,16 @@ class ExlprepForm extends Form
 //         		),
 //         ));
         
-        $this->add(array(
-        		'name' => 'uploadTmp',
-        		'type' => 'file',
-//         		'attributes' => array(
-//         				'required' => 'required',
+//         $this->add(array(
+//         		'name' => 'uploadTmp',
+//         		'type' => 'file',
+// //         		'attributes' => array(
+// //         				'required' => 'required',
+// //         		),
+//         		'options' => array(
+// //         				'label' => 'Search Template Upload',
 //         		),
-        		'options' => array(
-        				'label' => 'Search Template Upload',
-        		),
-        ));
+//         ));
         
         $this->add(array(
         		'name' => 'uploadExl',
@@ -83,7 +83,7 @@ class ExlprepForm extends Form
         				'required' => 'required',
         		),
         		'options' => array(
-        				'label' => 'Excel Spreadsheet Upload',
+//         				'label' => 'Excel Spreadsheet Upload',
         		),
         ));
         
