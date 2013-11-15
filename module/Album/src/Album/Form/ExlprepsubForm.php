@@ -30,9 +30,9 @@ class ExlprepsubForm extends Form
             'name' => 'submit',
             'attributes' => array(
                 'type'  => 'submit',
-                'value' => 'Update',
+                'value' => 'Take it',
                 'id' => 'submitbutton',
-                'class' => 'btn btn-info',
+                'class' => 'btn btn-info btn-sm',
             ),
         ));
     }

@@ -7,6 +7,7 @@ $jqueryUiSrc =   'http://code.jquery.com/ui/1.10.3/jquery-ui.js';
 $this->headTitle($title);
 $this->headScript()->prependFile($jqueryUiSrc);
 $this->headScript()->prependFile($jquerySrc);
+// $this->headScript()->appendFile( "/js/jquery.tablesorter.js", $type = 'text/javascript' );
 $this->headScript()->appendFile( "/js/dynamicForm.js", $type = 'text/javascript' );
 
 // $this->headLink()->appendStylesheet('/bootstrap-3.0.1/css/bootstrap.css');
@@ -16,7 +17,9 @@ $this->headLink()->appendStylesheet('/css/custom_eric.css');
 <h2><?php echo $this->escapeHtml($title); ?></h2>
 <p class="lead"> :processing a spreadsheet to break down PLM issues app by app</p>
 
-<div id="demoeric"> test area</div>
+<!-- <div id="demoeric"> test area</div> -->
+<hr>
+<!--  1st Form -->
 <div class="form-horizontal form-block">
 <?php $formsub->prepare(); // The correct enctype is set here ?>
 	<?php echo $this->form()->openTag($formsub); ?>
@@ -24,12 +27,21 @@ $this->headLink()->appendStylesheet('/css/custom_eric.css');
 			<label class="col-sm-2 control-label">Have Template?</label>
 		    <div class="col-sm-10">
 				<?php echo $this->formRow($formsub->get('uploadTmp')); ?>
+			</div>
+			<div class ="row"> </div>
+			<div class="col-sm-2"> </div>
+			<div class="col-sm-10">
+<!-- 			<div class="col-sm-offset-2 col-sm-10"> -->
+<!-- 			<div class="col-xs-5"> -->
 				<?php echo $this->formElement($formsub->get('submit')); ?>
 			</div>
 	</div>
 <?php echo $this->form()->closeTag(); ?>
 </div>
 
+<hr>
+
+<!--  2nd Form -->
 <div class="form-horizontal form-block">
 <?php $form->prepare(); // The correct enctype is set here ?>
 	<?php echo $this->form()->openTag($form); ?>
@@ -66,6 +78,7 @@ $this->headLink()->appendStylesheet('/css/custom_eric.css');
 				<button class="addbtn">Add a new category</button>
 			</div>
 		</div>
+		<hr> 
 		<div class="form-group">
 			<label for="uploadExl" class="col-sm-2 control-label">Spreadsheet <span class="required1"> *</span> </label> 
 		    <div class="col-sm-10">
