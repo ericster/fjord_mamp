@@ -11,6 +11,7 @@ use Album\Form\UploadForm;       // <-- Add this import
 use Album\Form\ExlprepForm;       // <-- Add this import
 use Album\Form\ExlprepsubForm;       // <-- Add this import
 use Album\Form\ExlPrepValidator;       // <-- Add this import
+use Album\Form\ExlPrepsubValidator;       // <-- Add this import
 
 class AlbumController extends AbstractActionController
 {
@@ -112,7 +113,7 @@ public function getAlbumTable()
 
     			// Regex pattern from form to write
 // 				$file_loc = '/Applications/MAMP/htdocs/myapp/public/data/appRegex/';
-				$file_loc = '/usr/local/zend/apache2/htdocs/myapp/public/data/appRegex/';
+				$file_loc = './public/data/appRegex/';
     			$myFile = $file_loc . "testFile.txt";
     			$fh = fopen($myFile, 'w') or die("can't open file");
     			$stringData = "Floppy Jalopy\n";
@@ -155,6 +156,66 @@ public function getAlbumTable()
     }
     
 
+    public function exlprep3formsAction()
+    {
+//     	$form    = $this->getForm();
+    	$request = $this->getRequest();
+    	$response = $this->getResponse();
+    	
+    	$messages = array();
+//     	if ($request->isPost()){
+//     		$form->setData($request->getPost());
+//     		if ( ! $form->isValid()) {
+//     			$errors = $form->getMessages();
+//     			foreach($errors as $key=>$row)
+//     			{
+//     				if (!empty($row) && $key != 'submit') {
+//     					foreach($row as $keyer => $rower)
+//     					{
+//     						$messages[$key][] = $rower;
+//     					}
+//     				}
+//     			}
+//     		}
+    	
+//     		if (!empty($messages)){
+//     			$response->setContent(\Zend\Json\Json::encode($messages));
+//     		} else {
+//     			//save to db ;)
+//     			$this->savetodb($form->getData());
+//     			$response->setContent(\Zend\Json\Json::encode(array('success'=>1)));
+//     		}
+//     	}
+				$file_loc = './public/data/uploads/';
+    			$myFile = $file_loc . "TmoApps.txt";
+    			$fh = fopen($myFile, 'r') or die("can't open file");
+    			$regexstr = "";
+// 	    		print_r("regex starts\n");
+	    		
+	    		ob_start();
+	    	    $applist = array();
+    			while ($line = fgets($fh)) {
+    				// <... Do You work with the line ...>
+    				$line_conv = str_replace("|", ",", $line);
+    				$app = explode(":", $line_conv,2);
+    				$key = trim($app[0]);
+    				$value = trim($app[1]);
+    				$applist[$key] = $value;
+    				$regexstr = $regexstr . $line_conv . "\n"; 
+    			}
+    			fclose($fh);
+    			
+// 				print_r($applist);
+				ob_end_clean();
+    			$response->setContent(\Zend\Json\Json::encode($applist, true));
+// 	    		print_r("regex ended\n");
+//     			header("Content-Type: application/json", true);
+//     			$response->setContent($applist);
+//     			echo $regexstr;
+//     	$response = $regexstr;
+    	return $response;
+    }
+
     public function exlprep2formsAction()
     {
     	$form = new ExlprepForm('exldata');
@@ -168,7 +229,7 @@ public function getAlbumTable()
     		if(isset($postData['uploadTmp'])){
 	    		print_r("exldatasub form submitted!\n");
 // 				$file_loc = '/Users/Eric/Downloads/';
-				$file_loc = '/usr/local/zend/apache2/htdocs/myapp/public/data/uploads/';
+				$file_loc = './public/data/uploads/';
     			$myFile = $file_loc . "TmoApps.txt";
     			$fh = fopen($myFile, 'r') or die("can't open file");
     			$regexstr = "";
@@ -179,6 +240,7 @@ public function getAlbumTable()
     				$regexstr = $regexstr . $line_conv . "\n"; 
     			}
     			fclose($fh);
+    			echo $regexstr;
 	    		print_r("regex ready\n");
 	    		print_r($regexstr);
 
