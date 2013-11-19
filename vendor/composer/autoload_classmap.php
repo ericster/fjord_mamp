@@ -6,4 +6,5 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'ZF2FileUploadExamples\\Module' => $vendorDir . '/cgm/zf2-file-upload-examples/Module.php',
 );

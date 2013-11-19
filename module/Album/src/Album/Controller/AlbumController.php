@@ -55,9 +55,48 @@ public function getAlbumTable()
     
     	return array('form' => $form);
 
-// 		return new ViewModel(array(
-// 	            'albums' => $this->getAlbumTable()->fetchAll(),
-// 	        ));
+    }
+    public function phpexcelreadAction()
+    {
+    	$file_loc = './public/data/appRegex/';
+    	$myFile = $file_loc . "testFile2.txt";
+    	$fh = fopen($myFile, 'w') or die("can't open file");
+    	var_dump($fh);
+    	$stringData = "Floppy Jalopy2\n";
+    	fwrite($fh, $stringData);
+    	$stringData = "Pointy Pinto2\n";
+    	fwrite($fh, $stringData);
+    	
+    	print_r($stringData);
+//     	$inputFileName = './sampleData/example1.xls';
+    	$inputFileName = './public/data/uploads/Garda_issues_1015.xls';
+    	
+    	//  Read your Excel workbook
+    	try {
+    		var_dump($inputFileName);
+    		$inputFileType = \PHPExcel_IOFactory::identify($inputFileName);
+    		var_dump($inputFileType);
+    		$objReader = \PHPExcel_IOFactory::createReader($inputFileType);
+    		$objPHPExcel = $objReader->load($inputFileName);
+    	} catch(Exception $e) {
+    		die('Error loading file "'.pathinfo($inputFileName,PATHINFO_BASENAME).'": '.$e->getMessage());
+    	}
+    	
+    	//  Get worksheet dimensions
+    	$sheet = $objPHPExcel->getSheet(0);
+    	$highestRow = $sheet->getHighestRow();
+    	$highestColumn = $sheet->getHighestColumn();
+    	
+    	//  Loop through each row of the worksheet in turn
+    	for ($row = 1; $row <= $highestRow; $row++){
+    		//  Read a row of data into an array
+    		$rowData = $sheet->rangeToArray('A' . $row . ':' . $highestColumn . $row,
+    				NULL,
+    				TRUE,
+    				FALSE);
+    		//  Insert row data array into your database of choice here
+    	}
+    		print_r($rowData);
 
     }
 
@@ -218,6 +257,7 @@ public function getAlbumTable()
 
     public function exlprep2formsAction()
     {
+    	// fjord_mamp
     	$form = new ExlprepForm('exldata');
     	$formsub = new ExlprepsubForm('exldatasub');
 //     	$form = new UploadForm('upload-form');

@@ -7,6 +7,8 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'Zend\\' => array($vendorDir . '/zendframework/zendframework/library'),
+    'ZF2FileUploadExamples' => array($vendorDir . '/cgm/zf2-file-upload-examples/src'),
+    'PHPExcel' => array($vendorDir . '/codeplex/phpexcel'),
     'Doctrine\\Common\\Lexer\\' => array($vendorDir . '/doctrine/lexer/lib'),
     'Doctrine\\Common\\Inflector\\' => array($vendorDir . '/doctrine/inflector/lib'),
     'Doctrine\\Common\\Collections\\' => array($vendorDir . '/doctrine/collections/lib'),

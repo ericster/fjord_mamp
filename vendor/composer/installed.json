@@ -522,5 +522,101 @@
             "persistence",
             "spl"
         ]
+    },
+    {
+        "name": "cgm/zf2-file-upload-examples",
+        "version": "1.0.0",
+        "version_normalized": "1.0.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/cgmartin/ZF2FileUploadExamples.git",
+            "reference": "abd00718dda2b8a4715ce5a48e79050e6b50652b"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/cgmartin/ZF2FileUploadExamples/zipball/abd00718dda2b8a4715ce5a48e79050e6b50652b",
+            "reference": "abd00718dda2b8a4715ce5a48e79050e6b50652b",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.3.3",
+            "zendframework/zendframework": ">=2.1.0"
+        },
+        "time": "2013-01-31 03:22:57",
+        "type": "module",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-0": {
+                "ZF2FileUploadExamples": "src/"
+            },
+            "classmap": [
+                "./Module.php"
+            ]
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "BSD-3-Clause"
+        ],
+        "authors": [
+            {
+                "name": "Christopher Martin",
+                "email": "cgmartin@gmail.com",
+                "homepage": "http://cgmartin.com"
+            }
+        ],
+        "description": "Form file upload examples for Zend Framework 2",
+        "homepage": "https://github.com/cgmartin/ZF2FileUploadExamples"
+    },
+    {
+        "name": "codeplex/phpexcel",
+        "version": "dev-master",
+        "version_normalized": "9999999-dev",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/markushausammann/PHPExcel.git",
+            "reference": "7f72be58b4f0a136a4ee9997318d717ecb18abc6"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/markushausammann/PHPExcel/zipball/7f72be58b4f0a136a4ee9997318d717ecb18abc6",
+            "reference": "7f72be58b4f0a136a4ee9997318d717ecb18abc6",
+            "shasum": ""
+        },
+        "require": {
+            "ext-xml": "*",
+            "php": ">=5.2.0"
+        },
+        "time": "2013-06-13 17:41:00",
+        "type": "library",
+        "installation-source": "source",
+        "autoload": {
+            "psr-0": {
+                "PHPExcel": ""
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "LGPL"
+        ],
+        "authors": [
+            {
+                "name": "Maarten Balliauw",
+                "homepage": "http://blog.maartenballiauw.be"
+            },
+            {
+                "name": "Mark Baker"
+            },
+            {
+                "name": "Erit Tilt"
+            }
+        ],
+        "description": "PHPExcel - OpenXML - Create Excel2007 documents in PHP - Spreadsheet engine",
+        "homepage": "http://phpexcel.codeplex.com",
+        "keywords": [
+            "OpenXML",
+            "excel",
+            "php",
+            "spreadsheet"
+        ]
     }
 ]
