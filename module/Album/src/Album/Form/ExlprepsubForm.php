@@ -32,7 +32,7 @@ class ExlprepsubForm extends Form
                 'type'  => 'submit',
                 'value' => 'Take it',
                 'id' => 'submitbutton',
-                'class' => 'btn btn-info btn-sm',
+                'class' => 'btn btn-sm',
             ),
         ));
     }
