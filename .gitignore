@@ -8,3 +8,6 @@ nbproject
 .settings
 composer.lock
 vendor/bin
+public/data/*
+vendor/*
+vendor/TestAjax/*
