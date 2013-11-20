@@ -6,7 +6,7 @@ use Zend\InputFilter\InputFilter;
 use Zend\InputFilter\InputFilterAwareInterface;
 use Zend\InputFilter\InputFilterInterface;
 
-class ExlPrepValidator implements InputFilterAwareInterface
+class ExlPrepsubValidator implements InputFilterAwareInterface
 {
 	protected $inputFilter;
 
@@ -23,57 +23,57 @@ class ExlPrepValidator implements InputFilterAwareInterface
 			$factory = new InputFactory();
 
 
-			$inputFilter->add($factory->createInput([
-					'name' => 'TmoTV',
-					'required' => true,
-					'filters' => array(
-							array('name' => 'StripTags'),
-							array('name' => 'StringTrim'),
-					),
-					'validators' => array(
-					),
-					]));
-
-
 // 			$inputFilter->add($factory->createInput([
-// 					'name' => 'uploadTmp',
+// 					'name' => 'TmoTV',
+// 					'required' => true,
 // 					'filters' => array(
 // 							array('name' => 'StripTags'),
 // 							array('name' => 'StringTrim'),
-// 							array('name' => 'filerenameupload',
-// 									'options' => array(
-// // 											'target'    => '/usr/local/zend/apache2/htdocs/myapp/public/data/uploads/',
-// 											'target'    => './public/data/uploads/',
-// 											'overwrite' => true,
-// 											'use_upload_name' => true)),
 // 					),
 // 					'validators' => array(
-// 							array(
-// 									'name' => 'File\Extension',
-// 									'extension' => array('txt', ),
-// 							)
 // 					),
 // 					]));
 
+
 			$inputFilter->add($factory->createInput([
-					'name' => 'uploadExl',
+					'name' => 'uploadTmp',
 					'filters' => array(
 							array('name' => 'StripTags'),
 							array('name' => 'StringTrim'),
 							array('name' => 'filerenameupload',
-// 							array('name' => 'File\RenameUpload',
-								  'options' => array(
-// 										'target'    => '/usr/local/zend/apache2/htdocs/myapp/public/data/uploads/',
-										'target'    => './public/data/uploads/',
-										'overwrite' => true,
-										'use_upload_name' => true)),
-							),
+									'options' => array(
+// 											'target'    => '/usr/local/zend/apache2/htdocs/myapp/public/data/uploads/',
+											'target'    => './public/data/uploads/',
+											'overwrite' => true,
+											'use_upload_name' => true)),
+					),
 					'validators' => array(
 							array(
-							'name' => 'File\Extension',
-							'options' => array('extension' => array('xls', 'xlsx'))),
+									'name' => 'File\Extension',
+									'extension' => array('txt', ),
+							)
 					),
 					]));
+
+// 			$inputFilter->add($factory->createInput([
+// 					'name' => 'uploadExl',
+// 					'filters' => array(
+// 							array('name' => 'StripTags'),
+// 							array('name' => 'StringTrim'),
+// 							array('name' => 'filerenameupload',
+// // 							array('name' => 'File\RenameUpload',
+// 								  'options' => array(
+// // 										'target'    => '/usr/local/zend/apache2/htdocs/myapp/public/data/uploads/',
+// 										'target'    => './public/data/uploads/',
+// 										'overwrite' => true,
+// 										'use_upload_name' => true)),
+// 							),
+// 					'validators' => array(
+// 							array(
+// 							'name' => 'File\Extension',
+// 							'options' => array('extension' => array('xls', 'xlsx'))),
+// 					),
+// 					]));
 			
 			$this->inputFilter = $inputFilter;
 		}

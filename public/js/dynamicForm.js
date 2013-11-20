@@ -12,30 +12,41 @@ $(document).ready(function() {
 //                    if (request) {
 //                        request.abort();
 //                    }
-                /*
             // setup some local variables
+            /*
             var $form = $(this);
             // let's select and cache all the fields
-            var $inputs = $form.find("input, select, button, textarea");
+            var $inputs = $form.find("input");
+            var $inputs = $("#exldatasub input[name=uploadTmp]");
             // serialize the data in the form
-            var serializedData = $form.serialize();
+//            var serializedData = $form.serialize();
+            var serializedData = $inputs.serialize();
+            console.log(serializedData);
             */
+
 
             // let's disable the inputs for the duration of the ajax request
 //            $inputs.prop("disabled", true);
 
+            var fd = new FormData();
+            fd.append("tmpUpload",  $("#exldatasub input[name=uploadTmp]")[0].files[0]);
 //         alert("AJAX rquest sending<br />") ;
             // fire off the request to /form.php
             request = $.ajax({
                 url: "/album/exlprep3forms",
+//                url: "http://localhost:8888/album/exlprep3forms",
+//                url: urlform,
                 type: "post",
                 dataType: "json",
+                processData: false,
+                data: fd,
 //                data: serializedData,
+                contentType: false,
                 success : function ( testReturn )
                   {
                         console.log("Hooray, it worked!");
                         var jsonString = jsonToString(testReturn);
-//                    alert(jsonString) ;
+//                    alert(testReturn) ;
 //                        $("#demoeric").html(jsonString);
                         
                         // Iteration to create table row
@@ -55,7 +66,8 @@ $(document).ready(function() {
 //                    alert("error from AJAX response<br />") ;
                  },
               });
-              
+             
+//            return false;
 
             });
 
@@ -71,6 +83,13 @@ $(document).ready(function() {
         function jsonToString($jsonObject) {
                 return JSON.stringify($jsonObject);
         }
+        
+//        $('#del-button').live("click", function(event){
+        $(document).on("click", '#del-button', function(event){
+        	row = $(this).parent().parent();
+        	row.remove();
+        	event.preventDefault();
+        });
         
         /** 
          * @memberOf iter_insert_row_empty
@@ -163,7 +182,9 @@ $(document).ready(function() {
                 template = template.replace(/__search_term__/g, search_term);
         }
 //        console.log(template);
-        var del = $('#del-button').clone();
+//        var del = $('#del-button').clone();
+        var del = '<button type="button" class="btn btn-danger btn-sm" id="del-button"> \
+        <span class="glyphicon glyphicon-trash"></span></button> </td> </tr>';
         
         var tplate = $(template);
         var parsed = $('<div/>').append(tplate);
@@ -209,12 +230,14 @@ $(document).ready(function() {
 //         var res = template.concat(str3);
         var res1 = str3.concat(template);
         var res = res1.concat('\</div\>');
-        var del = $('#del-button').clone();
+//        var del = $('#del-button').clone();
+        var del = '<button type="button" class="btn btn-danger btn-sm" id="del-button"> \
+        <span class="glyphicon glyphicon-trash"></span></button> </td> </tr>';
         
         // Test HTML tag
         var row_empty = '<tr class="nameRegex"> <td> col1 </td> <td> col2 </td> <td>  \
                 <button type="button" class="btn btn-danger btn-sm" id="del-button"> \
-                <span class="glyphicon glyphicon-trash"></span> Delete</button> </td> </tr>';
+                <span class="glyphicon glyphicon-trash"></span> </button> </td> </tr>';
         var div_add = '<li> Hello World </li>'
         var div_add2 = '<li> Hello World2 </li>'
         var div_add3 = '<p> Hello World2 </p>'
@@ -222,7 +245,7 @@ $(document).ready(function() {
 
 //        $("#demoeric").html(del);
         var tplate = $(template);
-        console.log($(template));
+//        console.log($(template));
         var parsed = $('<div/>').append(tplate);
 //        parsed.find(".class0")
         var appn= parsed.find('input.appname');
@@ -233,9 +256,9 @@ $(document).ready(function() {
         var appr_td = $('<td></td>').append(appr);
         var del_td = $('<td></td>').append(del); 
         var app_tr = $('<tr></tr>').append(appn_td).append(appr_td).append(del_td);
-        console.log(parsed);
-        console.log(appn_td);
-        console.log(appr);
+//        console.log(parsed);
+//        console.log(appn_td);
+//        console.log(appr);
 
 
         // Appending to target tag

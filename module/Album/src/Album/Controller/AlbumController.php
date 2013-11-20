@@ -198,11 +198,49 @@ public function getAlbumTable()
     public function exlprep3formsAction()
     {
 //     	$form    = $this->getForm();
+    	$form= new ExlprepsubForm('exldatasub');
     	$request = $this->getRequest();
     	$response = $this->getResponse();
     	
     	$messages = array();
 //     	if ($request->isPost()){
+    		$postData = $request->getFiles()->toArray();
+//     		$postData = $request->toArray();
+//     		$postData = $request()->getPost('data');
+//     		$post= $request->getFiles()->toArray();
+//     	    $formValidator = new ExlPrepsubValidator();
+//     		$form->setInputFilter($formValidator->getInputFilter());
+//     		print_r($form);
+//     		$form->setData($postData);
+//     		$data = $form->getData();
+    		print_r("exlprep3forms \n");
+    		print_r($postData);
+//     		print_r("postData \n");
+//     		print_r($data);
+//     		if(isset($postData['uploadTmp'])){
+    		if(isset($postData['tmpUpload'])){
+	    		print_r("exldatasub form submitted!\n");
+				$file_loc = './public/data/uploads/';
+				
+				$fileName = $file_loc . $postData['tmpUpload']['name'];
+				move_uploaded_file($postData['tmpUpload']['tmp_name'], $fileName);
+				/*
+//     			$myFile = $file_loc . "TmoApps.txt";
+    			$myFile = $file_loc . $postData['uploadTmp'][];
+    			$fh = fopen($myFile, 'r') or die("can't open file");
+    			$regexstr = "";
+	    		print_r("regex starts\n");
+    			while ($line = fgets($fh)) {
+    				// <... Do You work with the line ...>
+    				$line_conv = str_replace("|", ",", $line);
+    				$regexstr = $regexstr . $line_conv . "\n"; 
+    			}
+    			fclose($fh);
+    			echo $regexstr;
+    			*/
+	    		print_r("exldatasub regex ready\n");
+	    		print_r($regexstr);
+    		}
 //     		$form->setData($request->getPost());
 //     		if ( ! $form->isValid()) {
 //     			$errors = $form->getMessages();
@@ -243,9 +281,9 @@ public function getAlbumTable()
     				$regexstr = $regexstr . $line_conv . "\n"; 
     			}
     			fclose($fh);
-    			
-// 				print_r($applist);
 				ob_end_clean();
+// 				$applist= appList();
+// 				print_r($applist);
     			$response->setContent(\Zend\Json\Json::encode($applist, true));
 // 	    		print_r("regex ended\n");
 //     			header("Content-Type: application/json", true);
@@ -255,16 +293,44 @@ public function getAlbumTable()
     	return $response;
     }
 
+    public function appList(){
+				$file_loc = './public/data/uploads/';
+    			$myFile = $file_loc . "TmoApps.txt";
+    			$fh = fopen($myFile, 'r') or die("can't open file");
+    			$regexstr = "";
+// 	    		print_r("regex starts\n");
+	    		
+	    	    $applist = array();
+    			while ($line = fgets($fh)) {
+    				// <... Do You work with the line ...>
+    				$line_conv = str_replace("|", ",", $line);
+    				$app = explode(":", $line_conv,2);
+    				$key = trim($app[0]);
+    				$value = trim($app[1]);
+    				$applist[$key] = $value;
+    				$regexstr = $regexstr . $line_conv . "\n"; 
+    			}
+    			fclose($fh);
+    			return $applist;
+    }
+    			
+
     public function exlprep2formsAction()
     {
     	// fjord_mamp
     	$form = new ExlprepForm('exldata');
     	$formsub = new ExlprepsubForm('exldatasub');
 //     	$form = new UploadForm('upload-form');
+    	print_r("exlprep2forms \n");
     
     	$request = $this->getRequest();
     	if ($request->isPost()) {
-    		$postData = $request->getFiles()->toArray();
+	    	print_r("isPost \n");
+//     		$postData = $request->getFiles()->toArray();
+    		$postData = array_merge_recursive(
+    				$request->getPost()->toArray(),
+    				$request->getFiles()->toArray()
+    		);
     		print_r($postData);
     		if(isset($postData['uploadTmp'])){
 	    		print_r("exldatasub form submitted!\n");
@@ -273,19 +339,18 @@ public function getAlbumTable()
     			$myFile = $file_loc . "TmoApps.txt";
     			$fh = fopen($myFile, 'r') or die("can't open file");
     			$regexstr = "";
-	    		print_r("regex starts\n");
+	    		print_r("exlprep2forms regex starts\n");
     			while ($line = fgets($fh)) {
     				// <... Do You work with the line ...>
     				$line_conv = str_replace("|", ",", $line);
     				$regexstr = $regexstr . $line_conv . "\n"; 
     			}
     			fclose($fh);
-    			echo $regexstr;
-	    		print_r("regex ready\n");
-	    		print_r($regexstr);
+//     			echo $regexstr;
+// 	    		print_r("regex ready\n");
+// 	    		print_r($regexstr);
 
-// 	    		print_r("regex starts\n");
-// 				$file_loc = '/usr/local/zend/apache2/htdocs/myapp/public/data/appRegex/';
+// 				$file_loc = './public/data/appRegex/';
 //     			$myFile = $file_loc . "testFile.txt";
 //     			$fh = fopen($myFile, 'w') or die("can't open file");
 //     			$stringData = "Floppy Jalopy\n";
