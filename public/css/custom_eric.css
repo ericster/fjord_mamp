@@ -76,3 +76,9 @@ font-size: 15.5px !important;
 .required1 {
 color: #FF0000; 
 }
+
+.btn-default {
+  color: #333333;
+  background-color: #ffffff;
+  border-color: #cccccc;
+}

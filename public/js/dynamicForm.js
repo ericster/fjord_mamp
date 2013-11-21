@@ -1,7 +1,7 @@
 $(document).ready(function() {
 
         // :Dom Event
-		// :First form to populate the 2nd form with a temalate file
+                // :First form to populate the 2nd form with a temalate file
         $("#exldatasub").submit(function(event){
                 
 //                alert("AJAX rquest prep<br />") ;
@@ -29,7 +29,8 @@ $(document).ready(function() {
 //            $inputs.prop("disabled", true);
 
             var fd = new FormData();
-            fd.append("tmpUpload",  $("#exldatasub input[name=uploadTmp]")[0].files[0]);
+            fd.append("uploadTmp",  $("#exldatasub input[name=uploadTmp]")[0].files[0]);
+//            fd.append("uploadtmp", $("#exldatasub input[name=submit]"));
 //         alert("AJAX rquest sending<br />") ;
             // fire off the request to /form.php
             request = $.ajax({
@@ -59,9 +60,19 @@ $(document).ready(function() {
                   },
                 error : function (xhr, err)
                  {
-                    alert("readyState: "+xhr.readyState+"\nstatus: "+xhr.status);
-                    alert("responseText: "+xhr.responseText);
-                        console.log("Oops, it failed!");
+//                    alert("readyState: "+xhr.readyState+"\nstatus: "+xhr.status);
+//                    alert("responseText: "+xhr.responseText);
+//                    $("#exldatasub input[name=submit]").removeClass("btn-info");
+                    $("#exldatasub input[name=submit]").css({ "color": "#333333",
+                    		  "background-color": "#b5b5b5",
+                    		  "border-color": "#b5b5b5"
+                    		});
+//                	$("#response").html('A problem has occurred.');
+                	// bootstrap popover tooltip.
+		            $("#exldatasub input[name='uploadTmp']").popover({title: 'Invalid template', placement: 'top', content: "make sure to use right text format"}); 
+                	$("#exldatasub input[name=uploadTmp]").popover('show');
+//                    alert("failed ");
+//                    console.log("Oops, it failed!");
 //                        alert(data);
 //                    alert("error from AJAX response<br />") ;
                  },
@@ -70,6 +81,9 @@ $(document).ready(function() {
 //            return false;
 
             });
+
+//          $("#response").popover({title: 'Twitter Bootstrap Popover', placement: 'top', content: "It's so simple to create a tooltop for my website!"}); 
+//          $("#exldatasub input[name='uploadTmp']").popover({title: 'Twitter Bootstrap Popover', placement: 'top', content: "It's so simple to create a tooltop for my website!"}); 
 
           $("#exldatasub input[name='uploadTmp']").change(function(){
                       $("#exldatasub input[name=submit]").addClass("btn-info");
@@ -86,9 +100,9 @@ $(document).ready(function() {
         
 //        $('#del-button').live("click", function(event){
         $(document).on("click", '#del-button', function(event){
-        	row = $(this).parent().parent();
-        	row.remove();
-        	event.preventDefault();
+                row = $(this).parent().parent();
+                row.remove();
+                event.preventDefault();
         });
         
         /** 
@@ -106,7 +120,7 @@ $(document).ready(function() {
 
         }
     
-	    // :helper function to create rows of search item with a JSON data
+            // :helper function to create rows of search item with a JSON data
         // 
         /** 
          * @memberOf iter_insert_row
@@ -127,7 +141,7 @@ $(document).ready(function() {
             }
                 
             // :Dome Event
-        	// :jUqeury UI test to check ui file is included
+                // :jUqeury UI test to check ui file is included
         //    $(".table").tablesorter();
         
                 // Dom Event
@@ -151,9 +165,9 @@ $(document).ready(function() {
 
     // :helper function adding the first row: not used 
 
-	/**
-	* @memberOf insert_row_first
-	*/
+        /**
+        * @memberOf insert_row_first
+        */
     function insert_row_first( currentCount, app_name, search_term) {
         var template = '<input name="searchTerm[__index__][appName]" required="required" class="appname" type="text" value="__app_name__"> \
                 <input name="searchTerm[__index__][regexPattern]" required="required" class="appregex" type="text" value="__search_term__">';
