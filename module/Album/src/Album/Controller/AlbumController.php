@@ -310,7 +310,7 @@ public function getAlbumTable()
                                     $request->getPost()->toArray(),
                                     $request->getFiles()->toArray()
                     );
-                    print_r($postData);
+//                     print_r($postData);
                     print_r("isPost in exlprep2forms\n");
                     
                     /*
@@ -323,6 +323,7 @@ public function getAlbumTable()
                     if ($form->isValid()) {
 	                    $data = $form->getData();
 		                print_r("\nform validated \n");
+// 		                print_r($data);
 		                $colValidator = new ExlPrepcolValidator();
 		                $colfilter = $colValidator->getInputFilter();
 		                /*
@@ -334,7 +335,7 @@ public function getAlbumTable()
                         	foreach( $searchTerms as $app ) {
 	                        	$stringData = $app[appName] . ": " . $app[regexPattern] . "\n";
 	                        	$colData = array($app[appName], $app[regexPattern]);
-	                        	print_r($app);
+// 	                        	print_r($app);
 		                    	$colfilter->setData($app);
 		                    	if ($colfilter->isValid()) {
 		                    		print_r("collection fieldset validated\n");
@@ -343,17 +344,60 @@ public function getAlbumTable()
 		                    		$formvalid = false;
 		                    		print_r("collection fieldset not validated\n");
 		                    	}
+                        	}
 		                    	
 		                    	/*
 		                    	 * Finally all fields are validated
 		                    	 */
-		                    	if($formvalid) {
-		                    		print_r("All FIELDS VALIDATED\n");
+		                    if($formvalid) {
+		                    	print_r("All FIELDS VALIDATED\n");
+                                // Regex pattern from form to write
+	                            $file_loc = './public/data/appRegex/';
+                                $myFile = $file_loc . "testFile.txt";
+                                $fh = fopen($myFile, 'w') or die("can't open file");
+//                                 $stringData = "Floppy Jalopy2\n";
+//                                 fwrite($fh, $stringData);
+//                                 $stringData = "Pointy Pinto2\n";
+//                                 fwrite($fh, $stringData);
+                                $searchTerms = $data['searchTerm'];
+//                                 print_r($searchTerms);
+                                foreach( $searchTerms as $app ) {
+                                            $stringData = $app[appName] . ": " . $app[regexPattern] . "\n";
+//                                             print_r($stringData);
+                                            fwrite($fh, $stringData);
+                                }
+                                fclose($fh);
+                                    
+                                    /*
+                                     * python system call:
+                                     */
+                                	/*
+                                	 * @TODO
+                                	 */
+                                	$exlFile = $data['uploadExl']['tmp_name'];
+							        $appProc = 'python ./public/python/appPattern.py ' . $myFile . " ". $exlFile;
+							//         $appProc = 'python ./public/python/appPattern.py python/convertedXL.txt ./public/python/schemaPLM.pyc ./public/python/xlsData_PLM.pyc';
+							//         exec($appProc, $output, $return);
+							//         echo "Dir returned $return, and output: $output\n";
+							        $exe_status = system($appProc, $return);
+							        echo "Dir returned $return, and output:\n";
+							        /*
+							         * Non-zero exit status: command failed to execute
+							         */
+							        if($return){
+							        	print_r("python execution failed\n");
+							        }
+
+        //                             return $this->redirect()->toRoute('album', array(
+        //                                             'controller' => 'Album\Controller\Album',
+        //                                             'action'     => 'python',
+        //                                 ));
 		                    		
 		                    	}
-		                    	
+		                    	else{
+		                    		print_r("Search Table input error\n");
+		                    	}
 		                    
-                        	}
 	                    }
                     }
                     else{
@@ -362,114 +406,7 @@ public function getAlbumTable()
                     	print_r($err_data);
                     	
                     }
-                    print_r($data);
-                    if(isset($postData['uploadTmp-tmp'])){
-                            print_r("exldatasub form submitted!\n");
-//                                 $file_loc = '/Users/Eric/Downloads/';
-                                $file_loc = './public/data/uploads/';
-                            $myFile = $file_loc . "TmoApps.txt";
-                            $fh = fopen($myFile, 'r') or die("can't open file");
-                            $regexstr = "";
-                            print_r("exlprep2forms regex starts\n");
-                            while ($line = fgets($fh)) {
-                                    // <... Do You work with the line ...>
-                                    $line_conv = str_replace("|", ",", $line);
-                                    $regexstr = $regexstr . $line_conv . "\n"; 
-                            }
-                            fclose($fh);
-//                             echo $regexstr;
-//                             print_r("regex ready\n");
-//                             print_r($regexstr);
-
-//                                 $file_loc = './public/data/appRegex/';
-//                             $myFile = $file_loc . "testFile.txt";
-//                             $fh = fopen($myFile, 'w') or die("can't open file");
-//                             $stringData = "Floppy Jalopy\n";
-//                             fwrite($fh, $stringData);
-//                             $stringData = "Pointy Pinto\n";
-//                             fwrite($fh, $stringData);
-//                             fclose($fh);
-//                             print_r("regex ready\n");
-                    }
-                    /*
-                    else{
-                            // Validator
-        //                     $formValidator = new UploadForm();
-                                $x = 10/2;
-                                $result = "result is = " . $x . "\n";
-        
-                                try { 
-                                $formValidator = new ExlPrepValidator();
-        //                         var_dump($formValidator);
-                                }
-                                catch (Exception $e) {
-                                        $excp = "Exception is : " . $e->getMessage() . "\n";
-                                }
-                                print_r($excp);
-        //                         print_r($result);
-                            $form->setInputFilter($formValidator->getInputFilter());
-        //                     var_dump($form);
-        //                     $validator = new \Zend\Validator\File\Extension(array('php', 'exe'));
-        
-                            // Make certain to merge the files info!
-                            $post = array_merge_recursive(
-                                            $request->getPost()->toArray(),
-                                            $request->getFiles()->toArray()
-                            );
-                            $form->setData($post);
-                            
-                            // Fine moved to new location: considered to be having this option in the filter
-                            // BUG: how to handle an array?
-                            $files   = $request->getFiles()->toArray();
-        //                     $file = $fileArr['uploadExl'];
-                            print_r($files);
-        //                     $filter = new \Zend\Filter\File\RenameUpload("/Applications/MAMP/htdocs/myapp/public/data/uploads/");
-        //                     $filter->setUseUploadName(true);
-        //                     echo $filter->filter($files['uploadExl']);
-        //                     print_r($files);
-        
-        //                     var_dump($form);
-                            if ($form->isValid()) {
-                                    $data = $form->getData();
-                                    // Form is valid, save the form!
-                                    print_r("success!\n");
-                                    print_r($data);
-        //                             return $this->redirect()->toRoute('album');
-        
-                                    // Regex pattern from form to write
-        //                                 $file_loc = '/Applications/MAMP/htdocs/myapp/public/data/appRegex/';
-                                        $file_loc = '/usr/local/zend/apache2/htdocs/myapp/public/data/appRegex/';
-                                    $myFile = $file_loc . "testFile.txt";
-                                    $fh = fopen($myFile, 'w') or die("can't open file");
-                                    $stringData = "Floppy Jalopy\n";
-                                    fwrite($fh, $stringData);
-                                    $stringData = "Pointy Pinto\n";
-                                    fwrite($fh, $stringData);
-                                    
-                                    $searchTerms = $data['searchTerm'];
-                                        print_r($searchTerms);
-                                    foreach( $searchTerms as $app ) {
-                                            $stringData = $app[appName] . ": " . $app[regexPattern] . "\n";
-                                            print_r($stringData);
-                                            fwrite($fh, $stringData);
-                                    }
-                                    fclose($fh);
-                            }
-                            else {
-                                    print_r($form->getMessages()); //stringLengthTooLong error will show
-                                    $data = $form->getData();
-                                    print_r("fail!\n");
-                                    print_r($data);
-        //                             return $this->redirect()->toRoute('album');
-        //                             var_dump($form->getMessages()); //stringLengthTooLong error will show
-        //                             print_r($form->getErrors()); //stringLengthTooLong error will show
-        //                             return $this->redirect()->toRoute('album', array(
-        //                                             'controller' => 'Album\Controller\Album',
-        //                                             'action'     => 'python',
-        //                                 ));
-                            }
-                    }
-                    */
+//                     print_r($data);
             }
     
 //             $viewModel = new ViewModel();
@@ -480,10 +417,6 @@ public function getAlbumTable()
                             'form' => $form,
                             'formsub' => $formsub
             );
-
-//                 return new ViewModel(array(
-//                     'albums' => $this->getAlbumTable()->fetchAll(),
-//                 ));
     }
     
     public function downloadAction()
@@ -520,13 +453,17 @@ public function getAlbumTable()
 
     public function pythonAction()
     {
-         return new ViewModel(array(
-            'albums' => $this->getAlbumTable()->fetchAll(),
-        ));
-        //$appProc = 'python /Users/Eric/Documents/workspace/TCforTestLink/TestLink/appPattern.py';
-        //exec($appProc, $output, $return);
-        //system($appProc, $return);
-        //echo "Dir returned $return, and output:\n";
+//          return new ViewModel(array(
+//             'albums' => $this->getAlbumTable()->fetchAll(),
+//         ));
+//         $appProc = 'python /Users/Eric/Documents/workspace/TCforTestLink/TestLink/appPattern.py';
+//         $appProc = 'python /Applications/MAMP/htdocs/myapp/public/python/appPattern.py';
+        $appProc = 'python ./public/python/appPattern.py';
+//         $appProc = 'python ./public/python/appPattern.py python/convertedXL.txt ./public/python/schemaPLM.pyc ./public/python/xlsData_PLM.pyc';
+//         exec($appProc, $output, $return);
+//         echo "Dir returned $return, and output: $output\n";
+        system($appProc, $return);
+        echo "Dir returned $return, and output:\n";
         //Zend_Debug::dump($output, $label = null, $echo = true);
         //echo "$return \n";
         //echo "============ var_dump ===================\n";

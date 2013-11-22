@@ -6,6 +6,9 @@ nbproject
 .idea
 .project
 .settings
+*.pyc
+*.txt
+*.xls
 composer.lock
 vendor/bin
 public/data/*
