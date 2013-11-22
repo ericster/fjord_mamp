@@ -27,7 +27,7 @@ class ExlprepForm extends Form
         		'type' => 'Zend\Form\Element\Text',
         		'attributes' => array(
         				'placeholder' => 'TMO_Garda_T399',
-        				'required' => 'required',
+//         				'required' => 'required',
         		),
         		'options' => array(
 //         				'label' => 'TMO TV',

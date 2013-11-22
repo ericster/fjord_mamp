@@ -13,6 +13,7 @@ use Album\Form\ExlprepsubForm;       // <-- Add this import
 use Album\Form\Exlprepsub2Form;       // <-- Add this import
 use Album\Form\ExlPrepValidator;       // <-- Add this import
 use Album\Form\ExlPrepsubValidator;       // <-- Add this import
+use Album\Form\ExlPrepcolValidator;       // <-- Add this import
 
 class AlbumController extends AbstractActionController
 {
@@ -207,6 +208,9 @@ public function getAlbumTable()
             $response = $this->getResponse();
             $file_loc = './public/data/uploads/';
             
+            /*
+             * 2nd form post: jQuery ajax request
+             */
             if ($request->isPost()){
                     $postData = $request->getFiles()->toArray();
 //                     print_r("exlprep3forms \n");
@@ -266,6 +270,9 @@ public function getAlbumTable()
             }
     }
 
+    /*
+     * defunct: TODO
+     */
     public function appList(){
                                 $file_loc = './public/data/uploads/';
                             $myFile = $file_loc . "TmoApps.txt";
@@ -304,15 +311,59 @@ public function getAlbumTable()
                                     $request->getFiles()->toArray()
                     );
                     print_r($postData);
-                    print_r("isPost \n");
-                    $formValidator = new ExlPrepsubValidator();
-                    $formsub->setInputFilter($formValidator->getInputFilter());
-                    $formsub->setData($postData);
-                    if ($formsub->isValid()) {
-	                    $data = $formsub->getData();
+                    print_r("isPost in exlprep2forms\n");
+                    
+                    /*
+                     * validation for taskName, regexPattern.
+                     */
+                    $formValidator = new ExlPrepValidator();
+                    $inputfilter = $formValidator->getInputFilter();
+                    $form->setInputFilter($formValidator->getInputFilter());
+                    $form->setData($postData);
+                    if ($form->isValid()) {
+	                    $data = $form->getData();
+		                print_r("\nform validated \n");
+		                $colValidator = new ExlPrepcolValidator();
+		                $colfilter = $colValidator->getInputFilter();
+		                /*
+		                 * validation for colletion fieldset: appName, regexPattern.
+		                 */
+	                    if(isset($postData['searchTerm'])){
+	                    	$formvalid = true;
+	                    	$searchTerms = $postData['searchTerm'];
+                        	foreach( $searchTerms as $app ) {
+	                        	$stringData = $app[appName] . ": " . $app[regexPattern] . "\n";
+	                        	$colData = array($app[appName], $app[regexPattern]);
+	                        	print_r($app);
+		                    	$colfilter->setData($app);
+		                    	if ($colfilter->isValid()) {
+		                    		print_r("collection fieldset validated\n");
+		                    	}
+		                    	else{
+		                    		$formvalid = false;
+		                    		print_r("collection fieldset not validated\n");
+		                    	}
+		                    	
+		                    	/*
+		                    	 * Finally all fields are validated
+		                    	 */
+		                    	if($formvalid) {
+		                    		print_r("All FIELDS VALIDATED\n");
+		                    		
+		                    	}
+		                    	
+		                    
+                        	}
+	                    }
+                    }
+                    else{
+                    	$inputfilter->setData($postData);
+                    	$err_data = $inputfilter->getValidInput();
+                    	print_r($err_data);
+                    	
                     }
                     print_r($data);
-                    if(isset($postData['uploadTmp'])){
+                    if(isset($postData['uploadTmp-tmp'])){
                             print_r("exldatasub form submitted!\n");
 //                                 $file_loc = '/Users/Eric/Downloads/';
                                 $file_loc = './public/data/uploads/';

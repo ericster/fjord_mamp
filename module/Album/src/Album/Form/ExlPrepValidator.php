@@ -21,10 +21,11 @@ class ExlPrepValidator implements InputFilterAwareInterface
 		{
 			$inputFilter = new InputFilter();
 			$factory = new InputFactory();
+			$searchFilter = new InputFilter();
 
 
 			$inputFilter->add($factory->createInput([
-					'name' => 'TmoTV',
+					'name' => 'taskName',
 					'required' => true,
 					'filters' => array(
 							array('name' => 'StripTags'),
@@ -35,26 +36,6 @@ class ExlPrepValidator implements InputFilterAwareInterface
 					]));
 
 
-// 			$inputFilter->add($factory->createInput([
-// 					'name' => 'uploadTmp',
-// 					'filters' => array(
-// 							array('name' => 'StripTags'),
-// 							array('name' => 'StringTrim'),
-// 							array('name' => 'filerenameupload',
-// 									'options' => array(
-// // 											'target'    => '/usr/local/zend/apache2/htdocs/myapp/public/data/uploads/',
-// 											'target'    => './public/data/uploads/',
-// 											'overwrite' => true,
-// 											'use_upload_name' => true)),
-// 					),
-// 					'validators' => array(
-// 							array(
-// 									'name' => 'File\Extension',
-// 									'extension' => array('txt', ),
-// 							)
-// 					),
-// 					]));
-
 			$inputFilter->add($factory->createInput([
 					'name' => 'uploadExl',
 					'filters' => array(
@@ -63,7 +44,6 @@ class ExlPrepValidator implements InputFilterAwareInterface
 							array('name' => 'filerenameupload',
 // 							array('name' => 'File\RenameUpload',
 								  'options' => array(
-// 										'target'    => '/usr/local/zend/apache2/htdocs/myapp/public/data/uploads/',
 										'target'    => './public/data/uploads/',
 										'overwrite' => true,
 										'use_upload_name' => true)),
@@ -74,6 +54,29 @@ class ExlPrepValidator implements InputFilterAwareInterface
 							'options' => array('extension' => array('xls', 'xlsx'))),
 					),
 					]));
+
+			/*
+			$searchFilter->add($factory->createInput([
+					'name' => 'appName',
+					'filters' => array(
+							array('name' => 'StripTags'),
+							array('name' => 'StringTrim'),
+					),
+					'validators' => array(
+					),
+					]));
+			$searchFilter->add($factory->createInput([
+					'name' => 'searchTerm',
+					'filters' => array(
+							array('name' => 'StripTags'),
+							array('name' => 'StringTrim'),
+					),
+					'validators' => array(
+					),
+					]));
+			
+			$inputFilter->add($searchFilter, "searchTerm");
+			*/
 			
 			$this->inputFilter = $inputFilter;
 		}

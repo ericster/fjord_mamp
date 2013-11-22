@@ -45,9 +45,32 @@ class AppSets extends Fieldset implements InputFilterProviderInterface
 	public function getInputFilterSpecification()
 	{
 		return array(
-				'name' => array(
-						'required' => false,
+					'name' => array(
+					'required' => false,
+							),
+				/*
+				'appName' => array(
+						'filters' => array(
+								array('name' => 'StripTags'),
+								array('name' => 'StringTrim'),
+						),
+		                'validators' => array(
+// 			                    array(
+// 			                        'name' => 'Float')
+		                ),
+				),	
+				'regexPattern' => array(
+						'filters' => array(
+								array('name' => 'StripTags'),
+								array('name' => 'StringTrim'),
+						),
+		                'validators' => array(
+// 			                    array(
+// 			                        'name' => 'Float')
+		                )
+
 				)
+				*/
 		);
 	}
 }

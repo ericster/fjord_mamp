@@ -70,11 +70,15 @@ $(document).ready(function() {
 //                	$("#response").html('A problem has occurred.');
                 	// bootstrap popover tooltip.
 		            $("#exldatasub input[name='uploadTmp']").popover({title: 'Invalid template', placement: 'top', content: "make sure to use right text format"}); 
+                	$("#exldatasub input[name=uploadTmp]").addClass('popover1');
                 	$("#exldatasub input[name=uploadTmp]").popover('show');
 //                    alert("failed ");
 //                    console.log("Oops, it failed!");
 //                        alert(data);
 //                    alert("error from AJAX response<br />") ;
+                	$('body').on('click', function (e) {
+                		$("#exldatasub input[name=uploadTmp]").popover('hide');
+                	});
                  },
               });
              
