@@ -100,7 +100,7 @@ def main():
             notClassfied = idx
             noClass.append(notClassfied) 
 #             outfile.writelines(str(notClassfied))
-    print noClass, 'length = ' , len(noClass)
+#     print noClass, 'length = ' , len(noClass)
     
     # 4. create a spreadsheet based on matching lists
     traversingCells = [ Pcell.Col_Title, Pcell.Col_Problem, Pcell.Col_Reproduction, \
@@ -110,6 +110,7 @@ def main():
     hdngsNo = [ Pcell.Col_Casecode, Pcell.Col_Title, Pcell.Col_Problem, Pcell.Col_Reproduction, \
                        Pcell.Col_Cause, Pcell.Col_Countermeasure ]
     print hdngsNo
+    print noClass
     ## Looping in rows to get a row with selected index
     prev_row =[]
     rowData = [] # filtered row data after removing not classified row.

@@ -1,7 +1,97 @@
 $(document).ready(function() {
 
         // :Dom Event
-                // :First form to populate the 2nd form with a temalate file
+        /*
+        * 2nd main form to populate the 2nd form with a temalate file
+        */
+	
+		$("#exldata1").submit(function(event){
+            event.preventDefault();
+			var queryarray = $("#exldata").serializeArray();
+			console.log(queryarray);
+            $('#result').html(queryarray);			
+		});
+		
+		function ConvertFormToJSON(form){
+		    var array = jQuery(form).serializeArray();
+		    var json = {};
+		    
+		    jQuery.each(array, function() {
+		        json[this.name] = this.value || '';
+		    });
+		    
+		    return json;
+		}
+
+        $("#exldata").submit(function(event){
+                
+//                alert("AJAX rquest prep<br />") ;
+                // prevent default posting of form
+            event.preventDefault();
+
+			var serializedData = $("#exldata").serializeArray();
+            $('#result').html(serializedData);			
+                
+            var fd = new FormData();
+            fd.append("uploadExl",  $("#exldata input[name=uploadExl]")[0].files[0]);
+            fd.append("taskName",  $("#exldata input[name=taskName]").val());
+            jQuery.each(serializedData, function() {
+		        fd.append(this.name, this.value);
+		    });
+            
+            
+//            fd.append("uploadtmp", $("#exldatasub input[name=submit]"));
+//         alert("AJAX rquest sending<br />") ;
+            // fire off the request to /form.php
+            request = $.ajax({
+                url: "/album/exlprep4forms",
+                type: "post",
+//                dataType: "json",
+                processData: false,
+                data: fd,
+//                data: serializedData,
+                contentType: false,
+                success : function ( testReturn )
+                  {
+                        console.log("Hooray, it worked!");
+                        var jsonString = jsonToString(testReturn);
+                    alert("response from AJAX response<br />") ;
+//                    alert(testReturn) ;
+		            $('#result').html(testReturn);			
+//                        $("#demoeric").html(jsonString);
+                  },
+                error : function (xhr, err)
+                 {
+//                    alert("readyState: "+xhr.readyState+"\nstatus: "+xhr.status);
+//                    alert("responseText: "+xhr.responseText);
+//                    $("#exldatasub input[name=submit]").removeClass("btn-info");
+                    $("#exldatasub input[name=submit]").css({ "color": "#333333",
+                    		  "background-color": "#b5b5b5",
+                    		  "border-color": "#b5b5b5"
+                    		});
+//                	$("#response").html('A problem has occurred.');
+                	// bootstrap popover tooltip.
+		            $("#exldatasub input[name='uploadTmp']").popover({title: 'Invalid template', placement: 'top', content: "make sure to use right text format"}); 
+                	$("#exldatasub input[name=uploadTmp]").addClass('popover1');
+                	$("#exldatasub input[name=uploadTmp]").popover('show');
+//                    alert("failed ");
+//                    console.log("Oops, it failed!");
+//                        alert(data);
+//                    alert("error from AJAX response<br />") ;
+                	$('body').on('click', function (e) {
+                		$("#exldatasub input[name=uploadTmp]").popover('hide');
+                	});
+                 },
+              });
+             
+//            return false;
+
+            }); // end of $("#exldatasub").submit();
+
+                 
+        /*
+        * First form to populate the 2nd form with a temalate file
+        */
         $("#exldatasub").submit(function(event){
                 
 //                alert("AJAX rquest prep<br />") ;
@@ -84,7 +174,7 @@ $(document).ready(function() {
              
 //            return false;
 
-            });
+            }); // end of $("#exldatasub").submit();
 
 //          $("#response").popover({title: 'Twitter Bootstrap Popover', placement: 'top', content: "It's so simple to create a tooltop for my website!"}); 
 //          $("#exldatasub input[name='uploadTmp']").popover({title: 'Twitter Bootstrap Popover', placement: 'top', content: "It's so simple to create a tooltop for my website!"}); 
