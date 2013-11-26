@@ -49,7 +49,6 @@ $(document).ready(function() {
 //                dataType: "json",
                 processData: false,
                 data: fd,
-//                data: serializedData,
                 contentType: false,
                 success : function ( testReturn )
                   {
@@ -57,6 +56,7 @@ $(document).ready(function() {
                         var jsonString = jsonToString(testReturn);
                     alert("response from AJAX response<br />") ;
 //                    alert(testReturn) ;
+//		            $('#result').html("response received!!!");			
 		            $('#result').html(testReturn);			
 //                        $("#demoeric").html(jsonString);
                   },

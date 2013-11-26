@@ -13,7 +13,7 @@ class XlsData
 {
     public $cell_arr = array();
     public $row_arr = array();
-    public $exlfile;
+    public $exlfile = '';
 
 	
 	public function __construct($exlfile = ""){
@@ -34,19 +34,20 @@ class XlsData
         return get_object_vars($this);
     }	
     
+
     function read_rows()
     {
     	 
     	$inputFileName = './public/data/uploads/Garda_issues_1015.xls';
     	$inputFileName = $this->exlfile;
-    	print_r('reading exl file');
-    	print_r($inputFileName);
+//     	print_r('reading exl file');
+//     	print_r($inputFileName);
     
     	//  Read your Excel workbook
     	try {
-    		var_dump($inputFileName);
+//     		var_dump($inputFileName);
     		$inputFileType = \PHPExcel_IOFactory::identify($inputFileName);
-    		var_dump($inputFileType);
+//     		var_dump($inputFileType);
     		$objReader = \PHPExcel_IOFactory::createReader($inputFileType);
     		$objPHPExcel = $objReader->load($inputFileName);
     	} catch(Exception $e) {
@@ -66,12 +67,31 @@ class XlsData
     				TRUE,
     				FALSE);
     		//  Insert row data array into your database of choice here
-	    	print_r($rowData);
+// 	    	print_r($rowData);
     		array_push($this->row_arr, $rowData);
     	}
     
     }
     
+    function not_classified_rows($no_class_list) {
+//     	print_r("ready to cull out");
+//     	print_r($no_class_list);
+    	$no_class_rows = array();
+//     	print_r("size is : ");
+//     	print_r(sizeof($this->row_arr));
+    	foreach ($this->row_arr as $key => $row) {
+//     		print_r($key);
+    		if(in_array($key, $no_class_list)){
+//     			print_r("matching");
+//     			print_r($row);
+    			array_push($no_class_rows, $row);
+    		}
+    	} 
+//     	print_r("returning no_class_rows. size is : ");
+//     	print_r(sizeof($no_class_rows));
+    	return $no_class_rows;
+    	
+    }
     function read_cells(){
     	
 //     	/** Error reporting */

@@ -389,6 +389,8 @@ public function getAlbumTable()
 							        echo "Dir returned $return, and output:\n";
 							        print_r("exe_status\n");
 							        print_r($exe_status);
+							        $py_result = json_decode($exe_status, true);
+							        var_dump($py_result);
 							        /*
 							         * PHP system call non-zero exit status: command failed to execute
 							         */
@@ -400,13 +402,15 @@ public function getAlbumTable()
 							        $exldata = new XlsData($exlFile);
 							        $exldata->read_rows();
 							        $row_arr = $exldata->getRowArr();
-							        print_r($row_arr);
+							        $not_classified = $exldata->not_classified_rows($py_result);
+// 							        print_r($row_arr);
+							        print_r($not_classified);
 		                    		print_r("\nNew spreadsheet is created!!!\n");
 		                    	}
 		                    	else{
 		                    		print_r("Search Table input error\n");
 		                    	}
-	                    $response->setContent(\Zend\Json\Json::encode($row_arr, true));
+	                    $response->setContent(\Zend\Json\Json::encode($not_classified, true));
 // 	                    $response->setContent($row_arr);
                     }
                     else{

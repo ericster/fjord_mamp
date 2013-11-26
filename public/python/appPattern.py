@@ -11,6 +11,7 @@ Created on Oct 17, 2013
 import re
 import xlwt
 import sys
+import json
 sys.path.append('/Applications/MAMP/htdocs/myapp/public/python')
 from xlsData_PLM import XlsData
 from schemaPLM import PLM_Schema as Pcell
@@ -111,6 +112,7 @@ def main():
                        Pcell.Col_Cause, Pcell.Col_Countermeasure ]
     print hdngsNo
     print noClass
+    print json.dumps(noClass)
     ## Looping in rows to get a row with selected index
     prev_row =[]
     rowData = [] # filtered row data after removing not classified row.
@@ -118,6 +120,7 @@ def main():
         row = xlsData.getRow(i)
         # checking if a row contains no casecode
 #         print "casecode = ", row[Pcell.Col_Casecode].cell_value
+
 #         if row[Pcell.Col_Casecode].cell_value == '':
 #             print "casecode = ", row[Pcell.Col_Casecode].cell_value, row[Pcell.Col_Title].cell_value, \
 #                                 row[Pcell.Col_Problem].cell_value, row[Pcell.Col_Reproduction].cell_value, \
