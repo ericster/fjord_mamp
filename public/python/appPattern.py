@@ -21,8 +21,8 @@ traversingCells = [ Pcell.Col_Title, Pcell.Col_Problem, Pcell.Col_Reproduction, 
 
 import sys
 
-print 'Number of arguments:', len(sys.argv), 'arguments.'
-print 'Argument List:', str(sys.argv)
+# print 'Number of arguments:', len(sys.argv), 'arguments.'
+# print 'Argument List:', str(sys.argv)
 # first argument: python file
 # second argument: template text file
 # third argument: PLM xls file 
@@ -110,8 +110,8 @@ def main():
     hdngsNo =  traversingCells.insert(0, Pcell.Col_Casecode)
     hdngsNo = [ Pcell.Col_Casecode, Pcell.Col_Title, Pcell.Col_Problem, Pcell.Col_Reproduction, \
                        Pcell.Col_Cause, Pcell.Col_Countermeasure ]
-    print hdngsNo
-    print noClass
+#     print hdngsNo
+#     print noClass
     print json.dumps(noClass)
     ## Looping in rows to get a row with selected index
     prev_row =[]

@@ -67,8 +67,10 @@ class XlsData
     				TRUE,
     				FALSE);
     		//  Insert row data array into your database of choice here
-// 	    	print_r($rowData);
-    		array_push($this->row_arr, $rowData);
+//     		print_r("row_data_inserted");
+// 	    	var_dump($rowData);
+	    	// debugged : one row is an array of an array of cells
+    		array_push($this->row_arr, $rowData[0]);
     	}
     
     }
@@ -77,8 +79,10 @@ class XlsData
 //     	print_r("ready to cull out");
 //     	print_r($no_class_list);
     	$no_class_rows = array();
-//     	print_r("size is : ");
+//     	print_r("size of row_arr: ");
 //     	print_r(sizeof($this->row_arr));
+//     	var_dump($this->row_arr);
+
     	foreach ($this->row_arr as $key => $row) {
 //     		print_r($key);
     		if(in_array($key, $no_class_list)){
@@ -90,8 +94,30 @@ class XlsData
 //     	print_r("returning no_class_rows. size is : ");
 //     	print_r(sizeof($no_class_rows));
     	return $no_class_rows;
-    	
     }
+    
+    function get_selected_cols($sel_cols, $row_arr) {
+//     	print_r("row_arr = ");
+//     	print_r($row_arr);
+//     	print_r("sel_cols : ". implode(' ', $sel_cols));
+    	$mod_row_arr = array();
+    	foreach($row_arr as $row){
+//     		print_r("row = ");
+//     		print_r($row);
+    		$mod_row = array();
+//     		print_r("row size is :". sizeof($row));
+    		foreach ($row as $idx => $col){
+    			if(in_array($idx, $sel_cols)){
+    				array_push($mod_row,$col );
+    			}
+    		}
+    		array_push($mod_row_arr, $mod_row);
+    	}
+    	
+    	return $mod_row_arr;
+    }
+    
+    
     function read_cells(){
     	
 //     	/** Error reporting */
@@ -103,8 +129,8 @@ class XlsData
 
     	$inputFileName = './public/data/uploads/Garda_issues_1015.xls';
     	$inputFileName = $this->exlfile;
-    	print_r('reading exl file');
-    	print_r($inputFileName);
+//     	print_r('reading exl file');
+//     	print_r($inputFileName);
     	
     	//  Read your Excel workbook
     	try {

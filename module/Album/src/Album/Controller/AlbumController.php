@@ -15,6 +15,7 @@ use Album\Form\Exlprepsub2Form;       // <-- Add this import
 use Album\Form\ExlPrepValidator;       // <-- Add this import
 use Album\Form\ExlPrepsubValidator;       // <-- Add this import
 use Album\Form\ExlPrepcolValidator;       // <-- Add this import
+use Zend\Http\Headers;
 
 class AlbumController extends AbstractActionController
 {
@@ -315,8 +316,8 @@ public function getAlbumTable()
                                     $request->getPost()->toArray(),
                                     $request->getFiles()->toArray()
                     );
-                    print_r($postData);
-                    print_r("isPost in exlprep4forms\n");
+//                     print_r($postData);
+//                     print_r("isPost in exlprep4forms\n");
                     
                     /*
                      * validation for taskName, regexPattern.
@@ -327,8 +328,8 @@ public function getAlbumTable()
                     $form->setData($postData);
                     if ($form->isValid()) {
 	                    $data = $form->getData();
-		                print_r("\nform validated \n");
-		                print_r($data);
+// 		                print_r("\nform validated \n");
+// 		                print_r($data);
 		                $colValidator = new ExlPrepcolValidator();
 		                $colfilter = $colValidator->getInputFilter();
 		                /*
@@ -343,7 +344,7 @@ public function getAlbumTable()
 // 	                        	print_r($app);
 		                    	$colfilter->setData($app);
 		                    	if ($colfilter->isValid()) {
-		                    		print_r("collection fieldset validated\n");
+// 		                    		print_r("collection fieldset validated\n");
 		                    	}
 		                    	else{
 		                    		$formvalid = false;
@@ -355,7 +356,7 @@ public function getAlbumTable()
 		                    	 * Finally all fields are validated
 		                    	 */
 		                    if($formvalid) {
-		                    	print_r("All FIELDS VALIDATED\n");
+// 		                    	print_r("All FIELDS VALIDATED\n");
                                 // Regex pattern from form to write
 	                            $file_loc = './public/data/appRegex/';
 	                            /*
@@ -385,12 +386,13 @@ public function getAlbumTable()
 							        $appProc = 'python ./public/python/appPattern.py ' . $myFile . " ". $exlFile;
 							//         exec($appProc, $output, $return);
 							//         echo "Dir returned $return, and output: $output\n";
-							        $exe_status = system($appProc, $return);
-							        echo "Dir returned $return, and output:\n";
-							        print_r("exe_status\n");
-							        print_r($exe_status);
-							        $py_result = json_decode($exe_status, true);
-							        var_dump($py_result);
+// 							        $exe_status = system($appProc, $return);
+							        exec($appProc, $exe_status, $return);
+// 							        echo "Dir returned $return, and output:\n";
+// 							        print_r("exe_status\n");
+// 							        print_r($exe_status);
+							        $py_result = json_decode($exe_status[0], true);
+// 							        var_dump($py_result);
 							        /*
 							         * PHP system call non-zero exit status: command failed to execute
 							         */
@@ -398,19 +400,25 @@ public function getAlbumTable()
 							        	print_r("python execution failed\n");
 							        }
 
-							        print_r($exlFile);
+// 							        print_r($exlFile);
 							        $exldata = new XlsData($exlFile);
 							        $exldata->read_rows();
 							        $row_arr = $exldata->getRowArr();
 							        $not_classified = $exldata->not_classified_rows($py_result);
+							        $sel_cols = array(3, 4, 7, 8, 10, 11 );
+							        $mod_rows = $exldata->get_selected_cols($sel_cols, $not_classified);
 // 							        print_r($row_arr);
-							        print_r($not_classified);
-		                    		print_r("\nNew spreadsheet is created!!!\n");
+// 							        print_r("size of not classified" . sizeof($not_classified));
+// 							        var_dump($not_classified);
+// 							        print_r("var_dump ended");
+// 									print_r("mod_rows");
+// 							        print_r($mod_rows);
+// 		                    		print_r("\nNew spreadsheet is created!!!\n");
 		                    	}
 		                    	else{
 		                    		print_r("Search Table input error\n");
 		                    	}
-	                    $response->setContent(\Zend\Json\Json::encode($not_classified, true));
+	                    $response->setContent(\Zend\Json\Json::encode($mod_rows, true));
 // 	                    $response->setContent($row_arr);
                     }
                     else{
@@ -563,7 +571,33 @@ public function getAlbumTable()
             );
     }
     
-    public function downloadAction()
+    
+    
+
+    public function downloadAction() {
+	    $response = $this->getResponse();
+// 	    $response->setHeaders(Headers::fromString("Content-Type: application/octet-stream\r\nContent-Length: 9\r\nContent-Disposition: attachment; filename=\"blamoo.txt\""));
+// 	    $response->setContent('blablabla');
+
+// 	    /Applications/MAMP/htdocs/myapp/public/python/
+
+	    $xlsx_file_name = "./public/python/appBreakdown.xls";
+	    if(file_exists($filename)) {
+	    	print_r("appBreakdown.xls exists");
+	    }
+
+	    $response->getHeaders()->addHeaders(array(
+// 	    		'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+	    		'Content-Type' => 'application/vnd.ms-excel',
+	    		'Content-Disposition' => 'attachment;filename="appBreak.xls"',
+// 	    		'Cache-Control' => 'max-age=0',
+	    ));
+	    $response->setContent(file_get_contents($xlsx_file_name));
+
+	    return $response;
+    }
+    
+    public function download_sampleAction()
     {
             /* get here all the data you need from the database
              * $size = size of the file you can get by readfile()
