@@ -63,11 +63,13 @@ $(document).ready(function() {
                     var space = '<hr><div class = "row"> <div class="col-sm-2">';
                     space += '</div><div class="col-sm-12><span class="caret"></span></div></div>';
 ////                    var result_header ='<label class="col-sm-2 control-label">Result</label>';  
-                    var result_header =$('<h4 class="col-sm-2 text-center">Not classified</h4>');  
+                    var result_header =$('<h4 class="col-sm-2 text-right">Not classified</h4>');  
 //                    var result_header = '<h4> Testcases not classified </h4>';
 			        var table =$('<table class="table tablesorter" id="nocat"> </table>');
-			        var header  = $('<tr><th>Casecode</th> <th>Title</th> <th>Problem</th> <th>Reproduction</th><th>Cause</th> <th>Measure</th></tr>'); 
+			        var header  = $('<thead><tr><th>Casecode</th> <th>Title</th> <th>Problem</th> <th>Reproduction</th><th>Cause</th> <th>Measure</th></tr></thead>'); 
+			        var body = $('<tbody></tbody>')
 			        table.append(header);
+			        var tbody = table.append(body);
 		            $.each(testReturn, function() {
 		            	var newrow = $('<tr class="nocategory"></tr>');
 		            	  $.each(this, function() {
@@ -76,7 +78,8 @@ $(document).ready(function() {
 		            		td += '</td>';
 		            		newrow.append(td);
 		            	  });
-		            	  table.append(newrow);
+//		            	  table.append(newrow);
+		            	  tbody.append(newrow);
 		            	});
 //		            $('#result').append(space);
 		            result_header.before($(space));
