@@ -11,9 +11,11 @@ use Album\Form\AlbumForm;       // <-- Add this import
 use Album\Form\UploadForm;       // <-- Add this import
 use Album\Form\ExlprepForm;       // <-- Add this import
 use Album\Form\ExlprepsubForm;       // <-- Add this import
+use Album\Form\ExlprepsubmodForm;       // <-- Add this import
 use Album\Form\Exlprepsub2Form;       // <-- Add this import
 use Album\Form\ExlPrepValidator;       // <-- Add this import
 use Album\Form\ExlPrepsubValidator;       // <-- Add this import
+use Album\Form\ExlPrepsubmodValidator;       // <-- Add this import
 use Album\Form\ExlPrepcolValidator;       // <-- Add this import
 use Zend\Http\Headers;
 
@@ -202,6 +204,105 @@ public function getAlbumTable()
     /*
      * response url to jquery ajax request: 1st From
      */
+    public function exlprep3formsmodAction()
+    {
+//             $formsub= new Exlprepsub2Form('exldatasub');
+            $formsub= new ExlprepsubmodForm('exldatasub');
+            $request = $this->getRequest();
+            $response = $this->getResponse();
+            $file_loc = './public/data/uploads/';
+            
+            /*
+             * 2nd form post: jQuery ajax request
+             */
+            if ($request->isPost()){
+                    $postData = $request->getFiles()->toArray();
+//                     print_r("exlprep3forms \n");
+//                     print_r($postData);
+	                $formValidator = new ExlPrepsubmodValidator();
+                    $formsub->setInputFilter($formValidator->getInputFilter());
+                    $formsub->setData($postData);
+//                     print_r("form validating... \n");
+                    
+//                     $validator = new \Zend\Validator\File\Extension('txt,text');
+//                     $myFile = $file_loc . "TmoApps.txt";
+//                     $fileName = $file_loc . $postData['uploadTmp']['name'];
+// 		            print_r($fileName);
+                    if ($formsub->isValid()) {
+	                    $data = $formsub->getData();
+// 	                    if($validator->isValid($fileName)) {
+// 		                    print_r("\nfile extension validated \n");
+// 	                    }
+// 	                    print_r("form validated \n");
+// 	                    print_r($data);
+	                    if(isset($postData['uploadTmp'])){
+// 	                            print_r("\n uploadTmp is processing\n");
+	                                $myFile = $file_loc . $postData['uploadTmp']['name'];
+// 	                                print_r($myFile);
+	//                                 move_uploaded_file($postData['tmpUpload']['tmp_name'], $fileName);
+	//                             $myFile = $file_loc . "TmoApps.txt";
+	//                             $myFile = $file_loc . $postData['uploadTmp'][];
+	                            $fh = fopen($myFile, 'r') or die("can't open file");
+	                            $regexstr = "";
+// 	                            print_r("regex starts\n");
+	                            ob_start();
+		                        $applist = array();
+	                            while ($line = fgets($fh)) {
+	                                    $line_conv = str_replace("|", ",", $line);
+	                                    $app = explode(":", $line_conv,2);
+	                                    $key = trim($app[0]);
+	                                    $value = trim($app[1]);
+	                                    $applist[$key] = $value;
+	                                    $regexstr = $regexstr . $line_conv . "\n"; 
+	                            }
+	                            fclose($fh);
+	                            ob_end_clean();
+	//                             echo $regexstr;
+// 	                            print_r("exldatasub regex ready\n");
+// 	                            print_r($regexstr);
+	                    }
+	                    if(isset($postData['uploadExl'])){
+// 	                        print_r("\n uploadExl is processing\n");
+	                    	$exlFile = $data['uploadExl']['tmp_name'];
+// 		                    print_r($exlFile);
+		                    $exldata = new XlsData($exlFile);
+// 		                    $exldata->read_rows();
+		                    $exldata->read_rows_for_heading();
+// 		                    $exldata->get_heading_row();
+		                    $headingRow = $exldata->get_heading_row();
+		                    $searchCells = $exldata->get_search_cells();
+		                    $visibleCells = $exldata->get_visible_cells();
+		                    $casecodeCell = $exldata->get_casecode_cell();
+// 		                    print_r("headingRow is" );
+// 		                    foreach ($headingRow as $key => $cell){
+// 		                    	print_r($key . ":" . $cell . "\n");
+// 		                    }
+// 		                    $row_arr = $exldata->getRowArr();
+// 		                    $not_classified = $exldata->not_classified_rows($py_result);
+// 		                    $sel_cols = array(3, 4, 7, 8, 10, 11 );
+// 		                    $mod_rows = $exldata->get_selected_cols($sel_cols, $not_classified);
+		                    // 	print_r($row_arr);
+	                    }
+	                    $result = array("applist" => $applist, "heading" =>$headingRow, "searchCells" => $searchCells, "casecodeCell" => $casecodeCell);
+
+//                         $response->setContent(\Zend\Json\Json::encode($applist, true));
+                        $response->setContent(\Zend\Json\Json::encode($result, true));
+			            return $response;
+                    } 
+                    else{
+// 			            return array(
+//                             'formsub' => $formsub
+// 			            );
+	                    print_r("form not validated... \n");
+						$err_mes1 = "file name not validated";
+						return $err_mes1;
+                    }
+            }
+    }
+
+    /*
+     * response url to jquery ajax request: 1st From
+     */
     public function exlprep3formsAction()
     {
 //             $formsub= new Exlprepsub2Form('exldatasub');
@@ -297,6 +398,146 @@ public function getAlbumTable()
     }
                             
 
+    /*
+     * response url to jquery ajax request: 2nd main From
+     */
+    public function exlprep4formsmodAction()
+    {
+            // fjord_mamp
+            $form = new ExlprepForm('exldata');
+//             $form = new UploadForm('upload-form');
+//             print_r("exlprep2forms \n");
+            $request = $this->getRequest();
+            $response = $this->getResponse();
+
+            if ($request->isPost()) {
+//                     $postData = $request->getFiles()->toArray();
+                    $postData = array_merge_recursive(
+//                                     $request->getPost()->toArray()
+                                    $request->getPost()->toArray(),
+                                    $request->getFiles()->toArray()
+                    );
+//                     print_r($postData);
+//                     print_r("isPost in exlprep4forms\n");
+                    
+                    /*
+                     * validation for taskName, regexPattern.
+                     */
+                    $formValidator = new ExlPrepValidator();
+                    $inputfilter = $formValidator->getInputFilter();
+                    $form->setInputFilter($formValidator->getInputFilter());
+                    $form->setData($postData);
+                    if ($form->isValid()) {
+	                    $data = $form->getData();
+// 		                print_r("\nform validated \n");
+// 		                print_r($data);
+		                $colValidator = new ExlPrepcolValidator();
+		                $colfilter = $colValidator->getInputFilter();
+		                /*
+		                 * validation for colletion fieldset: appName, regexPattern.
+		                 */
+	                    if(isset($postData['searchTerm'])){
+	                    	$formvalid = true;
+	                    	$searchTerms = $postData['searchTerm'];
+                        	foreach( $searchTerms as $app ) {
+	                        	$stringData = $app[appName] . ": " . $app[regexPattern] . "\n";
+	                        	$colData = array($app[appName], $app[regexPattern]);
+// 	                        	print_r($app);
+		                    	$colfilter->setData($app);
+		                    	if ($colfilter->isValid()) {
+// 		                    		print_r("collection fieldset validated\n");
+		                    	}
+		                    	else{
+		                    		$formvalid = false;
+		                    		print_r("collection fieldset not validated\n");
+		                    	}
+                        	}
+		                    
+	                    }        	
+	                    		/*
+		                    	 * Finally all fields are validated
+		                    	 */
+		                    if($formvalid) {
+// 		                    	print_r("All FIELDS VALIDATED\n");
+                                // Regex pattern from form to write
+	                            $file_loc = './public/data/appRegex/';
+	                            /*
+	                             * template file
+	                             */
+                                $myFile = $file_loc . "testFile_1.txt";
+                                $fh = fopen($myFile, 'w') or die("can't open file");
+                                $searchTerms = $data['searchTerm'];
+//                                 print_r($searchTerms);
+                                foreach( $searchTerms as $app ) {
+                                			$org_pattern = $app[regexPattern];
+                                			/*
+                                			 * ',' replaced by '|' for python regex search
+                                			 */
+                                			$conv_pattern = preg_replace("/,/", "|", $org_pattern);
+                                            $stringData = $app[appName] . ": " . $conv_pattern . "\n";
+//                                             $stringData = $app[appName] . ": " . $app[regexPattern] . "\n";
+//                                             print_r($stringData);
+                                            fwrite($fh, $stringData);
+                                }
+                                fclose($fh);
+                                    
+                                    /*
+                                     * PHP python system call:
+                                     */
+                                	$exlFile = $data['uploadExl']['tmp_name'];
+							        $appProc = 'python ./public/python/appPattern.py ' . $myFile . " ". $exlFile;
+							//         exec($appProc, $output, $return);
+							//         echo "Dir returned $return, and output: $output\n";
+// 							        $exe_status = system($appProc, $return);
+							        exec($appProc, $exe_status, $return);
+// 							        echo "Dir returned $return, and output:\n";
+// 							        print_r("exe_status\n");
+// 							        print_r($exe_status);
+							        $py_result = json_decode($exe_status[0], true);
+// 							        var_dump($py_result);
+							        /*
+							         * PHP system call non-zero exit status: command failed to execute
+							         */
+							        if($return){
+							        	print_r("python execution failed\n");
+							        }
+
+							        /*
+							         * PHPExcel read excel data
+							         */
+// 							        print_r($exlFile);
+							        $exldata = new XlsData($exlFile);
+							        $exldata->read_rows();
+							        $row_arr = $exldata->getRowArr();
+							        $not_classified = $exldata->not_classified_rows($py_result);
+							        $sel_cols = array(3, 4, 7, 8, 10, 11 );
+							        $mod_rows = $exldata->get_selected_cols($sel_cols, $not_classified);
+// 							        print_r($row_arr);
+// 							        print_r("size of not classified" . sizeof($not_classified));
+// 							        var_dump($not_classified);
+// 							        print_r("var_dump ended");
+// 									print_r("mod_rows");
+// 							        print_r($mod_rows);
+// 		                    		print_r("\nNew spreadsheet is created!!!\n");
+		                    	}
+		                    	else{
+		                    		print_r("Search Table input error\n");
+		                    	}
+	                    $response->setContent(\Zend\Json\Json::encode($mod_rows, true));
+// 	                    $response->setContent($row_arr);
+                    }
+                    else{
+                    	$inputfilter->setData($postData);
+                    	$err_data = $inputfilter->getValidInput();
+//                     	print_r($err_data);
+//                     	$response->setContent($err_data);
+                    	
+                    }
+	                    return $response;
+            }
+    
+    }
+    
     /*
      * response url to jquery ajax request: 2nd main From
      */
@@ -433,6 +674,154 @@ public function getAlbumTable()
     
     }
     
+    
+    /*
+     * Sandbox for new form scheme
+     * obsolete form processing by jquery ajax: preventDefault
+     * only shwoing two forms in view
+     */
+    public function exlprep2formsmodAction()
+    {
+            // fjord_mamp
+            $form = new ExlprepForm('exldata');
+            $formsub = new ExlprepsubForm('exldatasub');
+//             $form = new UploadForm('upload-form');
+//             print_r("exlprep2forms \n");
+    
+            $request = $this->getRequest();
+            if ($request->isPost()) {
+//                     $postData = $request->getFiles()->toArray();
+                    $postData = array_merge_recursive(
+                                    $request->getPost()->toArray(),
+                                    $request->getFiles()->toArray()
+                    );
+                    print_r($postData);
+                    print_r("isPost in exlprep2forms\n");
+                    
+                    /*
+                     * validation for taskName, regexPattern.
+                     */
+                    $formValidator = new ExlPrepValidator();
+                    $inputfilter = $formValidator->getInputFilter();
+                    $form->setInputFilter($formValidator->getInputFilter());
+                    $form->setData($postData);
+                    if ($form->isValid()) {
+	                    $data = $form->getData();
+		                print_r("\nform validated \n");
+		                print_r($data);
+		                $colValidator = new ExlPrepcolValidator();
+		                $colfilter = $colValidator->getInputFilter();
+		                /*
+		                 * validation for colletion fieldset: appName, regexPattern.
+		                 */
+	                    if(isset($postData['searchTerm'])){
+	                    	$formvalid = true;
+	                    	$searchTerms = $postData['searchTerm'];
+                        	foreach( $searchTerms as $app ) {
+	                        	$stringData = $app[appName] . ": " . $app[regexPattern] . "\n";
+	                        	$colData = array($app[appName], $app[regexPattern]);
+// 	                        	print_r($app);
+		                    	$colfilter->setData($app);
+		                    	if ($colfilter->isValid()) {
+		                    		print_r("collection fieldset validated\n");
+		                    	}
+		                    	else{
+		                    		$formvalid = false;
+		                    		print_r("collection fieldset not validated\n");
+		                    	}
+                        	}
+		                    	
+		                    	/*
+		                    	 * Finally all fields are validated
+		                    	 */
+		                    if($formvalid) {
+		                    	print_r("All FIELDS VALIDATED\n");
+                                // Regex pattern from form to write
+	                            $file_loc = './public/data/appRegex/';
+	                            /*
+	                             * template file
+	                             */
+                                $myFile = $file_loc . "testFile.txt";
+                                $fh = fopen($myFile, 'w') or die("can't open file");
+//                                 $stringData = "Floppy Jalopy2\n";
+//                                 fwrite($fh, $stringData);
+//                                 $stringData = "Pointy Pinto2\n";
+//                                 fwrite($fh, $stringData);
+                                $searchTerms = $data['searchTerm'];
+//                                 print_r($searchTerms);
+                                foreach( $searchTerms as $app ) {
+                                			$org_pattern = $app[regexPattern];
+                                			/*
+                                			 * ',' replaced by '|' for python regex search
+                                			 */
+                                			$conv_pattern = preg_replace("/,/", "|", $org_pattern);
+                                            $stringData = $app[appName] . ": " . $conv_pattern . "\n";
+//                                             $stringData = $app[appName] . ": " . $app[regexPattern] . "\n";
+//                                             print_r($stringData);
+                                            fwrite($fh, $stringData);
+                                }
+                                fclose($fh);
+                                    
+                                    /*
+                                     * PHP python system call:
+                                     */
+                                	$exlFile = $data['uploadExl']['tmp_name'];
+							        $appProc = 'python ./public/python/appPattern.py ' . $myFile . " ". $exlFile;
+							//         $appProc = 'python ./public/python/appPattern.py python/convertedXL.txt ./public/python/schemaPLM.pyc ./public/python/xlsData_PLM.pyc';
+							//         exec($appProc, $output, $return);
+							//         echo "Dir returned $return, and output: $output\n";
+							        $exe_status = system($appProc, $return);
+							        echo "Dir returned $return, and output:\n";
+							        print_r("exe_status\n");
+							        print_r($exe_status);
+							        /*
+							         * PHP system call non-zero exit status: command failed to execute
+							         */
+							        if($return){
+							        	print_r("python execution failed\n");
+							        }
+
+        //                             return $this->redirect()->toRoute('album', array(
+        //                                             'controller' => 'Album\Controller\Album',
+        //                                             'action'     => 'python',
+        //                                 ));
+        
+							        print_r($exlFile);
+							        $exldata = new XlsData($exlFile);
+// 							        $exldata->read_rows();
+							        $row_arr = $exldata->getRowArr();
+// 							        print_r($row_arr);
+		                    		print_r("\nNew spreadsheet is created!!!\n");
+		                    	}
+		                    	else{
+		                    		print_r("Search Table input error\n");
+		                    	}
+		                    
+	                    }
+                    }
+                    else{
+                    	$inputfilter->setData($postData);
+                    	$err_data = $inputfilter->getValidInput();
+                    	print_r($err_data);
+                    	
+                    }
+//                     print_r($data);
+            }
+    
+//             $viewModel = new ViewModel();
+//             $viewModel->setTerminal(true);
+//             return new ViewModel();
+//             return array('form' => $form);
+            return array(
+                            'form' => $form,
+                            'formsub' => $formsub
+            );
+    }
+    
+    /*
+     * obsolete form processing by jquery ajax: preventDefault
+     * only shwoing two forms in view
+     */
     public function exlprep2formsAction()
     {
             // fjord_mamp

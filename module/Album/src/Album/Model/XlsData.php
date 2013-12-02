@@ -14,6 +14,9 @@ class XlsData
     public $cell_arr = array();
     public $row_arr = array();
     public $exlfile = '';
+    public static $searchCells = array("Title", "Problem", "Reproduction Route", "Cause", "Countermeasure");
+    public static $visibleCells = array("Case Code", "Title", "Problem", "Reproduction Route", "Cause", "Countermeasure");
+    public static $casecode = "Case Code";
 
 	
 	public function __construct($exlfile = ""){
@@ -35,6 +38,50 @@ class XlsData
     }	
     
 
+
+    function read_rows_for_heading()
+    {
+    	 
+    	$inputFileName = './public/data/uploads/Garda_issues_1015.xls';
+    	$inputFileName = $this->exlfile;
+//     	print_r('reading exl file');
+//     	print_r($inputFileName);
+    
+    	//  Read your Excel workbook
+    	try {
+//     		var_dump($inputFileName);
+    		$inputFileType = \PHPExcel_IOFactory::identify($inputFileName);
+//     		var_dump($inputFileType);
+    		$objReader = \PHPExcel_IOFactory::createReader($inputFileType);
+    		$objPHPExcel = $objReader->load($inputFileName);
+    	} catch(Exception $e) {
+    		die('Error loading file "'.pathinfo($inputFileName,PATHINFO_BASENAME).'": '.$e->getMessage());
+    	}
+    
+    	//  Get worksheet dimensions
+    	$sheet = $objPHPExcel->getSheet(0);
+    	/*
+    	 * safe asssumption that heading is within 10th row
+    	 */
+    	$highestRow = 10;
+    	$highestColumn = $sheet->getHighestColumn();
+    
+    	//  Loop through each row of the worksheet in turn
+    	for ($row = 1; $row <= $highestRow; $row++){
+    		//  Read a row of data into an array
+    		$rowData = $sheet->rangeToArray('A' . $row . ':' . $highestColumn . $row,
+    				NULL,
+    				TRUE,
+    				FALSE);
+    		//  Insert row data array into your database of choice here
+//     		print_r("row_data_inserted");
+// 	    	var_dump($rowData);
+	    	// debugged : one row is an array of an array of cells
+    		array_push($this->row_arr, $rowData[0]);
+    	}
+    
+    }
+    
     function read_rows()
     {
     	 
@@ -74,6 +121,67 @@ class XlsData
     	}
     
     }
+    
+    /*
+     * find heading row with reasonable assumptions
+     * 1. heading row has a "Case Code" cell or other keywords such as Reproduction Route/Countermeasure
+     * 2. heading row can be found withn 10 rows. 
+     */
+    function find_heading_row_no(){
+    	$keywords = array("Case Code",);
+    	$headingRow = 0;
+    	foreach ($this->row_arr as $key => $row) {
+//     		print_r($key);
+			if($key < 10) {
+				foreach($keywords as $keyword) {
+		    		if(in_array($keyword, $row)){
+// 		    			print_r("heading row");
+		    			$headingRow = $key;
+		//     			print_r($row);
+		    		}
+				}
+
+			}
+    	} 
+    	return $headingRow;
+    }
+    
+    function get_heading_row(){
+    	$heading_row_no = $this->find_heading_row_no();
+    	return $this->row_arr[$heading_row_no];
+    }
+
+    function get_search_cells(){
+    	$heading = $this->get_heading_row();
+		$searchCells = self::$searchCells;
+		$checkCells = array();
+    	foreach ($heading as $key => $cell) {
+    		if(in_array($cell,$searchCells)){
+    			array_push($checkCells, $key);
+    		} 
+    	}
+    	return $checkCells;
+	}
+	
+	function get_casecode_cell(){
+		$heading = $this->get_heading_row();
+		foreach ($heading as $key => $cell) {
+			if($cell == self::$casecode){
+				return $key;
+			}
+		}
+	}
+	function get_visible_cells(){
+		$heading = $this->get_heading_row();
+		$visibleCells = self::$visibleCells;
+		$cellsToShow = array();
+		foreach ($heading as $key => $cell) {
+			if(in_array($cell,$visibleCells)){
+				array_push($cellsToShow, $key);
+			}
+		}
+		return $cellsToShow;
+	}
     
     function not_classified_rows($no_class_list) {
 //     	print_r("ready to cull out");
