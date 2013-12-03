@@ -58,7 +58,6 @@ $(document).ready(function() {
 //                    alert(testReturn) ;
 //		            $('#result').html("response received!!!");			
 //		            $('#result').html(testReturn);			
-//                        $("#demoeric").html(jsonString);
 
                     var space = '<hr><div class = "row"> <div class="col-sm-2">';
                     space += '</div><div class="col-sm-12><span class="caret"></span></div></div>';
@@ -93,25 +92,25 @@ $(document).ready(function() {
                   },
                 error : function (xhr, err)
                  {
-//                    alert("readyState: "+xhr.readyState+"\nstatus: "+xhr.status);
-//                    alert("responseText: "+xhr.responseText);
+                    alert("readyState: "+xhr.readyState+"\nstatus: "+xhr.status);
+                    alert("responseText: "+xhr.responseText);
 //                    $("#exldatasub input[name=submit]").removeClass("btn-info");
-                    $("#exldatasub input[name=submit]").css({ "color": "#333333",
-                    		  "background-color": "#b5b5b5",
-                    		  "border-color": "#b5b5b5"
-                    		});
+//                    $("#exldatasub input[name=submit]").css({ "color": "#333333",
+//                    		  "background-color": "#b5b5b5",
+//                    		  "border-color": "#b5b5b5"
+//                    		});
 //                	$("#response").html('A problem has occurred.');
                 	// bootstrap popover tooltip.
-		            $("#exldatasub input[name='uploadTmp']").popover({title: 'Invalid template', placement: 'top', content: "make sure to use right text format"}); 
-                	$("#exldatasub input[name=uploadTmp]").addClass('popover1');
-                	$("#exldatasub input[name=uploadTmp]").popover('show');
+//		            $("#exldatasub input[name='uploadTmp']").popover({title: 'Invalid template', placement: 'top', content: "make sure to use right text format"}); 
+//                	$("#exldatasub input[name=uploadTmp]").addClass('popover1');
+//                	$("#exldatasub input[name=uploadTmp]").popover('show');
 //                    alert("failed ");
 //                    console.log("Oops, it failed!");
 //                        alert(data);
 //                    alert("error from AJAX response<br />") ;
-                	$('body').on('click', function (e) {
-                		$("#exldatasub input[name=uploadTmp]").popover('hide');
-                	});
+//                	$('body').on('click', function (e) {
+//                		$("#exldatasub input[name=uploadTmp]").popover('hide');
+//                	});
                  },
               });
              
@@ -304,11 +303,11 @@ $(document).ready(function() {
 //	        	var cellCheck = '<input name="options[' + i + ']" class="cellCheck" type="checkbox" value="' + arr[i] + '">'; 
 	        	var cellCheck = '<input name="options" class="cellCheck checkbox" type="checkbox" value="checkTest0"> checkonTheGo'; 
 	        	if(jQuery.inArray(i, checkedArr) != -1 ) {
-		        	$("#checkCells").append('<input type="checkbox" name="catChkBox" class="ckbox" \
+		        	$("#checkCells").append('<input type="checkbox" name="catChkBox[' + i + ']"  class="chkbox" \
 		        		      id = "'+ i +'" value="'+ arr[i] + '" checked/>      <label for="'+ i +'">' + arr[i]+ '</label><br/>');
 
 	        	} else {
-		        	$("#checkCells").append('<input type="checkbox" name="catChkBox" class="ckbox" \
+		        	$("#checkCells").append('<input type="checkbox" name="catChkBox[' + i + ']" class="chkbox" \
 		        		      id = "'+ i +'" value="'+ arr[i] + '" />      <label for="'+ i +'">' + arr[i]+ '</label><br/>');
 	        	}
 //	        	$("#checkCells").append('<li class="list-group-item"><input type="checkbox" name="catChkBox" class="ckbox" \

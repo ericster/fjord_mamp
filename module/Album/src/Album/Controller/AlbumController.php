@@ -6,17 +6,24 @@ namespace Album\Controller;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Album\Model\Album;          // <-- Add this import
-use Album\Model\XlsData;          // <-- Add this import
 use Album\Form\AlbumForm;       // <-- Add this import
+
+use Album\Model\XlsData;          // <-- Add this import
 use Album\Form\UploadForm;       // <-- Add this import
+
 use Album\Form\ExlprepForm;       // <-- Add this import
-use Album\Form\ExlprepsubForm;       // <-- Add this import
-use Album\Form\ExlprepsubmodForm;       // <-- Add this import
-use Album\Form\Exlprepsub2Form;       // <-- Add this import
 use Album\Form\ExlPrepValidator;       // <-- Add this import
+use Album\Form\ExlprepsubForm;       // <-- Add this import
 use Album\Form\ExlPrepsubValidator;       // <-- Add this import
+
+use Album\Form\ExlprepmodForm;       // <-- Add this import
+use Album\Form\ExlprepsubmodForm;       // <-- Add this import
+use Album\Form\ExlPrepmodValidator;       // <-- Add this import
 use Album\Form\ExlPrepsubmodValidator;       // <-- Add this import
+
 use Album\Form\ExlPrepcolValidator;       // <-- Add this import
+use Album\Form\Exlprepsub2Form;       // <-- Add this import
+
 use Zend\Http\Headers;
 
 class AlbumController extends AbstractActionController
@@ -270,6 +277,9 @@ public function getAlbumTable()
 		                    $exldata->read_rows_for_heading();
 // 		                    $exldata->get_heading_row();
 		                    $headingRow = $exldata->get_heading_row();
+		                    /*
+		                     * default search/visible cells
+		                     */
 		                    $searchCells = $exldata->get_search_cells();
 		                    $visibleCells = $exldata->get_visible_cells();
 		                    $casecodeCell = $exldata->get_casecode_cell();
@@ -404,7 +414,7 @@ public function getAlbumTable()
     public function exlprep4formsmodAction()
     {
             // fjord_mamp
-            $form = new ExlprepForm('exldata');
+            $form = new ExlprepmodForm('exldata');
 //             $form = new UploadForm('upload-form');
 //             print_r("exlprep2forms \n");
             $request = $this->getRequest();
@@ -423,7 +433,7 @@ public function getAlbumTable()
                     /*
                      * validation for taskName, regexPattern.
                      */
-                    $formValidator = new ExlPrepValidator();
+                    $formValidator = new ExlPrepmodValidator();
                     $inputfilter = $formValidator->getInputFilter();
                     $form->setInputFilter($formValidator->getInputFilter());
                     $form->setData($postData);
@@ -454,9 +464,9 @@ public function getAlbumTable()
                         	}
 		                    
 	                    }        	
-	                    		/*
-		                    	 * Finally all fields are validated
-		                    	 */
+	                    	/*
+		                    * Finally all fields are validated
+		                    */
 		                    if($formvalid) {
 // 		                    	print_r("All FIELDS VALIDATED\n");
                                 // Regex pattern from form to write
@@ -480,49 +490,74 @@ public function getAlbumTable()
                                             fwrite($fh, $stringData);
                                 }
                                 fclose($fh);
+								/*
+								 * customized visible cells starting with caseCode
+                                 * checkboxes don't seem to need validators
+								 */
+//                                 $travCells = $data['catChkBox'];
+                                $checkboxes = $postData['catChkBox'];
+//                                 print_r("traversing cells \n");
+                                $travCells = array();
+                                foreach( $checkboxes as $idx => $cell){
+//                                 	print_r(" idx = " . $idx . " name = " . $cell);
+                                	array_push($travCells, $idx);
+                                }
                                     
-                                    /*
-                                     * PHP python system call:
-                                     */
-                                	$exlFile = $data['uploadExl']['tmp_name'];
-							        $appProc = 'python ./public/python/appPattern.py ' . $myFile . " ". $exlFile;
+                                /*
+                                * PHP python system call:
+                                */
+                                /*
+                                 * TODO: to find a way to fetch $data['uploadExl']['tmp_name'] ONCE!!
+                                 */
+                                $exlFile = $data['uploadExl']['tmp_name'];
+// 							    $appProc = 'python ./public/python/appPattern.py ' . $myFile . " ". $exlFile ;
+								/*
+								 * TODO: appPattern.py to trim down traversingCells 
+								 */
+							    $appProc = 'python ./public/python/appPattern.py ' . $myFile . " ". $exlFile . " ". $travCells;
 							//         exec($appProc, $output, $return);
 							//         echo "Dir returned $return, and output: $output\n";
-// 							        $exe_status = system($appProc, $return);
-							        exec($appProc, $exe_status, $return);
-// 							        echo "Dir returned $return, and output:\n";
-// 							        print_r("exe_status\n");
-// 							        print_r($exe_status);
-							        $py_result = json_decode($exe_status[0], true);
-// 							        var_dump($py_result);
-							        /*
-							         * PHP system call non-zero exit status: command failed to execute
-							         */
-							        if($return){
-							        	print_r("python execution failed\n");
-							        }
-
-							        /*
-							         * PHPExcel read excel data
-							         */
+// 							    $exe_status = system($appProc, $return);
+							    exec($appProc, $exe_status, $return);
+// 							    echo "Dir returned $return, and output:\n";
+// 							    print_r("exe_status\n");
+// 							    print_r($exe_status);
+							    $py_result = json_decode($exe_status[0], true);
+// 							    var_dump($py_result);
+							    /*
+							    * PHP system call non-zero exit status: command failed to execute
+							    */
+							    if($return){
+							    print_r("python execution failed\n");
+							    }
+								/*
+							    * PHPExcel read excel data
+							    */
 // 							        print_r($exlFile);
-							        $exldata = new XlsData($exlFile);
-							        $exldata->read_rows();
-							        $row_arr = $exldata->getRowArr();
-							        $not_classified = $exldata->not_classified_rows($py_result);
-							        $sel_cols = array(3, 4, 7, 8, 10, 11 );
-							        $mod_rows = $exldata->get_selected_cols($sel_cols, $not_classified);
-// 							        print_r($row_arr);
-// 							        print_r("size of not classified" . sizeof($not_classified));
-// 							        var_dump($not_classified);
-// 							        print_r("var_dump ended");
-// 									print_r("mod_rows");
-// 							        print_r($mod_rows);
-// 		                    		print_r("\nNew spreadsheet is created!!!\n");
-		                    	}
-		                    	else{
-		                    		print_r("Search Table input error\n");
-		                    	}
+							    $exldata = new XlsData($exlFile);
+							    $exldata->read_rows();
+							    $row_arr = $exldata->getRowArr();
+							    $headingRow = $exldata->get_heading_row();
+							    $casecodeCell = $exldata->get_casecode_cell();
+							    $not_classified = $exldata->not_classified_rows($py_result);
+								/*
+								* customized visible cells starting with caseCode
+								*/
+// 							    $sel_cols = array(3, 4, 7, 8, 10, 11 );
+							    array_push($travCells, $casecodeCell );
+							    $sel_cols = $travCells;
+							    $mod_rows = $exldata->get_selected_cols($sel_cols, $not_classified);
+// 							    print_r($row_arr);
+// 							    print_r("size of not classified" . sizeof($not_classified));
+// 							    var_dump($not_classified);
+// 							    print_r("var_dump ended");
+// 								print_r("mod_rows");
+// 							    print_r($mod_rows);
+// 		                    	print_r("\nNew spreadsheet is created!!!\n");
+		                    }
+		                    else{
+			                    print_r("Search Table input error\n");
+		                    }
 	                    $response->setContent(\Zend\Json\Json::encode($mod_rows, true));
 // 	                    $response->setContent($row_arr);
                     }

@@ -26,7 +26,7 @@ import sys
 # first argument: python file
 # second argument: template text file
 # third argument: PLM xls file 
-# forth argument: converted xls file 
+# forth argument: traversingCells array
 
 absolutePath = '/Applications/MAMP/htdocs/myapp/public/python/'
 
@@ -75,6 +75,7 @@ def main():
     
     traversingCells = [ Pcell.Col_Title, Pcell.Col_Problem, Pcell.Col_Reproduction, \
                    Pcell.Col_Cause, Pcell.Col_Countermeasure ]
+#     traversingCells = sys.argv[3]
 
     rowlen = xlsData.getRowLength()
     rowflag = [False]*rowlen
