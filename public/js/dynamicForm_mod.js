@@ -33,7 +33,8 @@ $(document).ready(function() {
             $('#result').html(serializedData);			
                 
             var fd = new FormData();
-            fd.append("uploadExl",  $("#exldata input[name=uploadExl]")[0].files[0]);
+//            fd.append("uploadExl",  $("#exldata input[name=uploadExl]")[0].files[0]);
+            fd.append("uploadExl",  $("#exldatasub input[name=uploadExl]")[0].files[0]);
             fd.append("taskName",  $("#exldata input[name=taskName]").val());
             jQuery.each(serializedData, function() {
 		        fd.append(this.name, this.value);

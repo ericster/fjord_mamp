@@ -36,24 +36,24 @@ class ExlPrepmodValidator implements InputFilterAwareInterface
 					]));
 
 
-			$inputFilter->add($factory->createInput([
-					'name' => 'uploadExl',
-					'filters' => array(
-							array('name' => 'StripTags'),
-							array('name' => 'StringTrim'),
-							array('name' => 'filerenameupload',
-// 							array('name' => 'File\RenameUpload',
-								  'options' => array(
-										'target'    => './public/data/uploads/',
-										'overwrite' => true,
-										'use_upload_name' => true)),
-							),
-					'validators' => array(
-							array(
-							'name' => 'File\Extension',
-							'options' => array('extension' => array('xls', 'xlsx'))),
-					),
-					]));
+// 			$inputFilter->add($factory->createInput([
+// 					'name' => 'uploadExl',
+// 					'filters' => array(
+// 							array('name' => 'StripTags'),
+// 							array('name' => 'StringTrim'),
+// 							array('name' => 'filerenameupload',
+// // 							array('name' => 'File\RenameUpload',
+// 								  'options' => array(
+// 										'target'    => './public/data/uploads/',
+// 										'overwrite' => true,
+// 										'use_upload_name' => true)),
+// 							),
+// 					'validators' => array(
+// 							array(
+// 							'name' => 'File\Extension',
+// 							'options' => array('extension' => array('xls', 'xlsx'))),
+// 					),
+// 					]));
 
 			/*
 			$searchFilter->add($factory->createInput([

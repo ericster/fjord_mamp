@@ -509,7 +509,8 @@ public function getAlbumTable()
                                 /*
                                  * TODO: to find a way to fetch $data['uploadExl']['tmp_name'] ONCE!!
                                  */
-                                $exlFile = $data['uploadExl']['tmp_name'];
+//                                 $exlFile = $data['uploadExl']['tmp_name'];
+                                $exlFile = $postData['uploadExl']['tmp_name'];
 // 							    $appProc = 'python ./public/python/appPattern.py ' . $myFile . " ". $exlFile ;
 								/*
 								 * TODO: appPattern.py to trim down traversingCells 
