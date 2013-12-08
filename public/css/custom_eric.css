@@ -84,7 +84,7 @@ color: #FF0000;
 }
 
 
-table.tablesorter {
+/* table.tablesorter {
 	font-size: 12px;
 	background-color: #4D4D4D;
 	width: 1024px;
@@ -122,7 +122,7 @@ table.tablesorter .headerSortUp {
 table.tablesorter .headerSortDown {
 	background-image: url("../images/desc.png");
 	background-repeat: no-repeat;
-}
+} */
 
 #checkCells input {
 	margin-right: 5px;
