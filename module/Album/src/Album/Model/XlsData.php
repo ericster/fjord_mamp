@@ -14,6 +14,8 @@ class XlsData
     public $cell_arr = array();
     public $row_arr = array();
     public $exlfile = '';
+    public $casecode_no = 0;
+    public $headrow_no= 0;
     public static $searchCells = array("Title", "Problem", "Reproduction Route", "Cause", "Countermeasure");
     public static $visibleCells = array("Case Code", "Title", "Problem", "Reproduction Route", "Cause", "Countermeasure");
     public static $casecode = "Case Code";
@@ -42,7 +44,7 @@ class XlsData
     function read_rows_for_heading()
     {
     	 
-    	$inputFileName = './public/data/uploads/Garda_issues_1015.xls';
+//     	$inputFileName = './public/data/uploads/Garda_issues_1015.xls';
     	$inputFileName = $this->exlfile;
 //     	print_r('reading exl file');
 //     	print_r($inputFileName);
@@ -127,7 +129,7 @@ class XlsData
      * 1. heading row has a "Case Code" cell or other keywords such as Reproduction Route/Countermeasure
      * 2. heading row can be found withn 10 rows. 
      */
-    function find_heading_row_no(){
+    function set_heading_row_no(){
     	$keywords = array("Case Code",);
     	$headingRow = 0;
     	foreach ($this->row_arr as $key => $row) {
@@ -143,13 +145,36 @@ class XlsData
 
 			}
     	} 
-    	return $headingRow;
+    	$this->headrow_no = $headingRow;
+    }
+    function get_heading_row_no(){
+    	return $this->headrow_no;
+
     }
     
     function get_heading_row(){
-    	$heading_row_no = $this->find_heading_row_no();
+    	$this->set_heading_row_no();
+    	$heading_row_no = $this->headrow_no;
     	return $this->row_arr[$heading_row_no];
     }
+    
+    function add_casecode_cell($traverseCells, $casecodeCell) {
+    	$visible_cells = $traverseCells;
+    	if(!in_array($casecodeCell, $traverseCells)){
+    		array_push($visible_cells, $casecodeCell);
+    	}
+    	return $visible_cells;
+    }
+    function get_visible_headings($visible_cells){
+    	$heading = $this->get_heading_row();
+		$head_cells = array();
+    	foreach ($heading as $key => $cell) {
+    		if(in_array($key,$visible_cells)){
+    			array_push($head_cells, $cell);
+    		} 
+    	}
+    	return $head_cells;
+	}
 
     function get_search_cells(){
     	$heading = $this->get_heading_row();
@@ -164,10 +189,14 @@ class XlsData
 	}
 	
 	function get_casecode_cell(){
+				return $this->casecode_no;
+	}
+
+	function set_casecode_cell(){
 		$heading = $this->get_heading_row();
 		foreach ($heading as $key => $cell) {
 			if($cell == self::$casecode){
-				return $key;
+				$this->casecode_no = $key;
 			}
 		}
 	}
@@ -209,17 +238,21 @@ class XlsData
 //     	print_r($row_arr);
 //     	print_r("sel_cols : ". implode(' ', $sel_cols));
     	$mod_row_arr = array();
-    	foreach($row_arr as $row){
+    	foreach($row_arr as $rowNo => $row){
 //     		print_r("row = ");
 //     		print_r($row);
-    		$mod_row = array();
-//     		print_r("row size is :". sizeof($row));
-    		foreach ($row as $idx => $col){
-    			if(in_array($idx, $sel_cols)){
-    				array_push($mod_row,$col );
-    			}
-    		}
-    		array_push($mod_row_arr, $mod_row);
+			$headNo = $this->headrow_no;
+// 			$headNo = -1;
+			if($rowNo > $headNo){
+	    		$mod_row = array();
+	//     		print_r("row size is :". sizeof($row));
+	    		foreach ($row as $idx => $col){
+	    			if(in_array($idx, $sel_cols)){
+	    				array_push($mod_row,$col );
+	    			}
+	    		}
+	    		array_push($mod_row_arr, $mod_row);
+			}
     	}
     	
     	return $mod_row_arr;

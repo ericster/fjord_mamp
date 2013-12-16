@@ -282,6 +282,7 @@ public function getAlbumTable()
 		                     */
 		                    $searchCells = $exldata->get_search_cells();
 		                    $visibleCells = $exldata->get_visible_cells();
+		                    $exldata->set_casecode_cell();
 		                    $casecodeCell = $exldata->get_casecode_cell();
 // 		                    print_r("headingRow is" );
 // 		                    foreach ($headingRow as $key => $cell){
@@ -495,8 +496,12 @@ public function getAlbumTable()
                                  * checkboxes don't seem to need validators
 								 */
 //                                 $travCells = $data['catChkBox'];
+							
                                 $checkboxes = $postData['catChkBox'];
 //                                 print_r("traversing cells \n");
+								/*
+								 * TODO: refactored to be in the XlsData, not proper in the Controller
+								 */
                                 $travCells = array();
                                 foreach( $checkboxes as $idx => $cell){
 //                                 	print_r(" idx = " . $idx . " name = " . $cell);
@@ -539,14 +544,17 @@ public function getAlbumTable()
 							    $exldata->read_rows();
 							    $row_arr = $exldata->getRowArr();
 							    $headingRow = $exldata->get_heading_row();
+			                    $exldata->set_casecode_cell();
 							    $casecodeCell = $exldata->get_casecode_cell();
 							    $not_classified = $exldata->not_classified_rows($py_result);
 								/*
 								* customized visible cells starting with caseCode
 								*/
 // 							    $sel_cols = array(3, 4, 7, 8, 10, 11 );
-							    array_push($travCells, $casecodeCell );
-							    $sel_cols = $travCells;
+// 							    array_push($travCells, $casecodeCell );
+// 							    $sel_cols = $travCells;
+							    $sel_cols = $exldata->add_casecode_cell($travCells, $casecodeCell);
+							    $sel_headingRow = $exldata->get_visible_headings($sel_cols);
 							    $mod_rows = $exldata->get_selected_cols($sel_cols, $not_classified);
 // 							    print_r($row_arr);
 // 							    print_r("size of not classified" . sizeof($not_classified));
@@ -555,11 +563,15 @@ public function getAlbumTable()
 // 								print_r("mod_rows");
 // 							    print_r($mod_rows);
 // 		                    	print_r("\nNew spreadsheet is created!!!\n");
+// 								$beforeEncode = array("mod_rows" => $mod_rows, "headingRow" => $headingRow, "sell_cols" => $sel_cols);
+								$beforeEncode = array("mod_rows" => $mod_rows, "headingRow" => $sel_headingRow, "sell_cols" => $sel_cols);
+
 		                    }
 		                    else{
 			                    print_r("Search Table input error\n");
 		                    }
-	                    $response->setContent(\Zend\Json\Json::encode($mod_rows, true));
+// 	                    $response->setContent(\Zend\Json\Json::encode($mod_rows, true));
+	                    $response->setContent(\Zend\Json\Json::encode($beforeEncode, true));
 // 	                    $response->setContent($row_arr);
                     }
                     else{

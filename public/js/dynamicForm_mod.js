@@ -53,12 +53,20 @@ $(document).ready(function() {
                 contentType: false,
                 success : function ( testReturn )
                   {
+                	/*
+                	 * testRetrun 
+                	 * 
+                	 * "mod_rows" => $mod_rows, 
+                	 * "headingRow" => $headingRow, 
+                	 * "sell_cols" => $sel_cols
+                	 */
                         console.log("Hooray, it worked!");
                         var jsonString = jsonToString(testReturn);
 //                    alert("response from AJAX response<br />") ;
 //                    alert(testReturn) ;
 //		            $('#result').html("response received!!!");			
-//		            $('#result').html(testReturn);			
+		            $('#result').html(testReturn.headingRow);			
+//		            $('#result').html(testReturn.sell_cols);			
 
                     var space = '<hr><div class = "row"> <div class="col-sm-2">';
                     space += '</div><div class="col-sm-12><span class="caret"></span></div></div>';
@@ -66,11 +74,26 @@ $(document).ready(function() {
                     var result_header =$('<h4 class="col-sm-2 text-right">Not classified</h4>');  
 //                    var result_header = '<h4> Testcases not classified </h4>';
 			        var table =$('<table class="table tablesorter" id="nocat"> </table>');
-			        var header  = $('<thead><tr><th>Casecode</th> <th>Title</th> <th>Problem</th> <th>Reproduction</th><th>Cause</th> <th>Measure</th></tr></thead>'); 
+			        /*
+			         * TODO: parameterize the table head from JSON result
+			         */
+//			        var header  = $('<thead><tr><th>Casecode</th> <th>Title</th> <th>Problem</th> <th>Reproduction</th><th>Cause</th> <th>Measure</th></tr></thead>'); 
+			        var header  = $('<thead></thead>'); 
+		            var headrow = $('<tr class="nocategory"></tr>');
+		            $.each(testReturn.headingRow, function() {
+//		            	var newhead = $('<tr class="nocategory"></tr>');
+		            	var th ='<th class="header">';
+		            	th += this;
+		            	th += '</th>';
+		            	headrow.append(th);
+		            	});
+		            header.append(headrow);
+
 			        var body = $('<tbody></tbody>')
 			        table.append(header);
 			        var tbody = table.append(body);
-		            $.each(testReturn, function() {
+//		            $.each(testReturn, function() {
+		            $.each(testReturn.mod_rows, function() {
 		            	var newrow = $('<tr class="nocategory"></tr>');
 		            	  $.each(this, function() {
 		            		var td = '<td>';
@@ -82,8 +105,8 @@ $(document).ready(function() {
 		            	  tbody.append(newrow);
 		            	});
 //		            $('#result').append(space);
-		            result_header.before($(space));
-		            $('#result').before(result_header);
+//		            result_header.before($(space));
+//		            $('#result').before(result_header);
 		            $('#result').append(table);
 
                     $("#exldata input[name=submit]").removeClass("btn-primary");
@@ -224,6 +247,11 @@ $(document).ready(function() {
 
 //                    alert("response from AJAX response<br />") ;
 //                    alert(testReturn) ;
+//                        $("#exldatasub").unbind('submit').submit();
+                  },
+                 complete: function() {
+//                        $("#exldatasub input[type=submit]").unbind('submit');
+                        $("#exldatasub input[type=submit]").attr('disabled', 'disabled');
                   },
                 error : function (xhr, err)
                  {
