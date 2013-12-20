@@ -12,12 +12,13 @@ import re
 import xlwt
 import sys
 import json
+import os
 sys.path.append('/Applications/MAMP/htdocs/myapp/public/python')
 from xlsData_PLM import XlsData
 from schemaPLM import PLM_Schema as Pcell
 
-traversingCells = [ Pcell.Col_Title, Pcell.Col_Problem, Pcell.Col_Reproduction, \
-                   Pcell.Col_Cause, Pcell.Col_Countermeasure ]
+global traversingCells 
+traversingCells = [ Pcell.Col_Title, Pcell.Col_Problem, Pcell.Col_Reproduction, Pcell.Col_Cause, Pcell.Col_Countermeasure ]
 
 import sys
 
@@ -28,8 +29,8 @@ import sys
 # third argument: PLM xls file 
 # forth argument: traversingCells array
 
-absolutePath = '/Applications/MAMP/htdocs/myapp/public/python/'
-
+# absolutePath = '/Applications/MAMP/htdocs/myapp/public/python/'
+absolutePath = os.path.dirname(os.path.abspath(__file__)) + '/../data/exlout/'
 def main():
 
     # 1. read a template file for app search patterns and create a list of app patterns 
@@ -73,8 +74,7 @@ def main():
 #     outfile = open(filename, 'w') 
 #     outfile.write(prettyForm)
     
-    traversingCells = [ Pcell.Col_Title, Pcell.Col_Problem, Pcell.Col_Reproduction, \
-                   Pcell.Col_Cause, Pcell.Col_Countermeasure ]
+#     traversingCells = [ Pcell.Col_Title, Pcell.Col_Problem, Pcell.Col_Reproduction, Pcell.Col_Cause, Pcell.Col_Countermeasure ]
 #     traversingCells = sys.argv[3]
 
     rowlen = xlsData.getRowLength()
@@ -105,8 +105,7 @@ def main():
 #     print noClass, 'length = ' , len(noClass)
     
     # 4. create a spreadsheet based on matching lists
-    traversingCells = [ Pcell.Col_Title, Pcell.Col_Problem, Pcell.Col_Reproduction, \
-                       Pcell.Col_Cause, Pcell.Col_Countermeasure ]
+#     traversingCells = [ Pcell.Col_Title, Pcell.Col_Problem, Pcell.Col_Reproduction, Pcell.Col_Cause, Pcell.Col_Countermeasure ]
 #     hdngsNo =  traversingCells
     hdngsNo =  traversingCells.insert(0, Pcell.Col_Casecode)
     hdngsNo = [ Pcell.Col_Casecode, Pcell.Col_Title, Pcell.Col_Problem, Pcell.Col_Reproduction, \
@@ -188,8 +187,7 @@ def sheetWrite(file_name, sheet_name, headings, heading_xf, data, data_xfs, col_
 def create_xls( rowData ):
 
     # step 1: prepare heading data
-    traversingCells = [ Pcell.Col_Title, Pcell.Col_Problem, Pcell.Col_Reproduction, \
-                       Pcell.Col_Cause, Pcell.Col_Countermeasure ]
+#     traversingCells = [ Pcell.Col_Title, Pcell.Col_Problem, Pcell.Col_Reproduction,  Pcell.Col_Cause, Pcell.Col_Countermeasure ]
     hdngsNo =  traversingCells.insert(0, Pcell.Col_Casecode)
     hdngs =  ["CaseCode", "Title", "Problem", "Reproduction", "Cause", "CounterMeasure"]
 
@@ -225,6 +223,7 @@ def create_xls( rowData ):
 #     ts_style = ts_style_pre + ts_color[row[6] % 4]
 
     # step 3: write in sheet
+#     absolutePath = '/Applications/MAMP/htdocs/myapp/public/python/'
     xlsOutFile = absolutePath + 'appBreakdown.xls'
 #     xlsOutFile = 'appBreakdown.xls'
     sheetWrite(xlsOutFile, 'Demo', hdngs, heading_xf, rowData, data_xfs, colWidth)
