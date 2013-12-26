@@ -32,15 +32,13 @@ $this->headLink()->appendStylesheet('/css/tablesorter_blue/style.css');
 <?php $formsub->prepare(); // The correct enctype is set here ?>
         <?php echo $this->form()->openTag($formsub); ?>
         <div class="form-group">
-<!--                         <label class="col-sm-2 control-label">Have Template?</label> -->
-                        <label class="col-sm-2 ">Have Template?</label>
+                        <label class="col-sm-2 control-label">Have Template?</label>
                     <div class="col-sm-10">
                                 <?php echo $this->formRow($formsub->get('uploadTmp')); ?>
                         </div>
                         
                         <div class ="row"> </div>
-<!--                         <label for="uploadExl" class="col-sm-2 control-label">Spreadsheet <span class="required1"> *</span> </label>  -->
-                        <label for="uploadExl" class="col-sm-2 ">Spreadsheet <span class="required1"> *</span> </label> 
+                        <label for="uploadExl" class="col-sm-2 control-label">Spreadsheet <span class="required1"> *</span> </label> 
                     <div class="col-sm-10">
                                 <?php echo $this->formRow($form->get('uploadExl')); ?>
                         </div>
@@ -63,8 +61,7 @@ $this->headLink()->appendStylesheet('/css/tablesorter_blue/style.css');
 <?php $form->prepare(); // The correct enctype is set here ?>
         <?php echo $this->form()->openTag($form); ?>
                 <div class="form-group">
-<!--                         <label for="taskName" class="col-sm-2 control-label">Task Name</label> -->
-                        <label for="taskName" class="col-sm-2 ">Task Name</label>
+                        <label for="taskName" class="col-sm-2 control-label">Task Name</label>
                     <div class="col-sm-10">
                                 <?php echo $this->formRow($form->get('taskName')); ?>
                         </div>
@@ -76,8 +73,7 @@ $this->headLink()->appendStylesheet('/css/tablesorter_blue/style.css');
 <!--                         </div> -->
 <!--                 </div> -->
                 <div class="form-group form-table-group">
-<!--                         <label class="col-sm-2 control-label">Search Table <span class="required1"> *</span></label> -->
-                        <label class="col-sm-2 ">Search Table <span class="required1"> *</span></label>
+                        <label class="col-sm-2 control-label">Search Table <span class="required1"> *</span></label>
                     <div class="col-sm-10">
                                         <?php 
                         //                         echo $this->formCollection($form->get('searchTerm'));
@@ -99,8 +95,7 @@ $this->headLink()->appendStylesheet('/css/tablesorter_blue/style.css');
                 </div>
                 <hr>
                 <div class="form-group">
-<!--                         <label class="col-sm-2 control-label">Search Fields <span class="required1"> *</span></label> -->
-                        <label class="col-sm-2 ">Search Fields <span class="required1"> *</span></label>
+                        <label class="col-sm-2 control-label">Search Fields <span class="required1"> *</span></label>
 	                    <div class="col-sm-10" >
 	                    <ul class="list-group" id="checkCells">
 	                    </ul>
@@ -124,21 +119,16 @@ $this->headLink()->appendStylesheet('/css/tablesorter_blue/style.css');
 <!-- Result here -->
 
 
-
-<hr>
-<h4>Output</h4>
-<!-- <div class="col-sm-2 "> <span class="glyphicon glyphicon-starr text-right"></span> </div> -->
-<!-- <div class="col-sm-10" > <span class="glyphicon glyphicon-align-left text-right"></span></div> -->
-<!-- <div class="download col-sm-2 text-right "> <h4> spreadsheet</h4></div> -->
-<div class="download col-sm-2 "> <h4> spreadsheet</h4></div>
+<div class="col-sm-2 "> <span class="glyphicon glyphicon-starr text-right"></span> </div>
+<div class="col-sm-10" > <span class="glyphicon glyphicon-align-left text-right"></span></div>
+<div class="download col-sm-2 text-right "> <h4> spreadsheet</h4></div>
 <div class="download col-sm-10 "> <h4>
 <a href="<?php 
 $urlParams = array('action' => 'download');
 echo $this->url('album', $urlParams); ?>"> download this</a>
 </h4>
 </div>
-<!-- <h4 class="col-sm-2 text-right">Not classified</h4> -->
-<h4 class="col-sm-2 ">Not classified</h4>
+<h4 class="col-sm-2 text-right">Not classified</h4>
 <div class="download col-sm-10" id="result"> <h4>Table to be shown</h4></div> 
 
 <!-- <div class="col-sm-10" id="result"> </div> -->
