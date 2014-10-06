@@ -32,7 +32,8 @@ class Module
         return array(
             'factories' => array(
                 'Album\Model\AlbumTable' =>  function($sm) {
-                    $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+//                     $dbAdapter = $sm->get('Zend\Db\Adapter\Adapter');
+                    $dbAdapter = $sm->get('adapter');
                     $table     = new AlbumTable($dbAdapter);
                     return $table;
                 },

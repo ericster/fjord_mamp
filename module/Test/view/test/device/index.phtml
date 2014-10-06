@@ -1,0 +1,65 @@
+<?php
+// module/Album/view/device/device/index.phtml:
+$title = 'My Device';
+$jquerySrc =   'http://code.jquery.com/jquery-1.9.1.js';
+$jqueryUiSrc =   'http://code.jquery.com/ui/1.10.3/jquery-ui.js';
+$this->headTitle($title);
+$this->headScript()->prependFile($jqueryUiSrc);
+$this->headScript()->prependFile($jquerySrc);
+$this->headScript()->appendFile( "/js/sortableTest.js", $type = 'text/javascript' );
+$this->headScript()->appendFile( "/js_highcharts/highcharts.js", $type = 'text/javascript' );
+$this->headScript()->appendFile( "/js_highcharts/modules/exporting.js", $type = 'text/javascript' );
+// $this->headScript()->appendFile( "/js/bar_negative_stack.js", $type = 'text/javascript' );
+$this->headScript()->appendFile( "/js/bar_stacked.js", $type = 'text/javascript' );
+
+// $styles = '${demo.css}';
+$this->headLink()->appendStylesheet('/css/themes/base/jquery-ui.css');
+$this->headLink()->appendStylesheet('/css/style.css');
+$styles = 'div#myDiv{margin:10px;padding:10px;}';
+$this->headStyle()->appendStyle($styles);
+echo $this->headStyle();
+?>
+<h1><?php echo $this->escapeHtml($title); ?></h1>
+<p>
+    <a href="<?php echo $this->url('device', array('action'=>'add'));?>">Add new device</a>
+</p>
+
+<div id="container" style="min-width: 310px; max-width: 800px; height: 400px; margin: 0 auto"></div>
+
+<table class="table">
+<tr>
+    <th>Status Name</th>
+    <th>Is closed?</th>
+    <th>&nbsp;</th>
+</tr>
+
+
+<?php foreach ($devicess as $device) : ?>
+<tr>
+
+<!--  
+    <td><?php echo $this->escapeHtml($device->name);?></td>
+    <td><?php echo $this->escapeHtml($device->is_closed);?></td>
+-->
+
+    <td><?php echo $this->escapeHtml($device->id);?></td>
+    <td><?php echo $this->escapeHtml($device->subject);?></td>
+
+    <td>
+        <a href="<?php echo $this->url('device',
+            array('action'=>'edit', 'id' => $device->id));?>">Edit</a>
+        <a href="<?php echo $this->url('device',
+            array('action'=>'delete', 'id' => $device->id));?>">Delete</a>
+    </td>
+</tr>
+<?php endforeach; ?>
+</table>
+
+<form name="upload-form" id="upload-form" method="post" enctype="multipart/form-data">
+    <div class="form-element">
+        <label for="image-file">Avatar Image Upload</label>
+        <input type="file" name="image-file" id="image-file">
+    </div>
+
+    <button>Submit</button>
+</form>

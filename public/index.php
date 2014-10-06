@@ -5,6 +5,8 @@
  */
 chdir(dirname(__DIR__));
 
+// echo getcwd(); 
+
 // Setup autoloading
 include 'init_autoloader.php';
 

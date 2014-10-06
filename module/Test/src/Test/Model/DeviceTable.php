@@ -1,49 +1,44 @@
 <?php
 // module/Album/src/Album/Model/AlbumTable.php:
-namespace Album\Model;
+namespace Test\Model;
 
 use Zend\Db\Adapter\Adapter;
-use Zend\Db\Sql\Sql;
 use Zend\Db\ResultSet\ResultSet;
-use Zend\Db\Adapter\Driver\ResultInterface;
 use Zend\Db\TableGateway\AbstractTableGateway;
+use Zend\Db\Adapter\Driver\ResultInterface;
+use Zend\Db\Sql\Sql;
 
-class AlbumTable extends AbstractTableGateway
+class DeviceTable extends AbstractTableGateway
 {
-    protected $table ='album';
+    protected $table ='device';
 
     public function __construct(Adapter $adapter)
     {
         $this->adapter = $adapter;
 
         $this->resultSetPrototype = new ResultSet();
-        $this->resultSetPrototype->setArrayObjectPrototype(new Album());
+        $this->resultSetPrototype->setArrayObjectPrototype(new Device());
 
         $this->initialize();
     }
 
     public function fetchAll()
     {
-//        $resultSet = $this->select();
-//        return $resultSet;
-        
-        $sql = new Sql($this->adapter);
+    	$adapter = $this->adapter;
+    	$sql = new Sql($adapter);
         $select = $sql->select();
-        $select->from('album');
-        $select->where(array('id' => 5));
+//         $select->from('issue_statuses');
+        $select->from('issues');
+//         $select->from('album');
         $statement = $sql->prepareStatementForSqlObject($select);
-        $result = $statement->execute();
-        echo $sql->getSqlStringForSqlObject($select);
-        
+        $result= $statement->execute();
+
         if ($result instanceof ResultInterface && $result->isQueryResult()) {
         	$resultSet = new ResultSet;
         	$resultSet->initialize($result);
-        
-//         	foreach ($resultSet as $row) {
-//         		echo $row->my_column . PHP_EOL;
-//         	}
-        }
-        
+        }	
+//         $sql = "select * from issue_statuses";
+//         $resultSet = $adapter->query($sql);
         return $resultSet;
     }
 
