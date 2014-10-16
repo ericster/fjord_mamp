@@ -29,7 +29,7 @@ class DeviceSet extends Fieldset implements InputFilterProviderInterface
 				),
 				'attributes' => array(
 						'required' => 'required',
-        				'class' => 'deviceList input-xxlarge',
+        				'class' => 'devicelist input-xxlarge',
 				)
 		));
 

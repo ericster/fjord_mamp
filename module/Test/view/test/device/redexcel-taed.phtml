@@ -8,7 +8,7 @@ $this->headScript()->prependFile($jquerySrc);
 $this->headScript()->appendFile( "/js/jquery.tablesorter.js", $type = 'text/javascript' );
 $this->headScript()->appendFile( "/js/bootstrap.js", $type = 'text/javascript' );
 $this->headScript()->appendFile( "/js/spin.js", $type = 'text/javascript' );
-$this->headScript()->appendFile( "/js/dynamicForm_mod.js", $type = 'text/javascript' );
+$this->headScript()->appendFile( "/js/Redexcel_Form.js", $type = 'text/javascript' );
 $this->headLink()->appendStylesheet('/css/custom_eric.css');
 $this->headLink()->appendStylesheet('/css/tablesorter_blue/style.css');
 ?>
@@ -33,12 +33,12 @@ $form = $this->form;
                         </div>
                 </div>
                 <div class="form-group form-table-group">
-                        <label class="col-sm-2 ">Search Table <span class="required1"> *</span></label>
+                        <label class="col-sm-2 ">Device Table <span class="required1"> *</span></label>
                     <div class="col-sm-10">
                                         <?php 
                                         $collections = $form->get('deviceVal');
                                         echo '<table class="table collectionTable"> 
-                                                        <tr> <th>App Name</th> <th>Search terms</th> <th>Remove</th> </tr> ';
+                                                        <tr> <th>Device Name</th> <th>Other Names in Redmine</th> <th>Remove</th> </tr> ';
                                         foreach ($collections as $col) : ?>
                                                 <tr>
                                                         <td> <?php echo $this->forminput($col->get('deviceName'));?> </td>
@@ -49,7 +49,7 @@ $form = $this->form;
                                         echo '</table>';
                                         ?>
                                 <!-- add button -->
-                                <button class="addbtn">Add a new category</button>
+                                <button class="addbtn">Add a device</button>
                         </div>
                 </div>
                 <hr> 
