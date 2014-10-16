@@ -1,5 +1,5 @@
 <?php
-namespace Album\Form;
+namespace Test\Form;
 
 use Zend\InputFilter\Factory as InputFactory;
 use Zend\InputFilter\InputFilter;

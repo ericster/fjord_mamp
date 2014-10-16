@@ -1,0 +1,84 @@
+<?php
+$title = 'Redmine Data Mining';
+$jquerySrc =   'http://code.jquery.com/jquery-1.9.1.js';
+$jqueryUiSrc =   'http://code.jquery.com/ui/1.10.3/jquery-ui.js';
+$this->headTitle($title);
+$this->headScript()->prependFile($jqueryUiSrc);
+$this->headScript()->prependFile($jquerySrc);
+$this->headScript()->appendFile( "/js/jquery.tablesorter.js", $type = 'text/javascript' );
+$this->headScript()->appendFile( "/js/bootstrap.js", $type = 'text/javascript' );
+$this->headScript()->appendFile( "/js/spin.js", $type = 'text/javascript' );
+$this->headScript()->appendFile( "/js/dynamicForm_mod.js", $type = 'text/javascript' );
+$this->headLink()->appendStylesheet('/css/custom_eric.css');
+$this->headLink()->appendStylesheet('/css/tablesorter_blue/style.css');
+?>
+<h2><?php echo $this->escapeHtml($title); ?></h2>
+<script type="text/javascript">
+    var urlform           = '<?php echo '';//echo $this->url('album', array('controller'=>'album', 'action'=>'exlprep3forms')); ?>';
+</script>
+<p class="lead"> : display issues per app for TAed devices</p>
+
+<!-- <div id="result"> test area</div> -->
+<?php 
+$form = $this->form;
+?>
+<hr>
+<div class="form-horizontal form-block">
+<?php $form->prepare(); // The correct enctype is set here ?>
+        <?php echo $this->form()->openTag($form); ?>
+                <div class="form-group">
+                        <label for="taskName" class="col-sm-2 ">Task Name</label>
+                    <div class="col-sm-10">
+                                <?php echo $this->formRow($form->get('taskName')); ?>
+                        </div>
+                </div>
+                <div class="form-group form-table-group">
+                        <label class="col-sm-2 ">Search Table <span class="required1"> *</span></label>
+                    <div class="col-sm-10">
+                                        <?php 
+                                        $collections = $form->get('deviceVal');
+                                        echo '<table class="table collectionTable"> 
+                                                        <tr> <th>App Name</th> <th>Search terms</th> <th>Remove</th> </tr> ';
+                                        foreach ($collections as $col) : ?>
+                                                <tr>
+                                                        <td> <?php echo $this->forminput($col->get('deviceName'));?> </td>
+                                                        <td> <?php echo $this->forminput($col->get('deviceList'));?> </td>
+                                                        <td> <?php //echo '<button type="button" class="btn btn-danger btn-sm" id="remove-button"><span class="glyphicon glyphicon-remove"></span></button>';?></td>
+                                                </tr>
+                                <?php  endforeach;
+                                        echo '</table>';
+                                        ?>
+                                <!-- add button -->
+                                <button class="addbtn">Add a new category</button>
+                        </div>
+                </div>
+                <hr> 
+                <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-10">
+                                <?php echo $this->formElement($form->get('submit')); ?>
+                        </div>
+                </div>
+                <?php echo $this->form()->closeTag(); ?>
+</div>
+
+<!-- Result here -->
+
+
+
+<hr>
+<h4>Output</h4>
+<!-- <div class="col-sm-2 "> <span class="glyphicon glyphicon-starr text-right"></span> </div> -->
+<!-- <div class="col-sm-10" > <span class="glyphicon glyphicon-align-left text-right"></span></div> -->
+<!-- <div class="download col-sm-2 text-right "> <h4> spreadsheet</h4></div> -->
+<div class="download col-sm-2 "> <h4> spreadsheet</h4></div>
+<div class="download col-sm-10 "> <h4>
+<a href="<?php 
+$urlParams = array('action' => 'download');
+echo $this->url('album', $urlParams); ?>"> download this</a>
+</h4>
+</div>
+<!-- <h4 class="col-sm-2 text-right">Not classified</h4> -->
+<h4 class="col-sm-2 ">Not classified</h4>
+<div class="download col-sm-10" id="result"> <h4>Table to be shown</h4></div> 
+
+<!-- <div class="col-sm-10" id="result"> </div> -->

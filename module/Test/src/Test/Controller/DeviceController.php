@@ -4,7 +4,8 @@ namespace Test\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
-use Album\Form\DeviceMapValidator;
+use Test\Form\DeviceMapValidator;
+use Test\Form\DeviceMapForm;
 
 class DeviceController extends AbstractActionController
 {

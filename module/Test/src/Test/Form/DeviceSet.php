@@ -1,10 +1,10 @@
 <?php
-namespace Album\Form;
+namespace Test\Form;
 
 use Zend\Form\Fieldset;
 use Zend\InputFilter\InputFilterProviderInterface;
 
-class AppSets extends Fieldset implements InputFilterProviderInterface
+class DeviceSet extends Fieldset implements InputFilterProviderInterface
 {
 	public function __construct()
 	{

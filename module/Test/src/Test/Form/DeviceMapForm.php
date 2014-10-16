@@ -1,11 +1,11 @@
 <?php
-namespace Album\Form;
+namespace Test\Form;
 
 use Zend\Captcha;
 use Zend\Form\Element;
 use Zend\Form\Form;
 
-class ExlprepForm extends Form
+class DeviceMapForm extends Form
 {
     public function __construct($name = null)
     {
@@ -16,7 +16,7 @@ class ExlprepForm extends Form
         		'name' => 'taskName',
         		'type' => 'Zend\Form\Element\Text',
         		'attributes' => array(
-        				'placeholder' => 'RedExcel Mining 3Q',
+        				'placeholder' => 'RedExcel Data Mining',
 //         				'required' => 'required',
         		),
         		'options' => array(
