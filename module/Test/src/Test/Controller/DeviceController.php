@@ -6,6 +6,7 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Test\Form\DeviceMapValidator;
 use Test\Form\DeviceMapForm;
+use Zend\View\Model\JsonModel;
 
 class DeviceController extends AbstractActionController
 {
@@ -114,6 +115,33 @@ class DeviceController extends AbstractActionController
     public function getissuesAction()
     {
         return new ViewModel();
+    }
+    
+    public function processAjaxRequestAction(){
+    
+    	$result = array('status' => 'error', 'message' => 'There was some error. Try again.');
+    
+    	$request = $this->getRequest();
+    	$response = $this->getResponse();
+    
+    	if($request->isXmlHttpRequest()){
+    
+    		$data = $request->getPost();
+    
+    		if(isset($data['deviceVal']) && !empty($data['deviceVal'])){
+    			$result['status'] = 'success';
+    			$result['message'] = 'We got the posted data successfully.';
+    			$devices = $data['deviceVal'];
+    			$deviceString = '';
+    			foreach ($devices as $device){
+    				$deviceString = $deviceString . ' ' . $device['deviceName'] . ' ' . $device['deviceList'] . '\n';
+    			}
+    			$result['message'] = $deviceString;
+    		}
+    		
+    	}
+    
+	    return new JsonModel($result);
     }
 
 

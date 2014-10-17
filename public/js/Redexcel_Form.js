@@ -11,8 +11,50 @@ $(document).ready(function() {
 		    
 		    return json;
 		}
+		
+		$( "#devicemap" ).submit(function( event ) {
+			  event.preventDefault();
+			  var serializedData = $("#devicemap").serializeArray();
+			  
+			  request =   jQuery.ajax({
+			        url : '/device/process-ajax-request',
+			        type: 'POST',
+			        dataType: 'JSON',
+			        data: serializedData,
+			        success: function(data, status){
+			            alert(data.message);
+			            if(data.status == 'error'){
+			                // Perform any operation on error
+			            }else{
+			                // Perform any operation on success
+			            }
+			        },
+			        error : function(xhr, textStatus, errorThrown) {
+			            if (xhr.status === 0) {
+			                alert('Not connect.\n Verify Network.');
+			            } else if (xhr.status == 404) {
+			                alert('Requested page not found. [404]');
+			            } else if (xhr.status == 500) {
+			                alert('Server Error [500].');
+			            } else if (errorThrown === 'parsererror') {
+			                alert('Requested JSON parse failed.');
+			            } else if (errorThrown === 'timeout') {
+			                alert('Time out error.');
+			            } else if (errorThrown === 'abort') {
+			                alert('Ajax request aborted.');
+			            } else {
+		                    alert("readyState: "+xhr.readyState+"\nstatus: "+xhr.status);
+		                    alert("responseText: "+xhr.responseText);
+			            }
+			        },
+			        complete: function(){
+			            // Perform any operation need on success/error
+			        }
+			    });
+			});
 
-        $("#devicemap").submit(function(event){
+
+        $("#devicemap1").submit(function(event){
                 
 //                alert("AJAX rquest prep<br />") ;
             // prevent default posting of form
@@ -22,7 +64,6 @@ $(document).ready(function() {
             $('#result').html(serializedData);			
                 
             var fd = new FormData();
-            fd.append("taskName",  $("#exldata input[name=taskName]").val());
             jQuery.each(serializedData, function() {
 		        fd.append(this.name, this.value);
 		    });
@@ -31,7 +72,7 @@ $(document).ready(function() {
 //         alert("AJAX rquest sending<br />") ;
             // fire off the request to /form.php
             request = $.ajax({
-                url: "/album/exlprep4formsmod",
+                url: "/device/process-ajax-request",
                 type: "post",
                 dataType: "json",
                 processData: false,
