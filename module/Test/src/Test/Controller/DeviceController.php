@@ -105,11 +105,17 @@ class DeviceController extends AbstractActionController
 		));
 	}
 
+	public function devicesAction()
+	{
+		return new ViewModel(array(
+				'devices' => $this->getDeviceTable()->fetchAll(),
+		));
+	}
+
 	public function issueAction()
 	{
 		return new ViewModel(array(
 				'issues' => $this->getIssueTable()->fetchAll(),
-// 				'devices' => $this->getIssueTable()->fetchAll(),
 		));
 	}
     public function getissuesAction()

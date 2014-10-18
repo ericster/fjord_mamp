@@ -27,9 +27,9 @@ class DeviceTable extends AbstractTableGateway
     	$adapter = $this->adapter;
     	$sql = new Sql($adapter);
         $select = $sql->select();
-//         $select->from('issue_statuses');
-        $select->from('issues');
-//         $select->from('album');
+        $select->from('custom_fields');
+//         $select->columns(array('possible_values'));
+        $select->where('id = 9');
         $statement = $sql->prepareStatementForSqlObject($select);
         $result= $statement->execute();
 
@@ -37,8 +37,17 @@ class DeviceTable extends AbstractTableGateway
         	$resultSet = new ResultSet;
         	$resultSet->initialize($result);
         }	
-//         $sql = "select * from issue_statuses";
+//         $sql = "select * from custome_fields where id = 9;";
 //         $resultSet = $adapter->query($sql);
+
+//         foreach ($resultSet as $row){
+// 	        $devices_val = $row->possible_values;
+// // 	        $devices_val = $row->id;
+//         }
+//         $device_string = explode("--- - ", $devices_val)[1];
+//         $device_arr = explode(" - ", $device_string);
+        
+//         return $device_val;
         return $resultSet;
     }
 
