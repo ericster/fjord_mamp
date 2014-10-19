@@ -1,5 +1,4 @@
 <?php
-
 namespace Test\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
@@ -111,6 +110,18 @@ class DeviceController extends AbstractActionController
 				'devices' => $this->getDeviceTable()->fetchAll(),
 		));
 	}
+
+	public function deviceListAction()
+	{
+		return new JsonModel(
+				 $this->getDeviceTable()->fetchAll()
+		);
+	}
+
+    public function deviceautocompleteAction()
+    {
+        return new ViewModel();
+    }
 
 	public function issueAction()
 	{

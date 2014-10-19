@@ -1,0 +1,36 @@
+<?php
+// module/Album/view/device/device/index.phtml:
+$title = 'device auto complete from db';
+$jquerySrc =   'http://code.jquery.com/jquery-1.9.1.js';
+$jqueryUiSrc =   'http://code.jquery.com/ui/1.10.3/jquery-ui.js';
+$this->headTitle($title);
+$this->headScript()->prependFile($jqueryUiSrc);
+$this->headScript()->prependFile($jquerySrc);
+$this->headScript()->appendFile( "/js/sortableTest.js", $type = 'text/javascript' );
+$this->headScript()->appendFile( "/js_highcharts/highcharts.js", $type = 'text/javascript' );
+$this->headScript()->appendFile( "/js_highcharts/modules/exporting.js", $type = 'text/javascript' );
+// $this->headScript()->appendFile( "/js/bar_negative_stack.js", $type = 'text/javascript' );
+// $this->headScript()->appendFile( "/js/device_autocomplete_multi.js", $type = 'text/javascript' );
+
+// $styles = '${demo.css}';
+$this->headLink()->appendStylesheet('/css/themes/base/jquery-ui.css');
+$this->headLink()->appendStylesheet('/css/style.css');
+$styles = 'div#myDiv{margin:10px;padding:10px;}';
+$this->headStyle()->appendStyle($styles);
+echo $this->headStyle();
+?>
+<h1><?php echo $this->escapeHtml($title); ?></h1>
+
+<div class="ui-widget">
+  <label for="taeddevices">Device: </label>
+  <input id="taeddevices" size="50">
+</div>
+
+<form name="upload-form" id="upload-form" method="post" enctype="multipart/form-data">
+    <div class="form-element">
+        <label for="image-file">Avatar Image Upload</label>
+        <input type="file" name="image-file" id="image-file">
+    </div>
+
+    <button>Submit</button>
+</form>

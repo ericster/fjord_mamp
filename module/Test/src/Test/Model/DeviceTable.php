@@ -1,5 +1,4 @@
 <?php
-// module/Album/src/Album/Model/AlbumTable.php:
 namespace Test\Model;
 
 use Zend\Db\Adapter\Adapter;
@@ -7,6 +6,7 @@ use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\TableGateway\AbstractTableGateway;
 use Zend\Db\Adapter\Driver\ResultInterface;
 use Zend\Db\Sql\Sql;
+use Zend\Debug\Debug;
 
 class DeviceTable extends AbstractTableGateway
 {
@@ -22,13 +22,13 @@ class DeviceTable extends AbstractTableGateway
         $this->initialize();
     }
 
+
     public function fetchAll()
     {
     	$adapter = $this->adapter;
     	$sql = new Sql($adapter);
         $select = $sql->select();
         $select->from('custom_fields');
-//         $select->columns(array('possible_values'));
         $select->where('id = 9');
         $statement = $sql->prepareStatementForSqlObject($select);
         $result= $statement->execute();
@@ -37,20 +37,28 @@ class DeviceTable extends AbstractTableGateway
         	$resultSet = new ResultSet;
         	$resultSet->initialize($result);
         }	
-//         $sql = "select * from custome_fields where id = 9;";
-//         $resultSet = $adapter->query($sql);
-
-//         foreach ($resultSet as $row){
-// 	        $devices_val = $row->possible_values;
-// // 	        $devices_val = $row->id;
-//         }
-//         $device_string = explode("--- - ", $devices_val)[1];
-//         $device_arr = explode(" - ", $device_string);
         
-//         return $device_val;
-        return $resultSet;
+        $data = $resultSet->toArray();
+        foreach ($data[0] as $key => $val){
+        	if ($key == 'possible_values') {
+		        $devices_val = $val;
+        	}
+        }
+        $device_string = explode("--- ", $devices_val)[1];
+        // Debug::dump($device_string);
+        $device_arr = explode("- ", $device_string);
+        $device_arr = array_slice($device_arr, 1);
+        foreach ($device_arr as $elm){
+        	if(!empty($elm)){
+	        	$dev_arr[] = trim($elm);
+        	}
+        }
+        // Debug::dump($dev_arr);
+        
+        return array_reverse($device_arr);
     }
-
+    
+    
     public function getAlbum($id)
     {
         $id  = (int) $id;
