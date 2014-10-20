@@ -6,6 +6,8 @@ use Zend\View\Model\ViewModel;
 use Test\Form\DeviceMapValidator;
 use Test\Form\DeviceMapForm;
 use Zend\View\Model\JsonModel;
+use Zend\Debug\Debug;
+use Test\Model\Device;
 
 class DeviceController extends AbstractActionController
 {
@@ -144,6 +146,7 @@ class DeviceController extends AbstractActionController
     	if($request->isXmlHttpRequest()){
     
     		$data = $request->getPost();
+    		Debug::dump($data);
     
     		if(isset($data['deviceVal']) && !empty($data['deviceVal'])){
     			$result['status'] = 'success';
@@ -155,6 +158,43 @@ class DeviceController extends AbstractActionController
     			}
     			$result['message'] = $deviceString;
     		}
+    		
+    	}
+    
+	    return new JsonModel($result);
+    }
+
+    public function deviceListAjaxAction(){
+    
+    	$result = array('status' => 'error', 'message' => 'There was some error. Try again.');
+    
+    	$request = $this->getRequest();
+    	$response = $this->getResponse();
+    
+    	if($request->isXmlHttpRequest()){
+    
+    		$data = $request->getPost();
+    
+    		if(isset($data['deviceVal']) && !empty($data['deviceVal'])){
+    			$devices = $data['deviceVal'];
+    			$deviceList = array();
+    			foreach ($devices as $device){
+    				$devlist_e = explode(', ', $device['deviceList']);
+    				//Debug::dump($devlist);
+    				$devlist = array_slice($devlist_e, 0, count($devlist_e)-1 );
+    				$deviceList[] = [$device['deviceName'] => $devlist];
+    			}
+    		}
+    		//Debug::dump($deviceList);
+    		$device_o = new Device();
+    		$device_o->setDeviceList($deviceList);
+    		$device_string = $device_o->device_query_string();
+    		$sql = $device_o->create_query_string_all($device_string);
+    		$query_resultSet = $this->getDeviceTable()->getSelectedDevicesIssues($sql); 
+    		$resultbyType = $device_o->get_issues_by_type_per_app_all($query_resultSet);
+    		//Debug::dump($resultbyType);
+    		//$device_string = $this->getDeviceTable()->fetchAll(); 
+	    	$result = array('status' => 'success', 'message' => $resultbyType);
     		
     	}
     

@@ -1,264 +1,226 @@
 $(document).ready(function() {
 
+	function ConvertFormToJSON(form){
+	    var array = jQuery(form).serializeArray();
+	    var json = {};
+	    
+	    jQuery.each(array, function() {
+	        json[this.name] = this.value || '';
+	    });
+	    
+	    return json;
+	}
 		
-		function ConvertFormToJSON(form){
-		    var array = jQuery(form).serializeArray();
-		    var json = {};
-		    
-		    jQuery.each(array, function() {
-		        json[this.name] = this.value || '';
+	$( "#devicemap" ).submit(function( event ) {
+		  event.preventDefault();
+		  var serializedData = $("#devicemap").serializeArray();
+		  
+		  request =   jQuery.ajax({
+		        url : '/device/device-list-ajax',
+		        type: 'POST',
+		        dataType: 'JSON',
+		        data: serializedData,
+		        success: function(data, status){
+		            alert(data.message);
+                    //console.log(data.message);
+		            //$('#result').html(data.message);			
+		            if(data.status == 'error'){
+		                // Perform any operation on error
+		            }else{
+		                // Perform any operation on success
+		            }
+		        },
+		        error : function(xhr, textStatus, errorThrown) {
+		            if (xhr.status === 0) {
+		                alert('Not connect.\n Verify Network.');
+		            } else if (xhr.status == 404) {
+		                alert('Requested page not found. [404]');
+		            } else if (xhr.status == 500) {
+		                alert('Server Error [500].');
+		            } else if (errorThrown === 'parsererror') {
+		                alert('Requested JSON parse failed.');
+		            } else if (errorThrown === 'timeout') {
+		                alert('Time out error.');
+		            } else if (errorThrown === 'abort') {
+		                alert('Ajax request aborted.');
+		            } else {
+	                    alert("readyState: "+xhr.readyState+"\nstatus: "+xhr.status);
+	                    alert("responseText: "+xhr.responseText);
+		            }
+		        },
+		        complete: function(){
+		            // Perform any operation need on success/error
+		        }
 		    });
-		    
-		    return json;
-		}
-		
-		$( "#devicemap" ).submit(function( event ) {
-			  event.preventDefault();
-			  var serializedData = $("#devicemap").serializeArray();
-			  
-			  request =   jQuery.ajax({
-			        url : '/device/process-ajax-request',
-			        type: 'POST',
-			        dataType: 'JSON',
-			        data: serializedData,
-			        success: function(data, status){
-			            alert(data.message);
-			            if(data.status == 'error'){
-			                // Perform any operation on error
-			            }else{
-			                // Perform any operation on success
-			            }
-			        },
-			        error : function(xhr, textStatus, errorThrown) {
-			            if (xhr.status === 0) {
-			                alert('Not connect.\n Verify Network.');
-			            } else if (xhr.status == 404) {
-			                alert('Requested page not found. [404]');
-			            } else if (xhr.status == 500) {
-			                alert('Server Error [500].');
-			            } else if (errorThrown === 'parsererror') {
-			                alert('Requested JSON parse failed.');
-			            } else if (errorThrown === 'timeout') {
-			                alert('Time out error.');
-			            } else if (errorThrown === 'abort') {
-			                alert('Ajax request aborted.');
-			            } else {
-		                    alert("readyState: "+xhr.readyState+"\nstatus: "+xhr.status);
-		                    alert("responseText: "+xhr.responseText);
-			            }
-			        },
-			        complete: function(){
-			            // Perform any operation need on success/error
-			        }
-			    });
-			});
+		});
 
 
-        $("#devicemap1").submit(function(event){
-                
-//                alert("AJAX rquest prep<br />") ;
-            // prevent default posting of form
-            event.preventDefault();
-
-			var serializedData = $("#exldata").serializeArray();
-            $('#result').html(serializedData);			
-                
-            var fd = new FormData();
-            jQuery.each(serializedData, function() {
-		        fd.append(this.name, this.value);
-		    });
+    $("#devicemap1").submit(function(event){
             
+        // alert("AJAX rquest prep<br />") ;
+        // prevent default posting of form
+        event.preventDefault();
+
+		var serializedData = $("#exldata").serializeArray();
+        $('#result').html(serializedData);			
             
-//         alert("AJAX rquest sending<br />") ;
-            // fire off the request to /form.php
-            request = $.ajax({
-                url: "/device/process-ajax-request",
-                type: "post",
-                dataType: "json",
-                processData: false,
-                data: fd,
-                contentType: false,
-                success : function ( testReturn )
-                  {
-                	/*
-                	 * testRetrun 
-                	 * 
-                	 * "mod_rows" => $mod_rows, 
-                	 * "headingRow" => $headingRow, 
-                	 * "sell_cols" => $sel_cols
-                	 */
-                        console.log("Hooray, it worked!");
-                        var jsonString = jsonToString(testReturn);
-//                    alert("response from AJAX response<br />") ;
-//                    alert(testReturn) ;
-//		            $('#result').html("response received!!!");			
-		            $('#result').html(testReturn.headingRow);			
-//		            $('#result').html(testReturn.sell_cols);			
+        var fd = new FormData();
+        jQuery.each(serializedData, function() {
+	        fd.append(this.name, this.value);
+	    });
+        
+        
+        // alert("AJAX rquest sending<br />") ;
+        // fire off the request to /form.php
+        request = $.ajax({
+            url: "/device/process-ajax-request",
+            type: "post",
+            dataType: "json",
+            processData: false,
+            data: fd,
+            contentType: false,
+            success : function ( testReturn )
+              {
+            	/*
+            	 * testRetrun 
+            	 * 
+            	 * "mod_rows" => $mod_rows, 
+            	 * "headingRow" => $headingRow, 
+            	 * "sell_cols" => $sel_cols
+            	 */
+                    console.log("Hooray, it worked!");
+                    var jsonString = jsonToString(testReturn);
+                // alert("response from AJAX response<br />") ;
+                // alert(testReturn) ;
+	            $('#result').html(testReturn.headingRow);			
 
-                    var space = '<hr><div class = "row"> <div class="col-sm-2">';
-                    space += '</div><div class="col-sm-12><span class="caret"></span></div></div>';
-////                    var result_header ='<label class="col-sm-2 control-label">Result</label>';  
-                    var result_header =$('<h4 class="col-sm-2 text-right">Not classified</h4>');  
-//                    var result_header = '<h4> Testcases not classified </h4>';
-			        var table =$('<table class="table tablesorter" id="nocat"> </table>');
-			        /*
-			         * TODO: parameterize the table head from JSON result
-			         */
-//			        var header  = $('<thead><tr><th>Casecode</th> <th>Title</th> <th>Problem</th> <th>Reproduction</th><th>Cause</th> <th>Measure</th></tr></thead>'); 
-			        var header  = $('<thead></thead>'); 
-		            var headrow = $('<tr class="nocategory"></tr>');
-		            $.each(testReturn.headingRow, function() {
-//		            	var newhead = $('<tr class="nocategory"></tr>');
-		            	var th ='<th class="header">';
-		            	th += this;
-		            	th += '</th>';
-		            	headrow.append(th);
-		            	});
-		            header.append(headrow);
+                var space = '<hr><div class = "row"> <div class="col-sm-2">';
+                space += '</div><div class="col-sm-12><span class="caret"></span></div></div>';
+                var result_header =$('<h4 class="col-sm-2 text-right">Not classified</h4>');  
+		        var table =$('<table class="table tablesorter" id="nocat"> </table>');
+		        /*
+		         * TODO: parameterize the table head from JSON result
+		         */
+		        var header  = $('<thead></thead>'); 
+	            var headrow = $('<tr class="nocategory"></tr>');
+	            $.each(testReturn.headingRow, function() {
+	            	var th ='<th class="header">';
+	            	th += this;
+	            	th += '</th>';
+	            	headrow.append(th);
+	            	});
+	            header.append(headrow);
 
-			        var body = $('<tbody></tbody>')
-			        table.append(header);
-			        var tbody = table.append(body);
-//		            $.each(testReturn, function() {
-		            $.each(testReturn.mod_rows, function() {
-		            	var newrow = $('<tr class="nocategory"></tr>');
-		            	  $.each(this, function() {
-		            		var td = '<td>';
-		            		td += this;
-		            		td += '</td>';
-		            		newrow.append(td);
-		            	  });
-//		            	  table.append(newrow);
-		            	  tbody.append(newrow);
-		            	});
-//		            $('#result').append(space);
-//		            result_header.before($(space));
-//		            $('#result').before(result_header);
-		            $('#result').append(table);
+		        var body = $('<tbody></tbody>')
+		        table.append(header);
+		        var tbody = table.append(body);
+	            $.each(testReturn.mod_rows, function() {
+	            	var newrow = $('<tr class="nocategory"></tr>');
+	            	  $.each(this, function() {
+	            		var td = '<td>';
+	            		td += this;
+	            		td += '</td>';
+	            		newrow.append(td);
+	            	  });
+	            	  tbody.append(newrow);
+	            	});
+	            $('#result').append(table);
 
-                    $("#exldata input[name=submit]").removeClass("btn-primary");
+                $("#exldata input[name=submit]").removeClass("btn-primary");
 
-                    $('.download').removeClass('hide');
-		            $("#nocat").tablesorter();
-                  },
-                error : function (xhr, err)
-                 {
-                    alert("readyState: "+xhr.readyState+"\nstatus: "+xhr.status);
-                    alert("responseText: "+xhr.responseText);
-//                    $("#exldatasub input[name=submit]").removeClass("btn-info");
-//                    $("#exldatasub input[name=submit]").css({ "color": "#333333",
-//                    		  "background-color": "#b5b5b5",
-//                    		  "border-color": "#b5b5b5"
-//                    		});
-//                	$("#response").html('A problem has occurred.');
-                	// bootstrap popover tooltip.
-//		            $("#exldatasub input[name='uploadTmp']").popover({title: 'Invalid template', placement: 'top', content: "make sure to use right text format"}); 
-//                	$("#exldatasub input[name=uploadTmp]").addClass('popover1');
-//                	$("#exldatasub input[name=uploadTmp]").popover('show');
-//                    alert("failed ");
-//                    console.log("Oops, it failed!");
-//                        alert(data);
-//                    alert("error from AJAX response<br />") ;
-//                	$('body').on('click', function (e) {
-//                		$("#exldatasub input[name=uploadTmp]").popover('hide');
-//                	});
-                 },
-              });
+                $('.download').removeClass('hide');
+	            $("#nocat").tablesorter();
+              },
+            error : function (xhr, err)
+             {
+                alert("readyState: "+xhr.readyState+"\nstatus: "+xhr.status);
+                alert("responseText: "+xhr.responseText);
+             },
+          });
+        }); // end of $("#exldatasub").submit();
+   
+    /*
+     * Spinner for ajax
+     */
+    // Creating spinner see <a href="http://fgnass.github.com/spin.js/">http://fgnass.github.com/spin.js/</a> for configuration wizzard
+    var opts = {
+       lines: 13, // The number of lines to draw
+       length: 7, // The length of each line
+       width: 4, // The line thickness
+       radius: 10, // The radius of the inner circle
+       rotate: 0, // The rotation offset
+       color: '#0099FF', // #rgb or #rrggbb
+       speed: 0.75, // Rounds per second
+       trail: 50, // Afterglow percentage
+       shadow: false, // Whether to render a shadow
+       hwaccel: false, // Whether to use hardware acceleration
+       className: 'spinner', // The CSS class to assign to the spinner
+       zIndex: 2e9, // The z-index (defaults to 2000000000)
+       top: 'auto', // Top position relative to parent in px
+       left: 'auto' // Left position relative to parent in px
+    };
+    var spinner = new Spinner(opts);
+    var ajax_cnt = 0; // Support for parallel AJAX requests
+     
+    // Global functions to show/hide on ajax requests
+    $(document).ajaxStart(function() {
+       $('<div id ="spinner_center" style="position:fixed;top:70px;left:49%"></div>').appendTo('body');
+       spinner.spin($('#spinner_center')[0]);
+    });
+     
+    $(document).ajaxStop(function() {
+          spinner.stop();
+          $('#spinner_center').remove();
+    });
+
              
-//            return false;
 
-            }); // end of $("#exldatasub").submit();
-       
-        /*
-         * Spinner for ajax
-         */
-        // Creating spinner see <a href="http://fgnass.github.com/spin.js/">http://fgnass.github.com/spin.js/</a> for configuration wizzard
-        var opts = {
-           lines: 13, // The number of lines to draw
-           length: 7, // The length of each line
-           width: 4, // The line thickness
-           radius: 10, // The radius of the inner circle
-           rotate: 0, // The rotation offset
-           color: '#0099FF', // #rgb or #rrggbb
-           speed: 0.75, // Rounds per second
-           trail: 50, // Afterglow percentage
-           shadow: false, // Whether to render a shadow
-           hwaccel: false, // Whether to use hardware acceleration
-           className: 'spinner', // The CSS class to assign to the spinner
-           zIndex: 2e9, // The z-index (defaults to 2000000000)
-           top: 'auto', // Top position relative to parent in px
-           left: 'auto' // Left position relative to parent in px
-        };
-        var spinner = new Spinner(opts);
-        var ajax_cnt = 0; // Support for parallel AJAX requests
-         
-        // Global functions to show/hide on ajax requests
-        $(document).ajaxStart(function() {
-//           $('&lt;div id ="spinner_center" style="position:fixed;top:70px;left:49%;"&gt;&amp;nbsp;&lt;/div&gt;').appendTo('body');
-           $('<div id ="spinner_center" style="position:fixed;top:70px;left:49%"></div>').appendTo('body');
-//           $("#result").append($('<div id ="spinner_center" style="position:fixed;top:70px;left:49%"></div>'));
-           spinner.spin($('#spinner_center')[0]);
-//           ajax_cnt++;
-        });
-         
-        $(document).ajaxStop(function() {
-//           ajax_cnt--;
-//           if (ajax_cnt <= 0) {
-              spinner.stop();
-              $('#spinner_center').remove();
-//              ajax_cnt = 0;
-//           }
-        });
+    // :helper function to change JSON object to string 
+    /** 
+     * @memberOf jsonToString
+     */
 
-                 
-
-        // :helper function to change JSON object to string 
-        /** 
-         * @memberOf jsonToString
-         */
-
-        function jsonToString($jsonObject) {
-                return JSON.stringify($jsonObject);
-        }
-        
-        $(document).on("click", '#del-button', function(event){
-                row = $(this).parent().parent();
-                row.remove();
-                event.preventDefault();
-        });
-        
-                
-        //    $(".table").tablesorter();
-        
-            $('.lead').hover(
-                             function() {
-                                        $( this ).append( $( "<span> ***</span>" ) );
-                                      }, function() {
-                                        $( this ).find( "span:last" ).remove();
-                                      }
-                            );
-            // to add a new row
-            $('.addbtn').on('click', function(e){
-                e.preventDefault();
-                insert_row_empty();
-                bindAutoComplete();
-
+    function jsonToString($jsonObject) {
+            return JSON.stringify($jsonObject);
+    }
+    
+    $(document).on("click", '#del-button', function(event){
+            row = $(this).parent().parent();
+            row.remove();
+            event.preventDefault();
+    });
+    
             
-                // Sample from ZF2 
-                app2 =  $('form > div > fieldset').find('.appname');
-                fset = $('form > div > fieldset');
-            });
+    //    $(".table").tablesorter();
+    
+    $('.lead').hover(
+                     function() {
+                                $( this ).append( $( "<span> ***</span>" ) );
+                              }, function() {
+                                $( this ).find( "span:last" ).remove();
+                              }
+                    );
+    // to add a new row
+    $('.addbtn').on('click', function(e){
+        e.preventDefault();
+        insert_row_empty();
+        bindAutoComplete();
+
+    
+        // Sample from ZF2 
+        app2 =  $('form > div > fieldset').find('.appname');
+        fset = $('form > div > fieldset');
+    });
 
     // :helper function adding the first row: not used 
 
-        /**
-        * @memberOf insert_row_first
-        */
+     /**
+     * @memberOf insert_row_first
+     */
     function insert_row_first( currentCount, app_name, search_term) {
         var template = '<input name="searchTerm[__index__][appName]" required="required" class="appname" type="text" value="__app_name__"> \
                 <input name="searchTerm[__index__][regexPattern]" required="required" class="appregex" type="text" value="__search_term__">';
         template = template.replace(/__index__/g, currentCount);
-//        var del = $('#del-button').clone();
             appn.val(app_name);
             appr.val(search_term);
     }
@@ -269,21 +231,14 @@ $(document).ready(function() {
      */
     function insert_row_empty() {
         var currentCount = $('form .devicename').length;
-//                alert(currentCount);
-//        var template = $('form > div > fieldset > span').data('template');
-//        var template = $('form > div > fieldset > span').data('template');
-//            document.getElementById("demo").innerHTML= template;
         var template = '<input name="deviceVal[__index__][deviceName]" required="required" class="devicename" type="text" value=""> \
                 <input name="deviceVal[__index__][deviceList]" required="required" class="devicelist" type="text" value="">';
         var rowCount = $('.collectionTable tr').length;
         template = template.replace(/__index__/g, currentCount);
-//        console.log(template);
-//         var str3 = " \</br\>";
+        // console.log(template);
         var str3 = "\<div\>";
-//         var res = template.concat(str3);
         var res1 = str3.concat(template);
         var res = res1.concat('\</div\>');
-//        var del = $('#del-button').clone();
         var del = '<button type="button" class="btn btn-danger btn-sm" id="del-button"> \
         <span class="glyphicon glyphicon-trash"></span></button> </td> </tr>';
         
@@ -296,11 +251,8 @@ $(document).ready(function() {
         var div_add3 = '<p> Hello World2 </p>'
        
 
-//        $("#demoeric").html(del);
         var tplate = $(template);
-//        console.log($(template));
         var parsed = $('<div/>').append(tplate);
-//        parsed.find(".class0")
         var appn= parsed.find('input.devicename');
         var appr= parsed.find('input.devicelist');
         appn.addClass('input-normal')
@@ -309,9 +261,6 @@ $(document).ready(function() {
         var appr_td = $('<td></td>').append(appr);
         var del_td = $('<td></td>').append(del); 
         var app_tr = $('<tr></tr>').append(appn_td).append(appr_td).append(del_td);
-//        console.log(parsed);
-//        console.log(appn_td);
-//        console.log(appr);
 
 
         // Appending to target tag
@@ -322,23 +271,67 @@ $(document).ready(function() {
         $('#myTable tr:last').after(row_empty);
         }
     
-  function split( val ) {
-	      return val.split( /,\s*/ );
+	function split( val ) {
+	     return val.split( /,\s*/ );
 	}
-  function extractLast( term ) {
-    return split( term ).pop();
-  }
+	function extractLast( term ) {
+	    return split( term ).pop();
+	 }
 
-  function bindAutoComplete(){
-	  $( ".devicelist" )
-	    // don't navigate away from the field on tab when selecting an item
-	    .bind( "keydown", function( event ) {
+	function bindAutoComplete(){
+		  $( ".devicelist" )
+		    // don't navigate away from the field on tab when selecting an item
+		    .bind( "keydown", function( event ) {
+		      if ( event.keyCode === $.ui.keyCode.TAB &&
+		          $( this ).autocomplete( "instance" ).menu.active ) {
+		        event.preventDefault();
+		      }
+		    })
+		    .autocomplete({
+			  //maxShowItems: 5, // Make list height fit to 5 items when items are over 5.
+		      source: function( request, response ) {
+		        $.getJSON( "/device/device-list", {
+		          term: extractLast( request.term )
+		        }, response );
+		      },
+		      search: function() {
+		        // custom minLength
+		        var term = extractLast( this.value );
+		        if ( term.length < 2 ) {
+		          return false;
+		        }
+		      },
+		      focus: function (event, ui) {
+		                $(".ui-helper-hidden-accessible").hide();
+		                event.preventDefault();
+		      },
+		      select: function( event, ui ) {
+		        var terms = split( this.value );
+		        // remove the current input
+		        terms.pop();
+		        // add the selected item
+		        terms.push( ui.item.value );
+		        // add placeholder to get the comma-and-space at the end
+		        terms.push( "" );
+		        this.value = terms.join( ", " );
+		        return false;
+		      },
+		      messages: {
+		          noResults:"",
+		          results: function() {}
+		      }
+		    });
+	  }
+	$( ".devicelist" )
+	  // don't navigate away from the field on tab when selecting an item
+	.bind( "keydown", function( event ) {
 	      if ( event.keyCode === $.ui.keyCode.TAB &&
 	          $( this ).autocomplete( "instance" ).menu.active ) {
 	        event.preventDefault();
 	      }
-	    })
-	    .autocomplete({
+	})
+	.autocomplete({
+		  //maxShowItems: 5, // Make list height fit to 5 items when items are over 5.
 	      source: function( request, response ) {
 	        $.getJSON( "/device/device-list", {
 	          term: extractLast( request.term )
@@ -351,10 +344,10 @@ $(document).ready(function() {
 	          return false;
 	        }
 	      },
-	      focus: function (event, ui) {
-	                $(".ui-helper-hidden-accessible").hide();
-	                event.preventDefault();
-	      },
+		  focus: function (event, ui) {
+		                $(".ui-helper-hidden-accessible").hide();
+		                event.preventDefault();
+		  },
 	      select: function( event, ui ) {
 	        var terms = split( this.value );
 	        // remove the current input
@@ -370,49 +363,7 @@ $(document).ready(function() {
 	          noResults:"",
 	          results: function() {}
 	      }
-	    });
-  }
-  $( ".devicelist" )
-    // don't navigate away from the field on tab when selecting an item
-    .bind( "keydown", function( event ) {
-      if ( event.keyCode === $.ui.keyCode.TAB &&
-          $( this ).autocomplete( "instance" ).menu.active ) {
-        event.preventDefault();
-      }
-    })
-    .autocomplete({
-      source: function( request, response ) {
-        $.getJSON( "/device/device-list", {
-          term: extractLast( request.term )
-        }, response );
-      },
-      search: function() {
-        // custom minLength
-        var term = extractLast( this.value );
-        if ( term.length < 2 ) {
-          return false;
-        }
-      },
-	  focus: function (event, ui) {
-	                $(".ui-helper-hidden-accessible").hide();
-	                event.preventDefault();
-	  },
-      select: function( event, ui ) {
-        var terms = split( this.value );
-        // remove the current input
-        terms.pop();
-        // add the selected item
-        terms.push( ui.item.value );
-        // add placeholder to get the comma-and-space at the end
-        terms.push( "" );
-        this.value = terms.join( ", " );
-        return false;
-      },
-      messages: {
-          noResults:"",
-          results: function() {}
-      }
-    });
-
+	});
+	
 
   });

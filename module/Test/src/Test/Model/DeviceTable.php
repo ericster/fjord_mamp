@@ -58,6 +58,38 @@ class DeviceTable extends AbstractTableGateway
         return array_reverse($device_arr);
     }
     
+    public function getSelectedDevicesIssues($sql){
+    	$adapter = $this->adapter;
+    	//$sql = 'select * from custom_fields where id = 9';
+    	$resultSet = $adapter->query($sql, \Zend\Db\Adapter\Adapter::QUERY_MODE_EXECUTE);
+    	//Debug::dump($resultSet->toArray());
+    	//$data = $resultSet->toArray();
+    	//Debug::dump($data);
+	
+    	// 
+    	/*
+        foreach ($data[0] as $key => $val){
+        	if ($key == 'possible_values') {
+		        $devices_val = $val;
+        	}
+        }
+        $device_string = explode("--- ", $devices_val)[1];
+        // Debug::dump($device_string);
+        $device_arr = explode("- ", $device_string);
+        $device_arr = array_slice($device_arr, 1);
+        foreach ($device_arr as $elm){
+        	if(!empty($elm)){
+	        	$dev_arr[] = trim($elm);
+        	}
+        }
+        // Debug::dump($dev_arr);
+        
+        return array_reverse($device_arr);
+        */
+    	//return $data[0];
+    	return $resultSet;
+    }
+    
     
     public function getAlbum($id)
     {
