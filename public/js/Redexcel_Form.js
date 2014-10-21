@@ -1,4 +1,72 @@
+
+	function Taed_highcharts(cat, dat){
+	    $('#charts_container').highcharts({
+	        chart: {
+	            type: 'column'
+	        },
+	        title: {
+	            text: 'Issue Type Per App'
+	        },
+	        xAxis: {
+	            categories: cat
+	        },
+	        yAxis: {
+	            min: 0,
+	            title: {
+	                text: 'Issue Type per App' 
+	            }
+	        },
+	        legend: {
+	            reversed: true
+	        },
+	        plotOptions: {
+	            series: {
+	                stacking: 'normal'
+	            }
+	        },
+	        series: dat 
+	    });
+	}
+
 $(document).ready(function() {
+
+	function sample_chart(){
+	    $('#charts_container').highcharts({
+	        chart: {
+	            type: 'column'
+	        },
+	        title: {
+	            text: 'Stacked bar chart'
+	        },
+	        xAxis: {
+	            categories: ['Apples', 'Oranges', 'Pears', 'Grapes', 'Bananas']
+	        },
+	        yAxis: {
+	            min: 0,
+	            title: {
+	                text: 'Total Issues'
+	            }
+	        },
+	        legend: {
+	            reversed: true
+	        },
+	        plotOptions: {
+	            series: {
+	                stacking: 'normal'
+	            }
+	        },
+	        series: [{
+	            name: 'John',
+	            data: [5, 3, 4, 7, 2]
+	        }, {
+	            name: 'Jane',
+	            data: [2, 2, 3, 2, 1]
+	        }, {
+	            name: 'Joe',
+	            data: [3, 4, 4, 2, 5]
+	        }]
+	    });
+	}
 
 	function ConvertFormToJSON(form){
 	    var array = jQuery(form).serializeArray();
@@ -21,9 +89,12 @@ $(document).ready(function() {
 		        dataType: 'JSON',
 		        data: serializedData,
 		        success: function(data, status){
-		            alert(data.message);
-                    //console.log(data.message);
+		            //alert(data.message);
+
+                    console.log(data.message);
 		            //$('#result').html(data.message);			
+                    //Taed_highcharts(cat, dat);
+                    sample_chart();
 		            if(data.status == 'error'){
 		                // Perform any operation on error
 		            }else{
@@ -288,7 +359,7 @@ $(document).ready(function() {
 		      }
 		    })
 		    .autocomplete({
-			  //maxShowItems: 5, // Make list height fit to 5 items when items are over 5.
+			  maxShowItems: 8, // Make list height fit to 5 items when items are over 5.
 		      source: function( request, response ) {
 		        $.getJSON( "/device/device-list", {
 		          term: extractLast( request.term )
@@ -331,7 +402,7 @@ $(document).ready(function() {
 	      }
 	})
 	.autocomplete({
-		  //maxShowItems: 5, // Make list height fit to 5 items when items are over 5.
+		  maxShowItems: 8, // Make list height fit to 5 items when items are over 5.
 	      source: function( request, response ) {
 	        $.getJSON( "/device/device-list", {
 	          term: extractLast( request.term )
@@ -365,5 +436,6 @@ $(document).ready(function() {
 	      }
 	});
 	
+    
 
   });

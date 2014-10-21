@@ -8,8 +8,11 @@ $this->headScript()->prependFile($jquerySrc);
 $this->headScript()->appendFile( "/js/jquery.tablesorter.js", $type = 'text/javascript' );
 $this->headScript()->appendFile( "/js/bootstrap.js", $type = 'text/javascript' );
 $this->headScript()->appendFile( "/js/spin.js", $type = 'text/javascript' );
+$this->headScript()->appendFile( "/js/highcharts/highcharts.js", $type = 'text/javascript' );
+$this->headScript()->appendFile( "/js/highcharts/modules/exporting.js", $type = 'text/javascript' );
 $this->headScript()->appendFile( "/js/Redexcel_Form.js", $type = 'text/javascript' );
 $this->headScript()->appendFile( "/js/jquery.ui.autocomplete.scroll.min.js", $type = 'text/javascript' );
+// $this->headScript()->appendFile( "/js/highchart_ex_stacked_bar.js", $type = 'text/javascript' );
 $this->headLink()->appendStylesheet('/css/custom_eric.css');
 $this->headLink()->appendStylesheet('/css/tablesorter_blue/style.css');
 ?>
@@ -67,6 +70,9 @@ $form = $this->form;
 
 
 <hr>
+
+<div id="charts_container" style="min-width: 310px; max-width: 800px; height: 400px; margin: 0 auto"></div>
+
 <h4>Output</h4>
 <!-- <div class="col-sm-2 "> <span class="glyphicon glyphicon-starr text-right"></span> </div> -->
 <!-- <div class="col-sm-10" > <span class="glyphicon glyphicon-align-left text-right"></span></div> -->

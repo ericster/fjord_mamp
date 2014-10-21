@@ -167,8 +167,14 @@ class Device implements InputFilterAwareInterface
     	foreach (array_keys($app) as $val) {
     		$result[] = array_merge((array)$val, array_values($app[$val]));
     	}
-    
-    	return $result;
+    	
+    	$issue_type = array_slice($result[0], 1);
+    	//Debug::dump($issue_type);
+   		$result_transpose = $this->flipDiagonally($result);	 
+    	$app_name = array_slice($result_transpose[0], 1);
+    	//Debug::dump($app_name);
+   		//Debug::dump($result_transpose);
+    	return $result_transpose;
     }
     
     protected function cmp($a, $b)
@@ -189,6 +195,16 @@ class Device implements InputFilterAwareInterface
     	}
     
     	return $sumb - $suma;
+    }
+    
+    protected function flipDiagonally($arr) {
+    	$out = array();
+    	foreach ($arr as $key => $subarr) {
+    		foreach ($subarr as $subkey => $subvalue) {
+    			$out[$subkey][$key] = $subvalue;
+    		}
+    	}
+    	return $out;
     }
 
     public function setInputFilter(InputFilterInterface $inputFilter)
