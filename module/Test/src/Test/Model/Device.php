@@ -174,7 +174,16 @@ class Device implements InputFilterAwareInterface
     	$app_name = array_slice($result_transpose[0], 1);
     	//Debug::dump($app_name);
    		//Debug::dump($result_transpose);
-    	return $result_transpose;
+   		$type_arr = array_slice($result_transpose,1);
+		foreach($type_arr as $type){
+			if (empty($type[0])) 
+				$chart_data[] = ['name' => 'Undefined', 'data'=> array_slice($type, 1)];
+			else	
+				$chart_data[] = ['name' => $type[0], 'data'=> array_slice($type, 1)];
+		}
+   		//Debug::dump($chart_data);
+   		$highchart_par = array('cat' => $app_name, 'dat'=> array_reverse($chart_data));
+    	return $highchart_par;
     }
     
     protected function cmp($a, $b)

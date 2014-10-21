@@ -4,6 +4,17 @@
 	        chart: {
 	            type: 'column'
 	        },
+	        colors: [
+	                 '#4572A7', 
+	                 '#89A54E', 
+	                 '#A47D7C', 
+	                 '#80699B', 
+	                 '#3D96AE', 
+	                 '#92A8CD', 
+	                 '#B5CA92',
+	                 '#DB843D', 
+	                 '#AA4643' 
+	                 ],
 	        title: {
 	            text: 'Issue Type Per App'
 	        },
@@ -13,7 +24,7 @@
 	        yAxis: {
 	            min: 0,
 	            title: {
-	                text: 'Issue Type per App' 
+	                text: 'Issues #' 
 	            }
 	        },
 	        legend: {
@@ -92,9 +103,12 @@ $(document).ready(function() {
 		            //alert(data.message);
 
                     console.log(data.message);
+                    hpar = data.message;
+                    cat = hpar.cat;
+                    dat = hpar.dat;
 		            //$('#result').html(data.message);			
-                    //Taed_highcharts(cat, dat);
-                    sample_chart();
+                    Taed_highcharts(cat, dat);
+                    //sample_chart();
 		            if(data.status == 'error'){
 		                // Perform any operation on error
 		            }else{
