@@ -32,7 +32,12 @@ class Device implements InputFilterAwareInterface
     */
     public function setDeviceList($devicelist)
     {
-    	$this->deviceList = $devicelist;
+       	$devicelist_test = array(
+    			'T ATT' => array('NDA Device', 'N910A T ATT'),
+    			'Chagall ATT' => array('T807A Chagall'),
+    			'KLIMT ATT' => array('T707A KLIMT'),
+    	); 	
+       	$this->deviceList = $devicelist_test;
     	
     }
 
@@ -44,11 +49,7 @@ class Device implements InputFilterAwareInterface
     
     public function device_query_string() {
     	$deviceList = $this->deviceList;
-    	$deviceList = array(
-    			'T ATT' => array('NDA Device', 'N910A T ATT'),
-    			'Chagall ATT' => array('T807A Chagall'),
-    			'KLIMT ATT' => array('T707A KLIMT'),
-    	);
+
     	//Debug::dump($deviceList);
     	$device_string = ' (';
     	foreach (array_keys($deviceList) as $device_name){
@@ -160,7 +161,7 @@ class Device implements InputFilterAwareInterface
     		$app[$row['app']][$row['issue_type']] = $app[$row['app']][$row['issue_type']] + 1;
     	}
     
-    	//uasort($app, 'cmp');
+    	//uasort($app, 'cmp') modified inside Device class;
     	uasort($app, array($this, 'cmp'));
     	$result = array();
     	$result[] = array_merge((array)'', $type);
@@ -168,12 +169,10 @@ class Device implements InputFilterAwareInterface
     		$result[] = array_merge((array)$val, array_values($app[$val]));
     	}
     	
+    	// result modification for Highcharts data
     	$issue_type = array_slice($result[0], 1);
-    	//Debug::dump($issue_type);
    		$result_transpose = $this->flipDiagonally($result);	 
     	$app_name = array_slice($result_transpose[0], 1);
-    	//Debug::dump($app_name);
-   		//Debug::dump($result_transpose);
    		$type_arr = array_slice($result_transpose,1);
 		foreach($type_arr as $type){
 			if (empty($type[0])) 
@@ -181,9 +180,95 @@ class Device implements InputFilterAwareInterface
 			else	
 				$chart_data[] = ['name' => $type[0], 'data'=> array_slice($type, 1)];
 		}
-   		//Debug::dump($chart_data);
    		$highchart_par = array('cat' => $app_name, 'dat'=> array_reverse($chart_data));
     	return $highchart_par;
+    }
+
+    public function get_issues_by_type_per_device_all($resultSet){
+    	$deviceList = $this->deviceList;
+    
+    	$type = array("Crash","Functional", "Usability", "By Design", "UX Flow", "ANR", "Stability", "Automation");
+    
+    	$devices = array();
+    	foreach($resultSet as $row){
+    		$devices_array = split(';', $row['devices']);
+    		foreach($devices_array as $device){
+    			$device = trim($device);
+    
+    			foreach (array_keys($deviceList) as $device_name){
+    				if (in_array($device, $deviceList[$device_name]))
+    					$device_rep = $device_name;
+    			}
+    			if(!array_key_exists($device_rep, $devices)) {
+    				$devices[$device_rep] = array_fill_keys($type, 0);
+    			}
+    
+    			$devices[$device_rep][$row['issue_type']] = $devices[$device_rep][$row['issue_type']] + 1;
+    		}
+    	}
+    
+    	uasort($devices, array($this, 'cmp'));
+    	$result = array();
+    	$result[] = array_merge((array)'', $type);
+    	foreach (array_keys($devices) as $val) {
+    		$result[] = array_merge((array)$val, array_values($devices[$val]));
+    	}
+    
+    	//echo json_encode($result);
+    	//return $result;
+
+    	// result modification for Highcharts data
+    	$issue_type = array_slice($result[0], 1);
+    	$result_transpose = $this->flipDiagonally($result);
+    	$app_name = array_slice($result_transpose[0], 1);
+    	$type_arr = array_slice($result_transpose,1);
+    	foreach($type_arr as $type){
+    		if (empty($type[0]))
+    			$chart_data[] = ['name' => 'Undefined', 'data'=> array_slice($type, 1)];
+    		else
+    			$chart_data[] = ['name' => $type[0], 'data'=> array_slice($type, 1)];
+    	}
+    	$highchart_par = array('cat' => $app_name, 'dat'=> array_reverse($chart_data));
+    	return $highchart_par;
+    }
+    
+    public function get_issues_by_device_all($resultSet){
+    	global $query_string;
+    	global $query_string_all;
+    	global $deviceList;
+    
+    	$result = get_all_issues_array($query_string_all);
+    
+    	$devices = array();
+    	while($row = mysqli_fetch_array($result)) {
+    		$devices_array = split(';', $row['devices']);
+    		foreach($devices_array as $device){
+    			$device = trim($device);
+    
+    			foreach (array_keys($deviceList) as $device_name){
+    				if (in_array($device, $deviceList[$device_name]))
+    					$device_rep = $device_name;
+    			}
+    			if(!array_key_exists($device_rep, $devices)) {
+    				$devices[$device_rep] = 0;
+    			}
+    
+    			$devices[$device_rep] = $devices[$device_rep] + 1;
+    		}
+    	}
+    
+    	arsort($devices);
+    	$result = array();
+    	$result[] = array_merge((array)'', (array)'All Issues');
+    	foreach (array_keys($devices) as $val) {
+    		$result[] = array_merge((array)$val, (array)$devices[$val]);
+    	}
+    
+    	echo "device issue all\n";
+    	print_r($result);
+    	echo "Jason format\n";
+    	echo json_encode($result);
+    	return $result;
     }
     
     protected function cmp($a, $b)

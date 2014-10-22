@@ -188,19 +188,29 @@ class DeviceController extends AbstractActionController
     		//Debug::dump($deviceList);
     		$device_o = new Device();
     		$device_o->setDeviceList($deviceList);
+    		
+    		// to create a query string
     		$device_string = $device_o->device_query_string();
     		$sql = $device_o->create_query_string_all($device_string);
+
+    		// redmine database query
     		$query_resultSet = $this->getDeviceTable()->getSelectedDevicesIssues($sql); 
-    		$resultbyType = $device_o->get_issues_by_type_per_app_all($query_resultSet);
+    		$query_resultSet->buffer(); 
+    		
+    		// process query data for charts
+    		$resultB = $device_o->get_issues_by_type_per_device_all($query_resultSet);
+    		$resultC = $device_o->get_issues_by_type_per_app_all($query_resultSet);
+
     		//Debug::dump($resultbyType);
     		//$device_string = $this->getDeviceTable()->fetchAll(); 
-	    	$result = array('status' => 'success', 'message' => $resultbyType);
+	    	$result = array('status' => 'success', 'message' => array('B' => $resultB, 'C' => $resultC));
+	    	//$result = array('status' => 'success', 'message' => $resultB);
+	    	//Debug::dump($result);
     		
     	}
     
 	    return new JsonModel($result);
     }
-
 
 }
 

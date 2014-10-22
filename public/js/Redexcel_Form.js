@@ -1,6 +1,6 @@
 
-	function Taed_highcharts(cat, dat){
-	    $('#charts_container').highcharts({
+	function Taed_highcharts(container, cat, dat){
+	    $(container).highcharts({
 	        chart: {
 	            type: 'column'
 	        },
@@ -101,13 +101,17 @@ $(document).ready(function() {
 		        data: serializedData,
 		        success: function(data, status){
 		            //alert(data.message);
-
                     console.log(data.message);
-                    hpar = data.message;
-                    cat = hpar.cat;
-                    dat = hpar.dat;
+                    hparB = data.message.B;
+                    //hparB = data.message;
+                    catB = hparB.cat;
+                    datB = hparB.dat;
+                    hparC = data.message.C;
+                    catC = hparC.cat;
+                    datC = hparC.dat;
 		            //$('#result').html(data.message);			
-                    Taed_highcharts(cat, dat);
+                    Taed_highcharts('#charts_container',catB, datB);
+                    Taed_highcharts('#chart_type_per_device',catC, datC);
                     //sample_chart();
 		            if(data.status == 'error'){
 		                // Perform any operation on error
@@ -122,6 +126,9 @@ $(document).ready(function() {
 		                alert('Requested page not found. [404]');
 		            } else if (xhr.status == 500) {
 		                alert('Server Error [500].');
+		                console.log(xhr.status);
+		                console.log(xhr.responseText);
+		                console.log(thrownError);
 		            } else if (errorThrown === 'parsererror') {
 		                alert('Requested JSON parse failed.');
 		            } else if (errorThrown === 'timeout') {
