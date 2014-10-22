@@ -233,14 +233,10 @@ class Device implements InputFilterAwareInterface
     }
     
     public function get_issues_by_device_all($resultSet){
-    	global $query_string;
-    	global $query_string_all;
-    	global $deviceList;
-    
-    	$result = get_all_issues_array($query_string_all);
+    	$deviceList = $this->deviceList;
     
     	$devices = array();
-    	while($row = mysqli_fetch_array($result)) {
+    	foreach($resultSet as $row){
     		$devices_array = split(';', $row['devices']);
     		foreach($devices_array as $device){
     			$device = trim($device);
@@ -264,11 +260,19 @@ class Device implements InputFilterAwareInterface
     		$result[] = array_merge((array)$val, (array)$devices[$val]);
     	}
     
-    	echo "device issue all\n";
-    	print_r($result);
-    	echo "Jason format\n";
-    	echo json_encode($result);
-    	return $result;
+    	// result modification for Highcharts data
+    	$issue_type = array_slice($result[0], 1);
+    	$result_transpose = $this->flipDiagonally($result);
+    	$app_name = array_slice($result_transpose[0], 1);
+    	$type_arr = array_slice($result_transpose,1);
+    	foreach($type_arr as $type){
+    		if (empty($type[0]))
+    			$chart_data[] = ['name' => 'Undefined', 'data'=> array_slice($type, 1)];
+    		else
+    			$chart_data[] = ['name' => $type[0], 'data'=> array_slice($type, 1)];
+    	}
+    	$highchart_par = array('cat' => $app_name, 'dat'=> array_reverse($chart_data));
+    	return $highchart_par;
     }
     
     protected function cmp($a, $b)

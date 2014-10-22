@@ -198,12 +198,14 @@ class DeviceController extends AbstractActionController
     		$query_resultSet->buffer(); 
     		
     		// process query data for charts
+    		$resultA = $device_o->get_issues_by_device_all($query_resultSet);
     		$resultB = $device_o->get_issues_by_type_per_device_all($query_resultSet);
     		$resultC = $device_o->get_issues_by_type_per_app_all($query_resultSet);
 
     		//Debug::dump($resultbyType);
     		//$device_string = $this->getDeviceTable()->fetchAll(); 
-	    	$result = array('status' => 'success', 'message' => array('B' => $resultB, 'C' => $resultC));
+	    	$result = array('status' => 'success', 
+	    					'message' => array('A'=> $resultA, 'B' => $resultB, 'C' => $resultC));
 	    	//$result = array('status' => 'success', 'message' => $resultB);
 	    	//Debug::dump($result);
     		
