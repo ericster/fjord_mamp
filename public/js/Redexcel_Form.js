@@ -41,9 +41,19 @@
 	        series: dat 
 	    });
 	}
+	
 
-	//function Taed_piechart(container, cat, dat, chart_title){
-	function Taed_piechart(container){
+	function Taed_piechart(container, cat, dat, chart_title){
+		var chartData=[];
+		var total_issues = 0;
+		for( var i=0; i<cat.length; i++){
+			   total_issues = total_issues + dat[0]['data'][i]; 
+		}
+		for( var i=0; i<cat.length; i++){
+			   chartData.push( [ cat[i], dat[0]['data'][i]*100/total_issues ] );
+		}
+		console.log(chartData);
+
 	    $(container).highcharts({
 	        chart: {
 	            type: 'pie',
@@ -54,7 +64,7 @@
 	            }
 	        },
 	        title: {
-	            text: 'Browser market shares at a specific website, 2014'
+	            text: chart_title
 	        },
 	        tooltip: {
 	            pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
@@ -66,26 +76,35 @@
 	                depth: 35,
 	                dataLabels: {
 	                    enabled: true,
-	                    format: '{point.name}'
+	                    format: '<b>{point.name}</b>: {point.percentage:.1f} %'
+	                }
+	            },
+		        colors: [
+		                 '#4572A7', 
+		                 '#A47D7C', 
+		                 '#80699B', 
+		                 '#3D96AE', 
+		                 '#B5CA92',
+		                 '#92A8CD', 
+		                 '#89A54E', 
+		                 '#DB843D',
+		                 '#AA4643' 
+		                 ],
+	            series: {
+	                allowPointSelect: true,
+	                slicedOffset: 20,
+	                states: {
+	                    select: {
+	                        color: '#666'
+	                    }
 	                }
 	            }
 	        },
 	        series: [{
 	            type: 'pie',
-	            name: 'Browser share',
-	            data: [
-	                ['Firefox',   45.0],
-	                ['IE',       26.8],
-	                {
-	                    name: 'Chrome',
-	                    y: 12.8,
-	                    sliced: true,
-	                    selected: true
-	                },
-	                ['Safari',    8.5],
-	                ['Opera',     6.2],
-	                ['Others',   0.7]
-	            ]
+	            name: 'issue share',
+	            data: 
+	            	chartData
 	        }]
 		});
 	}
@@ -142,7 +161,9 @@
             Taed_highcharts('#chart_device_all',catA, datA, 'Total # of Issues per Device');
             Taed_highcharts('#chart_type_per_device',catB, datB, 'Issues by Type per Device');
             Taed_highcharts('#chart_type_per_app',catC, datC, 'Issue by Type per Application');
-            Taed_piechart('#chart_issues_by_device');
+            if (catA.length > 1){
+	            Taed_piechart('#chart_issues_by_device', catA, datA, 'Total Issues per Device');
+            }
 	}
 
 	function ConvertFormToJSON(form){

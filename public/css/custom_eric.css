@@ -185,3 +185,7 @@ ul.ui-autocomplete {
 #checkCells input {
 	margin-right: 5px;
 }
+
+.spacer {
+    margin-top: 80px; /* define margin as you see fit */
+}

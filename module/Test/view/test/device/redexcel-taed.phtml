@@ -9,6 +9,7 @@ $this->headScript()->appendFile( "/js/jquery.tablesorter.js", $type = 'text/java
 $this->headScript()->appendFile( "/js/bootstrap.js", $type = 'text/javascript' );
 $this->headScript()->appendFile( "/js/spin.js", $type = 'text/javascript' );
 $this->headScript()->appendFile( "/js/highcharts/highcharts.js", $type = 'text/javascript' );
+$this->headScript()->appendFile( "/js/highcharts/highcharts-3d.js", $type = 'text/javascript' );
 $this->headScript()->appendFile( "/js/highcharts/modules/exporting.js", $type = 'text/javascript' );
 $this->headScript()->appendFile( "/js/Redexcel_Form.js", $type = 'text/javascript' );
 $this->headScript()->appendFile( "/js/jquery.ui.autocomplete.scroll.min.js", $type = 'text/javascript' );
@@ -67,15 +68,17 @@ $form = $this->form;
 
 <!-- Result here -->
 
-
+<hr>
+<div class="col-sm-2"> </div>
+<div id="chart_device_all"  style="min-width: 310px; max-width: 800px; height: 400px; margin: 0 auto"></div>
+<div class="col-sm-2"> </div>
+<div id="chart_type_per_device" style="min-width: 310px; max-width: 800px; height: 400px; margin: 0 auto"></div>
+<div class="col-sm-2"> </div>
+<div id="chart_type_per_app"  style="min-width: 310px; max-width: 800px; height: 400px; margin: 0 auto"></div>
+<div class="col-sm-2"> </div>
+<div id="chart_issues_by_device"  style="height: 400px; margin: 0 auto"></div>
 
 <hr>
-
-<div id="chart_device_all" style="min-width: 310px; max-width: 800px; height: 400px; margin: 0 auto"></div>
-<div id="chart_type_per_device" style="min-width: 310px; max-width: 800px; height: 400px; margin: 0 auto"></div>
-<div id="chart_type_per_app" style="min-width: 310px; max-width: 800px; height: 400px; margin: 0 auto"></div>
-<div id="chart_issues_by_device" style="height: 400px; margin: 0 auto"></div>
-
 <h4>Output</h4>
 <!-- <div class="col-sm-2 "> <span class="glyphicon glyphicon-starr text-right"></span> </div> -->
 <!-- <div class="col-sm-10" > <span class="glyphicon glyphicon-align-left text-right"></span></div> -->
