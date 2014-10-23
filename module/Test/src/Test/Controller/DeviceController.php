@@ -125,6 +125,58 @@ class DeviceController extends AbstractActionController
         return new ViewModel();
     }
 
+    public function downloadAction() {
+    	$response = $this->getResponse();
+    	// 	    $response->setHeaders(Headers::fromString("Content-Type: application/octet-stream\r\nContent-Length: 9\r\nContent-Disposition: attachment; filename=\"blamoo.txt\""));
+    	// 	    $response->setContent('blablabla');
+    
+    	// 	    /Applications/MAMP/htdocs/myapp/public/python/
+    
+    	$xlsx_file_name = "./public/python/appBreakdown.xls";
+    	if(file_exists($filename)) {
+    		print_r("appBreakdown.xls exists");
+    	}
+    
+    	$response->getHeaders()->addHeaders(array(
+    	// 	    		'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    			'Content-Type' => 'application/vnd.ms-excel',
+    			'Content-Disposition' => 'attachment;filename="appBreak.xls"',
+    			// 	    		'Cache-Control' => 'max-age=0',
+    	));
+    	$response->setContent(file_get_contents($xlsx_file_name));
+    
+    	return $response;
+    }
+    
+    public function download_sampleAction()
+    {
+    	/* get here all the data you need from the database
+    	 * $size = size of the file you can get by readfile()
+    	* $filename = 12f3f1aa1b11ec11dd1dd1.zip (with the path)
+    	* $filename1 = example.zip
+    	*/
+    
+    	if(file_exists($filename)) {
+    		ob_start();
+    		$size = readfile($filename);
+    		$this->view->data = ob_get_clean();
+    	}
+    
+    	header('Expires: Mon, 20 May 1974 23:58:00 GMT');
+    	header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
+    	header('Cache-Control: no-store, no-cache, must-revalidate');
+    	header('Cache-Control: post-check=0, pre-check=0', false);
+    	header('Cache-Control: private');
+    	header('Pragma: no-cache');
+    	header("Content-Transfer-Encoding: binary");
+    	header("Content-type: binary/octet-stream");
+    	header("Content-length: {$size}");
+    	header("Content-disposition: attachment; filename=\"{$filename1}\"");
+    
+    	$this->_helper->layout()->disableLayout();
+    	$this->render('download');
+    }
+    
 	public function issueAction()
 	{
 		return new ViewModel(array(
