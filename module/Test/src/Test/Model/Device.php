@@ -32,12 +32,14 @@ class Device implements InputFilterAwareInterface
     */
     public function setDeviceList($devicelist)
     {
+    	/*
        	$devicelist_test = array(
     			'T ATT' => array('NDA Device', 'N910A T ATT'),
     			'Chagall ATT' => array('T807A Chagall'),
     			'KLIMT ATT' => array('T707A KLIMT'),
     	); 	
-       	$this->deviceList = $devicelist_test;
+    	*/
+       	$this->deviceList = $devicelist;
     	
     }
 
@@ -141,7 +143,8 @@ class Device implements InputFilterAwareInterface
 		where cv.custom_field_id = \'9\' and ' .
 	    		$device_string .
 	    		'order by created_on desc';
-    	
+
+    	//Debug::dump($query_string_all);
     	return $query_string_all;
     	
     }

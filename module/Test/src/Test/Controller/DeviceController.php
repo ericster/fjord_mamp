@@ -182,7 +182,7 @@ class DeviceController extends AbstractActionController
     				$devlist_e = explode(', ', $device['deviceList']);
     				//Debug::dump($devlist);
     				$devlist = array_slice($devlist_e, 0, count($devlist_e)-1 );
-    				$deviceList[] = [$device['deviceName'] => $devlist];
+    				$deviceList[$device['deviceName']] = $devlist;
     			}
     		}
     		//Debug::dump($deviceList);
