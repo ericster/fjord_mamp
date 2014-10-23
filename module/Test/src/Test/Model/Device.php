@@ -66,7 +66,7 @@ class Device implements InputFilterAwareInterface
     		}
     	}
     	$device_string = $device_string . ' )';
-    	//Debug::dump($device_string);
+    	var_dump(($device_string));
     
     	return $device_string;
     }

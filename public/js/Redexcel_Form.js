@@ -102,7 +102,7 @@
 	        },
 	        series: [{
 	            type: 'pie',
-	            name: 'issue share',
+	            name: 'issue percent',
 	            data: 
 	            	chartData
 	        }]
