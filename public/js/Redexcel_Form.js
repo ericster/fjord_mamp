@@ -110,7 +110,7 @@
 	}
 
 	function sample_chart(){
-	    $('#charts_container').highcharts({
+	    $('#chart_device_all').highcharts({
 	        chart: {
 	            type: 'column'
 	        },
@@ -147,17 +147,16 @@
 	    });
 	}
 
-	function chart_draw(data){
-            hparA = data.message.A;
+	function chart_draw(chartData){
+            hparA = chartData.A;
             catA = hparA.cat;
             datA = hparA.dat;
-            hparB = data.message.B;
+            hparB = chartData.B;
             catB = hparB.cat;
             datB = hparB.dat;
-            hparC = data.message.C;
+            hparC = chartData.C;
             catC = hparC.cat;
             datC = hparC.dat;
-            //$('#result').html(data.message);			
             Taed_highcharts('#chart_device_all',catA, datA, 'Total # of Issues per Device');
             Taed_highcharts('#chart_type_per_device',catB, datB, 'Issues by Type per Device');
             Taed_highcharts('#chart_type_per_app',catC, datC, 'Issue by Type per Application');
@@ -286,6 +285,34 @@
 		      }
 		    });
 	  }
+	
+	function createDataTable(element, headData, bodyData){
+		var table =$('<table class="table tablesorter" id="nocat"> </table>');
+        var header  = $('<thead></thead>'); 
+        var headrow = $('<tr class="nocategory"></tr>');
+        $.each(headData, function() {
+        	var th ='<th class="header">';
+        	th += this;
+        	th += '</th>';
+        	headrow.append(th);
+        	});
+        header.append(headrow);
+
+        var body = $('<tbody></tbody>');
+        table.append(header);
+        var tbody = table.append(body);
+        $.each(bodyData, function() {
+        	var newrow = $('<tr class="nocategory"></tr>');
+        	  $.each(this, function() {
+        		var td = '<td>';
+        		td += this;
+        		td += '</td>';
+        		newrow.append(td);
+        	  });
+        	  tbody.append(newrow);
+        	});
+        $(element).append(table);
+	}
 
 $(document).ready(function() {
 		
@@ -300,8 +327,8 @@ $(document).ready(function() {
 		        data: serializedData,
 		        success: function(data, status){
 		            //alert(data.message);
-                    console.log(data.message);
-                    chart_draw(data);
+                    console.log(data.chartData);
+                    chart_draw(data.chartData);
                     //sample_chart();
 		            if(data.status == 'error'){
 		                // Perform any operation on error

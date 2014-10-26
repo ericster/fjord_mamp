@@ -218,7 +218,7 @@ class DeviceController extends AbstractActionController
 
     public function deviceListAjaxAction(){
     
-    	$result = array('status' => 'error', 'message' => 'There was some error. Try again.');
+    	$result = array('status' => 'error', 'message' => 'There was some error. Try again.', 'chartData' => '');
     
     	$request = $this->getRequest();
     	$response = $this->getResponse();
@@ -232,8 +232,13 @@ class DeviceController extends AbstractActionController
     			$deviceList = array();
     			foreach ($devices as $device){
     				$devlist_e = explode(', ', $device['deviceList']);
-    				//Debug::dump($devlist);
-    				$devlist = array_slice($devlist_e, 0, count($devlist_e)-1 );
+    				//var_dump($devlist_e);
+    				if (count($devlist_e) > 1)  {
+	    				$devlist = array_slice($devlist_e, 0, count($devlist_e)-1 );
+    				}
+    				else {
+	    				$devlist = array('dummy');
+    				}
     				$deviceList[$device['deviceName']] = $devlist;
     			}
     		}
@@ -258,8 +263,9 @@ class DeviceController extends AbstractActionController
     		//Debug::dump($resultbyType);
     		//$device_string = $this->getDeviceTable()->fetchAll(); 
 	    	$result = array('status' => 'success', 
-	    					'message' => array('A'=> $resultA, 'B' => $resultB, 'C' => $resultC));
-	    	//$result = array('status' => 'success', 'message' => $resultB);
+	    					'message' => 'no errors',
+	    					'chartData' => array('A'=> $resultA, 'B' => $resultB, 'C' => $resultC)
+	    					);
 	    	//Debug::dump($resultA);
     		
     	}
