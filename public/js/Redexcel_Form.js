@@ -160,7 +160,11 @@
             Taed_highcharts('#chart_device_all',catA, datA, 'Total # of Issues per Device');
             Taed_highcharts('#chart_type_per_device',catB, datB, 'Issues by Type per Device');
             Taed_highcharts('#chart_type_per_app',catC, datC, 'Issue by Type per Application');
-            if (catA.length > 1){
+            if (catA.length == 1){
+		        $('#chart_issues_by_device').css({'height':'0px'});
+            }
+            else{
+		        $('#chart_issues_by_device').css({'height':'400px'});
 	            Taed_piechart('#chart_issues_by_device', catA, datA, 'Total Issues per Device');
             }
 	}
