@@ -52,7 +52,7 @@
 		for( var i=0; i<cat.length; i++){
 			   chartData.push( [ cat[i], dat[0]['data'][i]*100/total_issues ] );
 		}
-		console.log(chartData);
+		//console.log(chartData);
 
 	    $(container).highcharts({
 	        chart: {
@@ -286,7 +286,10 @@
 		    });
 	  }
 	
-	function createDataTable(element, headData, bodyData){
+	function createDataTable(element, tableData){
+        $(element).empty();
+		var headData = tableData.headData;
+		var bodyData = tableData.issueData;
 		var table =$('<table class="table tablesorter" id="nocat"> </table>');
         var header  = $('<thead></thead>'); 
         var headrow = $('<tr class="nocategory"></tr>');
@@ -303,15 +306,36 @@
         var tbody = table.append(body);
         $.each(bodyData, function() {
         	var newrow = $('<tr class="nocategory"></tr>');
-        	  $.each(this, function() {
-        		var td = '<td>';
-        		td += this;
-        		td += '</td>';
-        		newrow.append(td);
+        	  $.each(this, function(key, value) {
+        		if(key == 'id'){
+	        		var td = $('<td></td>');
+	        		var hlink = $('<a></a>');
+	        		var redmineLink = 'http://redmine.telecom.sna.samsung.com/issues/' + value;
+	        		hlink.attr('href', redmineLink);
+	        		hlink.text(value);
+	        		td.append(hlink);
+	        		newrow.append(td);
+        		}
+        		else if(key == 'plm'){
+	        		var td = $('<td></td>');
+	        		var hlink = $('<a></a>');
+	        		var plmlink = 'http://splm.sec.samsung.net/wl/tqm/defect/defectsol/getDefectSolView.do?defectCode=' + value;
+	        		hlink.attr('href', plmlink);
+	        		hlink.text(value);
+	        		td.append(hlink);
+	        		newrow.append(td);
+        		}
+        		else{
+	        		var td = '<td>';
+	        		td += value;
+	        		td += '</td>';
+	        		newrow.append(td);
+        		}
         	  });
         	  tbody.append(newrow);
         	});
         $(element).append(table);
+        $("#nocat").tablesorter();
 	}
 
 $(document).ready(function() {
@@ -327,8 +351,9 @@ $(document).ready(function() {
 		        data: serializedData,
 		        success: function(data, status){
 		            //alert(data.message);
-                    console.log(data.chartData);
+                    //console.log(data.chartData);
                     chart_draw(data.chartData);
+                    createDataTable('#issueTable', data.tableData);
                     //sample_chart();
 		            if(data.status == 'error'){
 		                // Perform any operation on error

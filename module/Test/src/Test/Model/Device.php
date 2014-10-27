@@ -73,7 +73,8 @@ class Device implements InputFilterAwareInterface
     
     public function create_query_string_all($device_string){
 
-    	$query_string_all = 'select subject, app, cv.value as devices, plm, url, status, issue_type, author_mail, assignee_mail, created_on,
+    	$query_string_all = 'select a.id, subject, app, cv.value as devices, plm, issue_type, status, assignee_mail, created_on
+    	/*
 	    case status
 	        when \'Resolved\' Then updated_on
 	        else null
@@ -82,6 +83,7 @@ class Device implements InputFilterAwareInterface
 	        when \'Resolved\' Then datediff(updated_on, created_on)
 	        else datediff(curdate(), created_on)
 	    end as days
+    	*/
 	    from
 	    (
 	        select
@@ -90,8 +92,8 @@ class Device implements InputFilterAwareInterface
 	            projects.name as app,
 	            issue_statuses.name as status,
 	            author.mail as author_mail, assignee.mail as assignee_mail,
-	            issues.subject, issues.created_on, issues.updated_on, issues.start_date,
-	            concat(\'http:\/\/redmine.telecom.sna.samsung.com/issues/\', issues.id) as url
+	            issues.subject, issues.created_on, issues.updated_on, issues.start_date
+	            #concat(\'http:\/\/redmine.telecom.sna.samsung.com/issues/\', issues.id) as url
 	        from
 	            issues, issue_statuses, projects, users as author, users as assignee
 	        where
