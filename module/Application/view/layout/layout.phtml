@@ -4,7 +4,6 @@
   <head>
     <meta charset="utf-8">
     <?php 
-//     echo $this->headTitle('ZF2 '. $this->translate('Skeleton Application'))->setSeparator(' - ')->setAutoEscape(false) 
     echo $this->headTitle('Data Mining '. $this->translate('Convenience Utility'))->setSeparator(' - ')->setAutoEscape(false) 
     ?>
 
@@ -12,48 +11,38 @@
 
     <!-- Le styles -->
     <?php echo $this->headLink(array('rel' => 'shortcut icon', 'type' => 'image/vnd.microsoft.icon', 'href' => $this->basePath() . '/images/favicon.ico'))
-//                     ->prependStylesheet($this->basePath() . '/css/bootstrap-responsive.min.css')
                     ->prependStylesheet($this->basePath() . '/css/style.css')
                     ->prependStylesheet($this->basePath() . '/css/bootstrap.min.css') ?>
 
     <!-- Scripts -->
     <?php echo $this->headScript()->prependFile($this->basePath() . '/js/html5.js', 'text/javascript', array('conditional' => 'lt IE 9',))
-//                                   ->prependFile($this->basePath() . '/js/jquery-1.7.2.min.js') 
     ?>
 
   </head>
 
   <body>
-
-<!--     <div class="navbar navbar-fixed-top"> -->
-<!--     <div class="navbar navbar-default navbar-inverse navbar-fixed-top role="navigation""> -->
-<!--     <div class="navbar navbar-inverse navbar-fixed-top" > -->
     <nav class="navbar navbar-default navbar-inverse navbar-fixed-top" role="navigation">
-<!--       <div class="navbar-inner"> -->
-      <div class="navbar-header">
-<!--       <div "> -->
-        <div class="container">
-<!--           <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"> -->
-          <a class="btn navbar-btn" data-toggle="collapse" data-target=".navbar-collapse">
+      <div class="container-fluid">
+      	<!-- Brand and toggle get grouped for better mobile display -->
+	      <div class="navbar-header">
+	      	  <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+	      	  	<span class="sr-only">Toggle navigation</span>
+		        <span class="icon-bar"></span>
+		        <span class="icon-bar"></span>
+		        <span class="icon-bar"></span>
+		      </button>
+	          <a class="navbar-brand" href="<?php $urlParams = array('action' => 'redexcelTaed'); echo $this->url('device', $urlParams);?>"><?php echo $this->translate('Home') ?></a>
+	      </div>
 
-<!--             <span class="icon-bar"></span> -->
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </a>
-          <a class="brand" href=""><?php echo $this->translate('Data Mining Tool') ?></a>
-<!--           <a class="brand" href="<?php echo $this->url('home') ?>"><?php echo $this->translate('Skeleton Application') ?></a>
-           <div class="nav-collapse"> -->
-          <div class="collapse navbar-collapse">
-<!--  <ul class="nav navbar-nav">
-              <li class="active"><a href="<?php echo $this->url('home') ?>"><?php echo $this->translate('Home') ?></a></li>
-            </ul>
-          -->
-          </div><!--/.nav-collapse -->
-        </div>
-      </div>
-      </nav>
-<!--     </div> -->
+        <!-- Collect the nav links, forms, and other content for toggling -->
+	    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+	      <ul class="nav navbar-nav">
+	        <li class="active"><a href="<?php $urlParams = array('action' => 'redexcelTaed'); echo $this->url('device', $urlParams);?>">Data Mining Tool</a></li>
+	        <li><a href="http://redmine.telecom.sna.samsung.com/" target="_blank">Redmine</a></li>
+	      </ul>
+	    </div><!-- /.navbar-collapse -->
+  	</div><!-- /.container-fluid -->
+    </nav>
 
     <div class="container">
 
@@ -62,7 +51,7 @@
       <hr>
 
       <footer>
-        <p>&copy; 2013 Samsung STA MNO, <?php echo $this->translate('All rights reserved.') ?></p>
+        <p>&copy; 2014 Samsung STA MNOs, <?php echo $this->translate('All rights reserved.') ?></p>
       </footer>
 
     </div> <!-- /container -->
