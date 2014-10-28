@@ -316,6 +316,7 @@
 	        		var hlink = $('<a></a>');
 	        		var redmineLink = 'http://redmine.telecom.sna.samsung.com/issues/' + value;
 	        		hlink.attr('href', redmineLink);
+	        		hlink.attr('target', '_blank');
 	        		hlink.text(value);
 	        		td.append(hlink);
 	        		newrow.append(td);
@@ -325,6 +326,7 @@
 	        		var hlink = $('<a></a>');
 	        		var plmlink = 'http://splm.sec.samsung.net/wl/tqm/defect/defectsol/getDefectSolView.do?defectCode=' + value;
 	        		hlink.attr('href', plmlink);
+	        		hlink.attr('target', '_blank');
 	        		hlink.text(value);
 	        		td.append(hlink);
 	        		newrow.append(td);
