@@ -5,17 +5,22 @@ $jqueryUiSrc =   'http://code.jquery.com/ui/1.10.3/jquery-ui.js';
 $this->headTitle($title);
 $this->headScript()->prependFile($jqueryUiSrc);
 $this->headScript()->prependFile($jquerySrc);
+$this->headScript()->appendFile( "http://html5shiv.googlecode.com/svn/trunk/html5.js", $type = 'text/javascript' );
+$this->headScript()->appendFile( "http://cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.js", $type = 'text/javascript' );
+// $this->headScript()->appendFile( "/js/html5shiv.js", $type = 'text/javascript' );
+// $this->headScript()->appendFile( "/js/respond.js", $type = 'text/javascript' );
 $this->headScript()->appendFile( "/js/jquery.tablesorter.js", $type = 'text/javascript' );
-$this->headScript()->appendFile( "/js/bootstrap.js", $type = 'text/javascript' );
 $this->headScript()->appendFile( "/js/spin.js", $type = 'text/javascript' );
 $this->headScript()->appendFile( "/js/highcharts/highcharts.js", $type = 'text/javascript' );
 $this->headScript()->appendFile( "/js/highcharts/highcharts-3d.js", $type = 'text/javascript' );
 $this->headScript()->appendFile( "/js/highcharts/modules/exporting.js", $type = 'text/javascript' );
 $this->headScript()->appendFile( "/js/Redexcel_Form.js", $type = 'text/javascript' );
 $this->headScript()->appendFile( "/js/jquery.ui.autocomplete.scroll.min.js", $type = 'text/javascript' );
-// $this->headScript()->appendFile( "/js/highchart_ex_stacked_bar.js", $type = 'text/javascript' );
+$this->headScript()->appendFile( "/js/bootstrap.js", $type = 'text/javascript' );
 $this->headLink()->appendStylesheet('/css/custom_eric.css');
 $this->headLink()->appendStylesheet('/css/tablesorter_blue/style.css');
+$this->headMeta()->appendHttpEquiv('X-UA-Compatible', 'IE=edge');
+$this->headMeta()->appendName('viewport', 'width=device-width, initial-scale=1.0');
 ?>
 <h2><?php echo $this->escapeHtml($title); ?></h2>
 <script type="text/javascript">
