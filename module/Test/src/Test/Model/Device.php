@@ -1,6 +1,4 @@
 <?php
-
-// module/Test/src/Test/Model/Album.php:
 namespace Test\Model;
 
 use Zend\InputFilter\Factory as InputFactory;
