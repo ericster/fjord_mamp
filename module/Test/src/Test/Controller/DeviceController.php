@@ -8,6 +8,7 @@ use Test\Form\DeviceMapForm;
 use Zend\View\Model\JsonModel;
 use Zend\Debug\Debug;
 use Test\Model\Device;
+use Test\Model\Redexcel;
 
 class DeviceController extends AbstractActionController
 {
@@ -242,7 +243,6 @@ class DeviceController extends AbstractActionController
     				$deviceList[$device['deviceName']] = $devlist;
     			}
     		}
-    		//Debug::dump($deviceList);
     		$device_o = new Device();
     		$device_o->setDeviceList($deviceList);
     		
@@ -260,7 +260,6 @@ class DeviceController extends AbstractActionController
     		$resultC = $device_o->get_issues_by_type_per_app_all($query_resultSet);
 
 
-    		//Debug::dump($resultbyType);
     		$headData = array('Subject', 'App', 'Devices', 'PLM # ', 'Redmine #', 'Status', 'Type', 'Assigned', 'Created');
     		//$device_string = $this->getDeviceTable()->fetchAll(); 
 	    	$result = array('status' => 'success', 
@@ -268,7 +267,9 @@ class DeviceController extends AbstractActionController
 	    					'tableData' => array( 'headData' => $headData, 'issueData' => $query_resultSet->toArray()),
 	    					'chartData' => array('A'=> $resultA, 'B' => $resultB, 'C' => $resultC)
 	    					);
-	    	//Debug::dump($resultA);
+	    	
+	    	$redexcel_o = new Redexcel($query_resultSet, $deviceList);
+	    	$redexcel_o->main();
     		
     	}
     

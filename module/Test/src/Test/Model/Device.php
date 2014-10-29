@@ -50,7 +50,6 @@ class Device implements InputFilterAwareInterface
     public function device_query_string() {
     	$deviceList = $this->deviceList;
 
-    	//Debug::dump($deviceList);
     	$device_string = ' (';
     	foreach (array_keys($deviceList) as $device_name){
     		foreach ($deviceList[$device_name] as $device) {

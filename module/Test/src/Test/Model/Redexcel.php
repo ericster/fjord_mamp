@@ -2,42 +2,60 @@
 namespace Test\Model;
 
 use Zend\Debug\Debug;
+use PHPExcel;
+use PHPExcel_Cell;
+use PHPExcel_Chart_DataSeriesValues;
+use PHPExcel_Chart_DataSeries;
+use PHPExcel_Chart;
+use PHPExcel_Chart_Title;
+use PHPExcel_Chart_Legend;
+use PHPExcel_Chart_PlotArea;
+use PHPExcel_Style_Alignment;
+use PHPExcel_Style_Border;
+use PHPExcel_Style_Fill;
+use PHPExcel_Style_Font;
+use PHPExcel_Style_Color;
+use PHPExcel_IOFactory;
 
 class Redexcel 
 {
-	public $device_string;
+	public $resultSet;
 	public $deviceList;
+	
+	public static $type = array("Crash","Functional", "Usability", "By Design", "UX Flow", "ANR", "Stability", "Automation");
+	public static $tabname = "Summary";
 
-	public function redexcelMain(){
+	public function __construct($resultSet = null, $devicelist = null)
+	{
+		$this->resultSet = $resultSet;
+		$this->deviceList = $devicelist;
+	}
+
+	public function main(){
 		$excel = new PHPExcel();
 		$excel->getProperties()->setCreator("RedExcel Team")->setTitle("Redmine Data Mining");
 		
-		generate_summary(get_sheet($excel, 0));
-		$sheet1 = get_sheet($excel, 1);
+		$this->generate_summary($this->get_sheet($excel, 0));
+		$sheet1 = $this->get_sheet($excel, 1);
 		$sheet1->setTitle("Total Issues ");
-		generate_issues($sheet1, get_data_issues());
-		get_sheet($excel, 0);		// set summary as the first page
+		$this->generate_issues($sheet1, $this->get_data_issues());
+		$this->get_sheet($excel, 0);		// set summary as the first page
 		
-		$fname = create_output($excel);
+		$fname = $this->create_output($excel);
 	}
 	
 	function create_output($excel) {
 		// Save Excel 2007 file
 		$fname = 'RedExcel-TAed-'. date("M-d-y-a"). ".xlsx";
-		echo $fname . "\n";
-		echo date("H:i:s") , " Write to Excel2007 format" , PHP_EOL;
+		//echo $fname . "\n";
+		//echo date("H:i:s") , " Write to Excel2007 format" , PHP_EOL;
 		$writer = PHPExcel_IOFactory::createWriter($excel, "Excel2007");
 		$writer->setIncludeCharts(TRUE);
 		$writer->save($fname);
-		echo date("H:i:s") , " File written to " , $fname , PHP_EOL;
+		//echo date("H:i:s") , " File written to " , $fname , PHP_EOL;
 	
-	
-		// Echo memory peak usage
-		echo date("H:i:s") , " Peak memory usage: " , (memory_get_peak_usage(true) / 1024 / 1024) , " MB" , PHP_EOL;
-	
-		// Echo done
-		echo date("H:i:s") , " Done writing file" , PHP_EOL;
-		echo "File has been created in " , getcwd() , PHP_EOL;
+		//echo date("H:i:s") , " Done writing file" , PHP_EOL;
+		//echo "File has been created in " , getcwd() , PHP_EOL;
 	
 		return $fname;
 	}
@@ -53,140 +71,13 @@ class Redexcel
 	
 		return $excel->getActiveSheet();
 	}
-
-	/*
-	$deviceList = array(
-			'T ATT' => array('NDA Device', 'N910A T ATT'),
-			'Chagall ATT' => array('T807A Chagall'),
-			'KLIMT ATT' => array('T707A KLIMT'),
-	);
-	*/
-	
-	function device_query_string($deviceList) {
-		$device_string = ' (';
-		//echo $device_string . '\n';
-		foreach (array_keys($deviceList) as $device_name){
-			foreach ($deviceList[$device_name] as $device) {
-				if ($device == end(end($deviceList))){
-					$Operator = '';
-				}
-				else {
-					$Operator = ' OR ';
-				}
-				$device_string = $device_string . 'cv.value = \'' . $device . '\'' . $Operator;
-			}
-		}
-		$device_string = $device_string . ' )';
-	
-		return $device_string;
-	
-	}
-	
-	//$device_string = device_query_string($deviceList);
-	
-	/*
-	$query_string_all =
-	'select subject, app, cv.value as devices, plm, url, status, issue_type, author_mail, assignee_mail, created_on,
-    case status
-        when \'Resolved\' Then updated_on
-        else null
-    end as resolved_date,
-    case status
-        when \'Resolved\' Then datediff(updated_on, created_on)
-        else datediff(curdate(), created_on)
-    end as days
-    from
-    (
-        select
-            issues.id,
-            issues.project_id,
-            projects.name as app,
-            issue_statuses.name as status,
-            author.mail as author_mail, assignee.mail as assignee_mail,
-            issues.subject, issues.created_on, issues.updated_on, issues.start_date,
-            concat(\'http:\/\/redmine.telecom.sna.samsung.com/issues/\', issues.id) as url
-        from
-            issues, issue_statuses, projects, users as author, users as assignee
-        where
-            issues.status_id = issue_statuses.id and
-            issues.project_id = projects.id and
-            issues.author_id = author.id and
-            issues.assigned_to_id = assignee.id
-        order by
-            projects.id, issues.created_on asc
-    ) a
-    join custom_values as cv on cv.customized_id = a.id
-    left join
-    (
-        select issues.id, group_concat(value separator \'; \') as devices from issues, custom_values
-        where
-            issues.id = custom_values.customized_id and
-            custom_values.custom_field_id = \'9\'
-        group by custom_values.custom_field_id, custom_values.customized_id
-    ) devices
-    on a.id = devices.id
-    left join
-    (
-        select issues.id, group_concat(value separator \'; \') as plm from issues, custom_values
-        where
-            issues.id = custom_values.customized_id and
-            custom_values.custom_field_id = \'6\'
-        group by custom_values.custom_field_id, custom_values.customized_id
-    ) plm
-    on a.id = plm.id
-    left join
-    (
-        select issues.id, group_concat(value separator \'; \') as issue_type from  issues, custom_values
-        where
-            issues.id = custom_values.customized_id and
-            custom_values.custom_field_id = \'32\'
-        group by custom_values.custom_field_id, custom_values.customized_id
-    ) issue_type
-    on a.id = issue_type.id
-    join
-    (
-        select p2.id
-        from projects p
-            left join projects as p1 on p1.parent_id = p.id
-            left join projects as p2 on p2.parent_id = p1.id
-        where
-            p.id = 95
-    ) vux_projects
-    on a.project_id = vux_projects.id
-	where cv.custom_field_id = \'9\' and ' .
-		$device_string .
-		'order by created_on desc';
-	*/
-	
-	
-	function get_all_issues_array($query){
-		//    $con=mysqli_connect("wiki.telecom.sna.samsung.com","redmine_dev","","redmine_default");
-		//    $con=mysqli_connect("105.59.102.16","redmine_dev","","redmine_default");
-		$con=mysqli_connect("localhost","root","root","redmine_bak");
-	
-		if (mysqli_connect_errno()) {
-			echo "Failed to connect to MySQL: " . mysqli_connect_error() . "\n";
-		} else {
-			echo "Connected to Database\n";
-		}
-	
-		$set_db = mysqli_query($con, 'use redmine_default');
-		$result = mysqli_query($con, $query);
-	
-		if (!$result) {
-			die('Invalid query: ' . mysql_error());
-		}
-	
-		return $result;
-	}
 	
 	function get_data_issues() {
-		global $query_string_all;
-	
-		$result = get_all_issues_array($query_string_all);
+		$result = $this->resultSet;
 	
 		$issues_array = array();
-		while($row = mysqli_fetch_assoc($result)) {
+
+		foreach($result->toArray() as $row){
 			$array = array_values($row);
 	
 			$issues_array[] = $array;
@@ -215,22 +106,11 @@ class Redexcel
 	}
 	
 	function get_issues_by_type_per_app_all(){
-		global $query_string;
-		global $query_string_all;
-	
-		$result = get_all_issues_array(' select possible_values from custom_fields where id=32');
-		//     $statuses = array();
-		//    $type= mysqli_fetch_array($result, MYSQLI_NUM);
-		//    $type_str = explode("--- ", $type[0])[1];
-		//    $type_arr = explode("-", $type_str);
-		//    $type = array_slice($type_arr, 1);
-	
-		$type = array("Crash","Functional", "Usability", "By Design", "UX Flow", "ANR", "Stability", "Automation");
-	
-		$result = get_all_issues_array($query_string_all);
+		$type = self::$type;
+		$result = $this->resultSet;
 	
 		$app = array();
-		while($row = mysqli_fetch_array($result)) {
+		foreach($result as $row){
 			if(!array_key_exists($row['app'], $app)) {
 				$app[$row['app']] = array_fill_keys($type, 0);
 			}
@@ -238,7 +118,7 @@ class Redexcel
 			$app[$row['app']][$row['issue_type']] = $app[$row['app']][$row['issue_type']] + 1;
 		}
 	
-		uasort($app, cmp);
+		uasort($app, array($this, 'cmp'));
 		$result = array();
 		$result[] = array_merge((array)'', $type);
 		foreach (array_keys($app) as $val) {
@@ -251,16 +131,12 @@ class Redexcel
 	
 	// removed pending(14) issues
 	function get_issues_by_type_per_device_all(){
-		global $query_string;
-		global $query_string_all;
-		global $deviceList;
-	
-		$type = array("Crash","Functional", "Usability", "By Design", "UX Flow", "ANR", "Stability", "Automation");
-	
-		$result = get_all_issues_array($query_string_all);
+		$type = self::$type;
+		$result = $this->resultSet;
+		$deviceList = $this->deviceList;
 	
 		$devices = array();
-		while($row = mysqli_fetch_array($result)) {
+		foreach($result as $row){
 			$devices_array = split(';', $row['devices']);
 			foreach($devices_array as $device){
 				$device = trim($device);
@@ -278,7 +154,7 @@ class Redexcel
 		}
 	
 		//     arsort($devices);
-		uasort($devices, cmp);
+		uasort($devices, array($this, 'cmp'));
 		$result = array();
 		$result[] = array_merge((array)'', $type);
 		foreach (array_keys($devices) as $val) {
@@ -289,14 +165,11 @@ class Redexcel
 	}
 	
 	function get_issues_by_device_all(){
-		global $query_string;
-		global $query_string_all;
-		global $deviceList;
-	
-		$result = get_all_issues_array($query_string_all);
+		$result = $this->resultSet;
+		$deviceList = $this->deviceList;
 	
 		$devices = array();
-		while($row = mysqli_fetch_array($result)) {
+		foreach($result as $row){
 			$devices_array = split(';', $row['devices']);
 			foreach($devices_array as $device){
 				$device = trim($device);
@@ -325,7 +198,6 @@ class Redexcel
 	
 	function generate_issues($tab, $data) {
 	
-		echo "Geneate issues on a table\n";
 		// 	$tab->setTitle("Total Issues");
 	
 		$row_no = count($data);
@@ -499,13 +371,13 @@ class Redexcel
 			$dataSeriesLabels[($i - 1)] = new PHPExcel_Chart_DataSeriesValues("String",
 					$tabname . "!" . $pos, NULL, 1);
 			$dataSeriesValues[($i - 1)] = new PHPExcel_Chart_DataSeriesValues("Number",
-					$tabname . "!" . _get_range_x($cell_data_coordinate[0] + $i - 1, $cell_data_coordinate[1] + 1, count($data)),
+					$tabname . "!" . $this->_get_range_x($cell_data_coordinate[0] + $i - 1, $cell_data_coordinate[1] + 1, count($data)),
 					NULL, count($data));
 		}
 	
 		$xAxisTickValues = array(
 				new PHPExcel_Chart_DataSeriesValues('String',
-						$tabname . "!" . _get_range_x($cell_data_coordinate[0] - 1, $cell_data_coordinate[1] + 1, count($data)),
+						$tabname . "!" . $this->_get_range_x($cell_data_coordinate[0] - 1, $cell_data_coordinate[1] + 1, count($data)),
 						NULL, count($data)),
 	
 		);
@@ -548,13 +420,13 @@ class Redexcel
 			$dataSeriesLabels[($i - 1)] = new PHPExcel_Chart_DataSeriesValues("String",
 					$tabname . "!" . $pos, NULL, 1);
 			$dataSeriesValues[($i - 1)] = new PHPExcel_Chart_DataSeriesValues("Number",
-					$tabname . "!" . _get_range_x($cell_data_coordinate[0] + $i - 1, $cell_data_coordinate[1] + 1, count($data)),
+					$tabname . "!" . $this->_get_range_x($cell_data_coordinate[0] + $i - 1, $cell_data_coordinate[1] + 1, count($data)),
 					NULL, count($data));
 		}
 	
 		$xAxisTickValues = array(
 				new PHPExcel_Chart_DataSeriesValues('String',
-						$tabname . "!" . _get_range_x($cell_data_coordinate[0] - 1, $cell_data_coordinate[1] + 1, count($data)),
+						$tabname . "!" . $this->_get_range_x($cell_data_coordinate[0] - 1, $cell_data_coordinate[1] + 1, count($data)),
 						NULL, count($data)),
 		);
 	
@@ -597,13 +469,13 @@ class Redexcel
 			$dataSeriesLabels[($i - 1)] = new PHPExcel_Chart_DataSeriesValues("String",
 					$tabname . "!" . $pos, NULL, 1);
 			$dataSeriesValues[($i - 1)] = new PHPExcel_Chart_DataSeriesValues("Number",
-					$tabname . "!" . _get_range_x($cell_data_coordinate[0] + $i - 1, $cell_data_coordinate[1] + 1, count($data)),
+					$tabname . "!" . $this->_get_range_x($cell_data_coordinate[0] + $i - 1, $cell_data_coordinate[1] + 1, count($data)),
 					NULL, count($data));
 		}
 	
 		$xAxisTickValues = array(
 				new PHPExcel_Chart_DataSeriesValues('String',
-						$tabname . "!" . _get_range_x($cell_data_coordinate[0] - 1, $cell_data_coordinate[1] + 1, count($data)),
+						$tabname . "!" . $this->_get_range_x($cell_data_coordinate[0] - 1, $cell_data_coordinate[1] + 1, count($data)),
 						NULL, count($data)),
 		);
 	
@@ -635,13 +507,13 @@ class Redexcel
 	
 	//////////////////////////////////////////////////////////////////////////////////////////////////////
 	function generate_summary($tab) {
-		$tabname = "Summary";
+		$tabname = self::$tabname;
 	
 		$tab->setTitle($tabname);
 	
-		$tab->addChart(_get_stacked_chart($tab, $tabname, "All Issues per Device", get_issues_by_device_all(),  "A600", "A2", "H18"));
-		$tab->addChart(_get_stacked_chart($tab, $tabname, "Issue Type per Device", get_issues_by_type_per_device_all(),  "A400", "I2", "P18"));
-		$tab->addChart(_get_stacked_chart($tab, $tabname, "Issue Type per App", get_issues_by_type_per_app_all(), 		"A500", "Q2", "X18"));
+		$tab->addChart($this->_get_stacked_chart($tab, $tabname, "All Issues per Device", $this->get_issues_by_device_all(),  "A600", "A2", "H18"));
+		$tab->addChart($this->_get_stacked_chart($tab, $tabname, "Issue Type per Device", $this->get_issues_by_type_per_device_all(),  "A400", "I2", "P18"));
+		$tab->addChart($this->_get_stacked_chart($tab, $tabname, "Issue Type per App", $this->get_issues_by_type_per_app_all(), 		"A500", "Q2", "X18"));
 	
 	}
 	
