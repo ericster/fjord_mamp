@@ -261,7 +261,7 @@ class DeviceController extends AbstractActionController
 
 
     		//Debug::dump($resultbyType);
-    		$headData = array('Redmine #', 'Subject', 'App', 'Devices', 'PLM # ', 'Type', 'Status', 'Assigned', 'Created');
+    		$headData = array('Subject', 'App', 'Devices', 'PLM # ', 'Redmine #', 'Status', 'Type', 'Assigned', 'Created');
     		//$device_string = $this->getDeviceTable()->fetchAll(); 
 	    	$result = array('status' => 'success', 
 	    					'message' => 'no errors',

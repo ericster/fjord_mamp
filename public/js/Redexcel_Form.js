@@ -290,6 +290,15 @@
 		    });
 	  }
 	
+	function contains(a, obj) {
+	    for (var i = 0; i < a.length; i++) {
+	        if (a[i] === obj) {
+	            return true;
+	        }
+	    }
+	    return false;
+	}
+	
 	function createDataTable(element, tableData){
         $(element).empty();
 		var headData = tableData.headData;
@@ -311,13 +320,14 @@
         $.each(bodyData, function() {
         	var newrow = $('<tr class="nocategory"></tr>');
         	  $.each(this, function(key, value) {
-        		if(key == 'id'){
+        		if(key == 'url'){
 	        		var td = $('<td></td>');
 	        		var hlink = $('<a></a>');
-	        		var redmineLink = 'http://redmine.telecom.sna.samsung.com/issues/' + value;
-	        		hlink.attr('href', redmineLink);
+	        		//var redmineLink = 'http://redmine.telecom.sna.samsung.com/issues/' + value;
+	        		hlink.attr('href', value);
 	        		hlink.attr('target', '_blank');
-	        		hlink.text(value);
+	        		var linkArray = value.split('/');
+	        		hlink.text(linkArray[4]);
 	        		td.append(hlink);
 	        		newrow.append(td);
         		}
@@ -331,11 +341,21 @@
 	        		td.append(hlink);
 	        		newrow.append(td);
         		}
-        		else{
+        		else if(key == 'assignee_mail'){
+	        		var email = value.split('@');
+	        		var td = '<td>';
+	        		td += email[0];
+	        		td += '</td>';
+	        		newrow.append(td);
+        		}
+        		else if( contains(['subject', 'app' , 'devices' , 'status' , 'issue_type' , 'created_on'], key) ){
 	        		var td = '<td>';
 	        		td += value;
 	        		td += '</td>';
 	        		newrow.append(td);
+        		}
+        		else {
+        			//console.log(value);
         		}
         	  });
         	  tbody.append(newrow);
