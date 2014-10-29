@@ -51,7 +51,7 @@ class Redexcel
 		//echo date("H:i:s") , " Write to Excel2007 format" , PHP_EOL;
 		$writer = PHPExcel_IOFactory::createWriter($excel, "Excel2007");
 		$writer->setIncludeCharts(TRUE);
-		$writer->save($fname);
+		$writer->save('public/data/' . $fname);
 		//echo date("H:i:s") , " File written to " , $fname , PHP_EOL;
 	
 		//echo date("H:i:s") , " Done writing file" , PHP_EOL;
