@@ -127,22 +127,18 @@ class DeviceController extends AbstractActionController
     }
 
     public function downloadAction() {
+    	$filename= $this->params()->fromQuery('filename',null);
     	$response = $this->getResponse();
-    	// 	    $response->setHeaders(Headers::fromString("Content-Type: application/octet-stream\r\nContent-Length: 9\r\nContent-Disposition: attachment; filename=\"blamoo.txt\""));
-    	// 	    $response->setContent('blablabla');
-    
-    	// 	    /Applications/MAMP/htdocs/myapp/public/python/
-    
-    	$xlsx_file_name = "./public/python/appBreakdown.xls";
+    	$xlsx_file_name = "./public/data/" . $filename;
     	if(file_exists($filename)) {
-    		print_r("appBreakdown.xls exists");
+    		print_r("PHPExcel xls exists");
     	}
     
     	$response->getHeaders()->addHeaders(array(
-    	// 	    		'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    		    //'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    			//'Cache-Control' => 'max-age=0',
     			'Content-Type' => 'application/vnd.ms-excel',
-    			'Content-Disposition' => 'attachment;filename="appBreak.xls"',
-    			// 	    		'Cache-Control' => 'max-age=0',
+    			'Content-Disposition' => 'attachment;filename=' . $filename ,
     	));
     	$response->setContent(file_get_contents($xlsx_file_name));
     
@@ -260,16 +256,19 @@ class DeviceController extends AbstractActionController
     		$resultC = $device_o->get_issues_by_type_per_app_all($query_resultSet);
 
 
+    		// download xls file
+	    	$redexcel_o = new Redexcel($query_resultSet, $deviceList);
+	    	$filename = $redexcel_o->main();
+
     		$headData = array('Subject', 'App', 'Devices', 'PLM # ', 'Redmine #', 'Status', 'Type', 'Assigned', 'Created');
     		//$device_string = $this->getDeviceTable()->fetchAll(); 
 	    	$result = array('status' => 'success', 
 	    					'message' => 'no errors',
+	    					'xlsfile' => $filename,
 	    					'tableData' => array( 'headData' => $headData, 'issueData' => $query_resultSet->toArray()),
 	    					'chartData' => array('A'=> $resultA, 'B' => $resultB, 'C' => $resultC)
 	    					);
 	    	
-	    	$redexcel_o = new Redexcel($query_resultSet, $deviceList);
-	    	$redexcel_o->main();
     		
     	}
     

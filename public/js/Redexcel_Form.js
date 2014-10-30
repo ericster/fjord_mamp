@@ -363,9 +363,13 @@
         $(element).append(table);
         $("#nocat").tablesorter();
 	}
+	
+	function xlsDownloadLink( filename ){
+		var filepath = '/device/download' + '?filename=' + filename;
+        $("#xlsdown").attr("href", filepath);
+    }
 
 $(document).ready(function() {
-		
 	$( "#devicemap" ).submit(function( event ) {
 		  event.preventDefault();
 		  var serializedData = $("#devicemap").serializeArray();
@@ -381,6 +385,7 @@ $(document).ready(function() {
                     chart_draw(data.chartData);
                     createDataTable('#issueTable', data.tableData);
                     //sample_chart();
+                    xlsDownloadLink( data.xlsfile ); 
 		            if(data.status == 'error'){
 		                // Perform any operation on error
 		            }else{
@@ -522,4 +527,7 @@ $(document).ready(function() {
 	          results: function() {}
 	      }
 	});
+	
+
+	
   });

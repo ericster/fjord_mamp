@@ -42,6 +42,8 @@ class Redexcel
 		$this->get_sheet($excel, 0);		// set summary as the first page
 		
 		$fname = $this->create_output($excel);
+		
+		return $fname;
 	}
 	
 	function create_output($excel) {
