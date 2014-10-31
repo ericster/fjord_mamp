@@ -366,10 +366,12 @@
 	
 	function xlsDownloadLink( filename ){
 		var filepath = '/device/download' + '?filename=' + filename;
-        $("#xlsdown").attr("href", filepath);
+	    $("#xlsdown").prop("href", filepath);
     }
 
 $(document).ready(function() {
+	$(".output").hide();
+	
 	$( "#devicemap" ).submit(function( event ) {
 		  event.preventDefault();
 		  var serializedData = $("#devicemap").serializeArray();
@@ -382,6 +384,7 @@ $(document).ready(function() {
 		        success: function(data, status){
 		            //alert(data.message);
                     //console.log(data.chartData);
+					$(".output").show();
                     chart_draw(data.chartData);
                     createDataTable('#issueTable', data.tableData);
                     //sample_chart();
@@ -462,6 +465,7 @@ $(document).ready(function() {
             row.remove();
             event.preventDefault();
     });
+
     
             
     //    $(".table").tablesorter();
