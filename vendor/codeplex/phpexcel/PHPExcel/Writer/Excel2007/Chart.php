@@ -369,7 +369,8 @@ class PHPExcel_Writer_Excel2007_Chart extends PHPExcel_Writer_Excel2007_WriterPa
 
 			$objWriter->startElement('c:showVal');
 				$showVal = (empty($chartLayout)) ? 0 : $chartLayout->getShowVal();
-				$objWriter->writeAttribute('val', ((empty($showVal)) ? 0 : 1) );
+				//$objWriter->writeAttribute('val', ((empty($showVal)) ? 0 : 1) );
+				$objWriter->writeAttribute('val', 1 );
 			$objWriter->endElement();
 
 			$objWriter->startElement('c:showCatName');
