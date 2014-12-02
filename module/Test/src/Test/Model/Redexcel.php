@@ -256,6 +256,40 @@ class Redexcel
 		return $result;
 	}
 	
+	function get_issues_by_devices_per_app_all(){
+		$result = $this->resultSet;
+		//$devices = $this->get_issues_by_device_all();	
+		$deviceList = $this->deviceList;
+		$app = array();
+		foreach($result as $row){
+			$devices_array = split(';', $row['devices']);
+			foreach($devices_array as $device){
+				// app array
+				if(!array_key_exists($row['app'], $app)) {
+					$app[$row['app']] = array_fill_keys(array_keys($deviceList), 0);
+				}
+
+				$device = trim($device);
+			
+				foreach (array_keys($deviceList) as $device_name){
+					if (in_array($device, $deviceList[$device_name]))
+						$device_rep = $device_name;
+				}
+
+				$app[$row['app']][$device_rep] = $app[$row['app']][$device_rep] + 1;
+			}
+		}
+	
+		uasort($app, array($this, 'cmp'));
+		$result = array();
+		$result[] = array_merge((array)'', array_keys($deviceList));
+		foreach (array_keys($app) as $val) {
+			$result[] = array_merge((array)$val, array_values($app[$val]));
+		}
+	
+		return $result;
+	}
+	
 	function generate_issues($tab, $data) {
 	
 		// 	$tab->setTitle("Total Issues");
@@ -572,6 +606,7 @@ class Redexcel
 		$tab->setTitle($tabname);
 	
 		$tab->addChart($this->_get_stacked_chart($tab, $tabname, "All Issues per Device", $this->get_issues_by_device_all(),  "A600", "A2", "H18"));
+		$tab->addChart($this->_get_stacked_chart($tab, $tabname, "Issue devices per App", $this->get_issues_by_devices_per_app_all(), 		"A900", "A22", "H38"));
 		$tab->addChart($this->_get_stacked_chart($tab, $tabname, "Issue Type per Device", $this->get_issues_by_type_per_device_all(),  "A400", "I2", "P18"));
 		$tab->addChart($this->_get_stacked_chart($tab, $tabname, "Issue Priority per Device", $this->get_issues_by_priority_per_device_all(),  "A700", "I22", "P38"));
 		$tab->addChart($this->_get_stacked_chart($tab, $tabname, "Issue Type per App", $this->get_issues_by_type_per_app_all(), 		"A500", "Q2", "X18"));
