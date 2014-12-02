@@ -70,7 +70,7 @@ class Device implements InputFilterAwareInterface
     
     public function create_query_string_all($device_string){
 
-    	$query_string_all = 'select subject, app, cv.value as devices, plm, url, status, issue_type, author_mail, assignee_mail, created_on,
+    	$query_string_all = 'select subject, app, cv.value as devices, plm, url, status, issue_type, plm_priority, author_mail, assignee_mail, created_on,
 	    case status
 	        when \'Resolved\' Then updated_on
 	        else null
@@ -127,6 +127,15 @@ class Device implements InputFilterAwareInterface
 	        group by custom_values.custom_field_id, custom_values.customized_id
 	    ) issue_type
 	    on a.id = issue_type.id
+	    left join
+	    (
+	        select issues.id, group_concat(value separator \'; \') as plm_priority from  issues, custom_values
+	        where
+	            issues.id = custom_values.customized_id and
+	            custom_values.custom_field_id = \'18\'
+	        group by custom_values.custom_field_id, custom_values.customized_id
+	    ) plm_priority
+	    on a.id = plm_priority.id
 	    join
 	    (
 	        select p2.id

@@ -260,7 +260,7 @@ class DeviceController extends AbstractActionController
 	    	$redexcel_o = new Redexcel($query_resultSet, $deviceList);
 	    	$filename = $redexcel_o->main();
 
-    		$headData = array('Subject', 'App', 'Devices', 'PLM # ', 'Redmine #', 'Status', 'Type', 'Assigned', 'Created');
+    		$headData = array('Subject', 'App', 'Devices', 'PLM # ', 'Redmine #', 'Status', 'Type', 'PLM Priority', 'Assigned', 'Created');
     		//$device_string = $this->getDeviceTable()->fetchAll(); 
 	    	$result = array('status' => 'success', 
 	    					'message' => 'no errors',

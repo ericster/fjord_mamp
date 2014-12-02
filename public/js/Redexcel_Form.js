@@ -348,7 +348,7 @@
 	        		td += '</td>';
 	        		newrow.append(td);
         		}
-        		else if( contains(['subject', 'app' , 'devices' , 'status' , 'issue_type' , 'created_on'], key) ){
+        		else if( contains(['subject', 'app' , 'devices' , 'status' , 'issue_type' , 'plm_priority', 'created_on'], key) ){
 	        		var td = '<td>';
 	        		td += value;
 	        		td += '</td>';
