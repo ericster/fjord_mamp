@@ -23,6 +23,7 @@ class Redexcel
 	public $deviceList;
 	
 	public static $type = array("Crash","Functional", "Usability", "By Design", "UX Flow", "ANR", "Stability", "Automation");
+	public static $priority = array("C","B","A");
 	public static $tabname = "Summary";
 
 	public function __construct($resultSet = null, $devicelist = null)
@@ -129,6 +130,29 @@ class Redexcel
 	
 		return $result;
 	}
+
+	function get_issues_by_priority_per_app_all(){
+		$priority = self::$priority;
+		$result = $this->resultSet;
+	
+		$app = array();
+		foreach($result as $row){
+			if(!array_key_exists($row['app'], $app)) {
+				$app[$row['app']] = array_fill_keys($priority, 0);
+			}
+	
+			$app[$row['app']][$row['plm_priority']] = $app[$row['app']][$row['plm_priority']] + 1;
+		}
+	
+		uasort($app, array($this, 'cmp'));
+		$result = array();
+		$result[] = array_merge((array)'', $priority);
+		foreach (array_keys($app) as $val) {
+			$result[] = array_merge((array)$val, array_values($app[$val]));
+		}
+	
+		return $result;
+	}
 	
 	
 	// removed pending(14) issues
@@ -159,6 +183,40 @@ class Redexcel
 		uasort($devices, array($this, 'cmp'));
 		$result = array();
 		$result[] = array_merge((array)'', $type);
+		foreach (array_keys($devices) as $val) {
+			$result[] = array_merge((array)$val, array_values($devices[$val]));
+		}
+	
+		return $result;
+	}
+
+	function get_issues_by_priority_per_device_all(){
+		$priority = self::$priority;
+		$result = $this->resultSet;
+		$deviceList = $this->deviceList;
+	
+		$devices = array();
+		foreach($result as $row){
+			$devices_array = split(';', $row['devices']);
+			foreach($devices_array as $device){
+				$device = trim($device);
+	
+				foreach (array_keys($deviceList) as $device_name){
+					if (in_array($device, $deviceList[$device_name]))
+						$device_rep = $device_name;
+				}
+				if(!array_key_exists($device_rep, $devices)) {
+					$devices[$device_rep] = array_fill_keys($priority, 0);
+				}
+	
+				$devices[$device_rep][$row['plm_priority']] = $devices[$device_rep][$row['plm_priority']] + 1;
+			}
+		}
+	
+		//     arsort($devices);
+		uasort($devices, array($this, 'cmp'));
+		$result = array();
+		$result[] = array_merge((array)'', $priority);
 		foreach (array_keys($devices) as $val) {
 			$result[] = array_merge((array)$val, array_values($devices[$val]));
 		}
@@ -515,7 +573,9 @@ class Redexcel
 	
 		$tab->addChart($this->_get_stacked_chart($tab, $tabname, "All Issues per Device", $this->get_issues_by_device_all(),  "A600", "A2", "H18"));
 		$tab->addChart($this->_get_stacked_chart($tab, $tabname, "Issue Type per Device", $this->get_issues_by_type_per_device_all(),  "A400", "I2", "P18"));
+		$tab->addChart($this->_get_stacked_chart($tab, $tabname, "Issue Priority per Device", $this->get_issues_by_priority_per_device_all(),  "A700", "I22", "P38"));
 		$tab->addChart($this->_get_stacked_chart($tab, $tabname, "Issue Type per App", $this->get_issues_by_type_per_app_all(), 		"A500", "Q2", "X18"));
+		$tab->addChart($this->_get_stacked_chart($tab, $tabname, "Issue Priority per App", $this->get_issues_by_priority_per_app_all(), 		"A800", "Q22", "X38"));
 	
 	}
 	
