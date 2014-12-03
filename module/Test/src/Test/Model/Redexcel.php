@@ -551,6 +551,82 @@ class Redexcel
 	}
 	
 	
+	function _get_pie_chart($tab, $tabname, $title, $data, $cell_data, $cell_top_left, $cell_bottom_right) {
+		$tab->fromArray($data, null, $cell_data);
+		$cell_data_coordinate = PHPExcel_Cell::coordinateFromString($cell_data);
+		$cell_data_coordinate[0] = PHPExcel_Cell::columnIndexFromString($cell_data_coordinate[0]);
+	
+		$dataSeriesLabels = array();
+		$dataSeriesValues = array();
+		for ($i = 1; $i < count($data[0]); ++$i) {
+			$pos = PHPExcel_Cell::stringFromColumnIndex($cell_data_coordinate[0] + $i - 1) . $cell_data_coordinate[1];
+			//	Set the Labels for each data series we want to plot
+			//		Datatype
+			//		Cell reference for data
+			//		Format Code
+			//		Number of datapoints in series
+			//		Data values
+			//		Data Marker
+			$dataSeriesLabels[($i - 1)] = new PHPExcel_Chart_DataSeriesValues("String",
+					$tabname . "!" . $pos, NULL, 1);
+
+			//	Set the Data values for each data series we want to plot
+			//		Datatype
+			//		Cell reference for data
+			//		Format Code
+			//		Number of datapoints in series
+			//		Data values
+			//		Data Marker
+			$dataSeriesValues[($i - 1)] = new PHPExcel_Chart_DataSeriesValues("Number",
+					$tabname . "!" . $this->_get_range_x($cell_data_coordinate[0] + $i - 1, $cell_data_coordinate[1] + 1, count($data)),
+					NULL, count($data));
+		}
+	
+		//	Set the X-Axis Labels
+		//		Datatype
+		//		Cell reference for data
+		//		Format Code
+		//		Number of datapoints in series
+		//		Data values
+		//		Data Marker
+		$xAxisTickValues = array(
+				new PHPExcel_Chart_DataSeriesValues('String',
+						$tabname . "!" . $this->_get_range_x($cell_data_coordinate[0] - 1, $cell_data_coordinate[1] + 1, count($data)),
+						NULL, count($data)),
+		);
+	
+		$series = new PHPExcel_Chart_DataSeries(
+				PHPExcel_Chart_DataSeries::TYPE_PIECHART,		// plotType
+				PHPExcel_Chart_DataSeries::GROUPING_STANDARD,		// plotGrouping
+				range(0, count($dataSeriesValues)-1),			// plotOrder
+				$dataSeriesLabels,					// plotLabel
+				$xAxisTickValues,					// plotCategory
+				$dataSeriesValues					// plotValues
+		);
+		
+		//	Set up a layout object for the Pie chart
+		$layout1 = new PHPExcel_Chart_Layout();
+		$layout1->setShowVal(TRUE);
+		$layout1->setShowPercent(TRUE);
+	
+		$series->setPlotDirection(PHPExcel_Chart_DataSeries::DIRECTION_COL);
+		$chart = new PHPExcel_Chart(
+				$title,		// name
+				new PHPExcel_Chart_Title($title),
+				new PHPExcel_Chart_Legend(PHPExcel_Chart_Legend::POSITION_RIGHT, NULL, false),
+				new PHPExcel_Chart_PlotArea(layout1, array($series)),
+				true,			// plotVisibleOnly
+				0,			// displayBlanksAs
+				NULL,			// xAxisLabel
+				NULL			// yAxisLabel
+		);
+	
+		$chart->setTopLeftPosition($cell_top_left);
+		$chart->setBottomRightPosition($cell_bottom_right);
+		return $chart;
+	}
+	
+	
 	function _get_stacked_chart_option($tab, $tabname, $title, $data, $cell_data, $cell_top_left, $cell_bottom_right) {
 		$tab->fromArray($data, null, $cell_data);
 		$cell_data_coordinate = PHPExcel_Cell::coordinateFromString($cell_data);
