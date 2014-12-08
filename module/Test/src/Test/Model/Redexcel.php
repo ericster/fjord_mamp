@@ -6,6 +6,7 @@ use PHPExcel;
 use PHPExcel_Cell;
 use PHPExcel_Chart_DataSeriesValues;
 use PHPExcel_Chart_DataSeries;
+use PHPExcel_Chart_Layout;
 use PHPExcel_Chart;
 use PHPExcel_Chart_Title;
 use PHPExcel_Chart_Legend;
@@ -555,32 +556,30 @@ class Redexcel
 		$tab->fromArray($data, null, $cell_data);
 		$cell_data_coordinate = PHPExcel_Cell::coordinateFromString($cell_data);
 		$cell_data_coordinate[0] = PHPExcel_Cell::columnIndexFromString($cell_data_coordinate[0]);
-	
-		$dataSeriesLabels = array();
-		$dataSeriesValues = array();
-		for ($i = 1; $i < count($data[0]); ++$i) {
-			$pos = PHPExcel_Cell::stringFromColumnIndex($cell_data_coordinate[0] + $i - 1) . $cell_data_coordinate[1];
-			//	Set the Labels for each data series we want to plot
-			//		Datatype
-			//		Cell reference for data
-			//		Format Code
-			//		Number of datapoints in series
-			//		Data values
-			//		Data Marker
-			$dataSeriesLabels[($i - 1)] = new PHPExcel_Chart_DataSeriesValues("String",
-					$tabname . "!" . $pos, NULL, 1);
 
-			//	Set the Data values for each data series we want to plot
-			//		Datatype
-			//		Cell reference for data
-			//		Format Code
-			//		Number of datapoints in series
-			//		Data values
-			//		Data Marker
-			$dataSeriesValues[($i - 1)] = new PHPExcel_Chart_DataSeriesValues("Number",
-					$tabname . "!" . $this->_get_range_x($cell_data_coordinate[0] + $i - 1, $cell_data_coordinate[1] + 1, count($data)),
-					NULL, count($data));
-		}
+		$pos = PHPExcel_Cell::stringFromColumnIndex($cell_data_coordinate[0]) . $cell_data_coordinate[1];
+		//	Set the Labels for each data series we want to plot
+		//		Datatype
+		//		Cell reference for data
+		//		Format Code
+		//		Number of datapoints in series
+		//		Data values
+		//		Data Marker
+		$dataSeriesLabels = array( 
+				new PHPExcel_Chart_DataSeriesValues("String", $tabname . "!" . $pos, NULL, 1),
+		);
+
+		//	Set the Data values for each data series we want to plot
+		//		Datatype
+		//		Cell reference for data
+		//		Format Code
+		//		Number of datapoints in series
+		//		Data values
+		//		Data Marker
+		$dataSeriesValues = array( new PHPExcel_Chart_DataSeriesValues("Number",
+				$tabname . "!" . $this->_get_range_x($cell_data_coordinate[0], $cell_data_coordinate[1] + 1, count($data)),
+				NULL, count($data)),
+		);
 	
 		//	Set the X-Axis Labels
 		//		Datatype
@@ -605,16 +604,81 @@ class Redexcel
 		);
 		
 		//	Set up a layout object for the Pie chart
-		$layout1 = new PHPExcel_Chart_Layout();
-		$layout1->setShowVal(TRUE);
-		$layout1->setShowPercent(TRUE);
+		$layout = new PHPExcel_Chart_Layout();
+		$layout->setShowVal(TRUE);
+		$layout->setShowPercent(TRUE);
+		
+		$plotarea = new PHPExcel_Chart_PlotArea($layout, array($series));
 	
 		$series->setPlotDirection(PHPExcel_Chart_DataSeries::DIRECTION_COL);
 		$chart = new PHPExcel_Chart(
 				$title,		// name
 				new PHPExcel_Chart_Title($title),
 				new PHPExcel_Chart_Legend(PHPExcel_Chart_Legend::POSITION_RIGHT, NULL, false),
-				new PHPExcel_Chart_PlotArea(layout1, array($series)),
+				// Unknown error from PHPExcel!!!
+				//new PHPExcel_Chart_PlotArea(layout1, array($series1)),
+				$plotarea,
+				true,			// plotVisibleOnly
+				0,			// displayBlanksAs
+				NULL,			// xAxisLabel
+				NULL			// yAxisLabel
+		);
+	
+		$chart->setTopLeftPosition($cell_top_left);
+		$chart->setBottomRightPosition($cell_bottom_right);
+		return $chart;
+	}
+	
+	function _get_pie_chart_test($tab, $tabname, $title, $data, $cell_data, $cell_top_left, $cell_bottom_right) {
+
+		// A1100
+		$tab->fromArray(
+				array(
+						array('',	2010,	2011,	2012),
+						array('Q1',   12,   15,		21),
+						array('Q2',   56,   73,		86),
+						array('Q3',   52,   61,		69),
+						array('Q4',   30,   32,		0),
+				), null, $cell_data
+		);
+	
+		
+		
+		$dataseriesLabels1 = array(
+				new PHPExcel_Chart_DataSeriesValues('String', $tabname . "!" . '$C$1101', NULL, 1),	//	2011
+		);
+		$xAxisTickValues1 = array(
+				new PHPExcel_Chart_DataSeriesValues('String', $tabname . "!" . '$A$1102:$A$1105', NULL, 4),	//	Q1 to Q4
+		);
+		$dataSeriesValues1 = array(
+				new PHPExcel_Chart_DataSeriesValues('Number', $tabname . "!" . '$C$1102:$C$1105', NULL, 4),
+		);
+		
+		//	Build the dataseries
+		$series1 = new PHPExcel_Chart_DataSeries(
+				PHPExcel_Chart_DataSeries::TYPE_PIECHART,				// plotType
+				PHPExcel_Chart_DataSeries::GROUPING_STANDARD,			// plotGrouping
+				range(0, count($dataSeriesValues1)-1),					// plotOrder
+				$dataseriesLabels1,										// plotLabel
+				$xAxisTickValues1,										// plotCategory
+				$dataSeriesValues1										// plotValues
+		);
+		
+		//	Set up a layout object for the Pie chart
+		$layout1 = new PHPExcel_Chart_Layout();
+		$layout1->setShowVal(TRUE);
+		$layout1->setShowPercent(TRUE);
+		
+		$plotarea1 = new PHPExcel_Chart_PlotArea($layout1, array($series1));
+	
+		//$series1->setPlotDirection(PHPExcel_Chart_DataSeries::DIRECTION_COL);
+		$chart = new PHPExcel_Chart(
+				$title,		// name
+				new PHPExcel_Chart_Title($title),
+				new PHPExcel_Chart_Legend(PHPExcel_Chart_Legend::POSITION_RIGHT, NULL, false),
+				// Unknown error from PHPExcel!!!
+				//new PHPExcel_Chart_PlotArea(layout1, array($series1)),
+				$plotarea1,
 				true,			// plotVisibleOnly
 				0,			// displayBlanksAs
 				NULL,			// xAxisLabel
@@ -682,11 +746,12 @@ class Redexcel
 		$tab->setTitle($tabname);
 	
 		$tab->addChart($this->_get_stacked_chart($tab, $tabname, "All Issues per Device", $this->get_issues_by_device_all(),  "A600", "A2", "H18"));
-		$tab->addChart($this->_get_stacked_chart($tab, $tabname, "Issue devices per App", $this->get_issues_by_devices_per_app_all(), 		"A900", "A22", "H38"));
+		$tab->addChart($this->_get_stacked_chart($tab, $tabname, "All Issues per App", $this->get_issues_by_devices_per_app_all(), 		"A900", "A22", "H38"));
 		$tab->addChart($this->_get_stacked_chart($tab, $tabname, "Issue Type per Device", $this->get_issues_by_type_per_device_all(),  "A400", "I2", "P18"));
 		$tab->addChart($this->_get_stacked_chart($tab, $tabname, "Issue Priority per Device", $this->get_issues_by_priority_per_device_all(),  "A700", "I22", "P38"));
 		$tab->addChart($this->_get_stacked_chart($tab, $tabname, "Issue Type per App", $this->get_issues_by_type_per_app_all(), 		"A500", "Q2", "X18"));
 		$tab->addChart($this->_get_stacked_chart($tab, $tabname, "Issue Priority per App", $this->get_issues_by_priority_per_app_all(), 		"A800", "Q22", "X38"));
+		$tab->addChart($this->_get_pie_chart($tab, $tabname, "Issue per App pie chart", $this->get_issues_by_devices_per_app_all(), 		"A1101", "A42", "H58"));
 	
 	}
 	
