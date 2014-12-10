@@ -254,6 +254,9 @@ class DeviceController extends AbstractActionController
     		$resultA = $device_o->get_issues_by_device_all($query_resultSet);
     		$resultB = $device_o->get_issues_by_type_per_device_all($query_resultSet);
     		$resultC = $device_o->get_issues_by_type_per_app_all($query_resultSet);
+    		$resultD = $device_o->get_issues_by_priority_per_device_all($query_resultSet);
+    		$resultE = $device_o->get_issues_by_priority_per_app_all($query_resultSet);
+    		$resultF = $device_o->get_issues_by_devices_per_app_all($query_resultSet);
 
 
     		// download xls file
@@ -266,7 +269,8 @@ class DeviceController extends AbstractActionController
 	    					'message' => 'no errors',
 	    					'xlsfile' => $filename,
 	    					'tableData' => array( 'headData' => $headData, 'issueData' => $query_resultSet->toArray()),
-	    					'chartData' => array('A'=> $resultA, 'B' => $resultB, 'C' => $resultC)
+	    					'chartData' => array('A'=> $resultA, 'B' => $resultB, 'C' => $resultC,
+						    					 'D'=> $resultD, 'E' => $resultE, 'F' => $resultF )
 	    					);
 	    	
     		

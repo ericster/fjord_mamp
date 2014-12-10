@@ -284,6 +284,127 @@ class Device implements InputFilterAwareInterface
     	return $highchart_par;
     }
     
+    public function get_issues_by_priority_per_app_all($resultSet){
+    	$priority = $priority = array("A","B","C");
+    
+    	$app = array();
+    	foreach($resultSet as $row){
+    		if(!array_key_exists($row['app'], $app)) {
+    			$app[$row['app']] = array_fill_keys($priority, 0);
+    		}
+    
+    		$app[$row['app']][$row['plm_priority']] = $app[$row['app']][$row['plm_priority']] + 1;
+    	}
+    
+    	uasort($app, array($this, 'cmp'));
+    	$result = array();
+    	$result[] = array_merge((array)'', $priority);
+    	foreach (array_keys($app) as $val) {
+    		$result[] = array_merge((array)$val, array_values($app[$val]));
+    	}
+
+    	// result modification for Highcharts data
+    	$result_transpose = $this->flipDiagonally($result);
+    	$app_name = array_slice($result_transpose[0], 1);
+    	$type_arr = array_slice($result_transpose,1);
+    	foreach($type_arr as $type){
+    		if (empty($type[0]))
+    			$chart_data[] = ['name' => 'Undefined', 'data'=> array_slice($type, 1)];
+    		else
+    			$chart_data[] = ['name' => $type[0], 'data'=> array_slice($type, 1)];
+    	}
+    	$highchart_par = array('cat' => $app_name, 'dat'=> array_reverse($chart_data));
+    	return $highchart_par;
+    }
+    
+    public function get_issues_by_priority_per_device_all($resultSet){
+    	$priority = array("A","B","C");
+    	$deviceList = $this->deviceList;
+    
+    	$devices = array();
+    	foreach($resultSet as $row){
+    		$devices_array = split(';', $row['devices']);
+    		foreach($devices_array as $device){
+    			$device = trim($device);
+    
+    			foreach (array_keys($deviceList) as $device_name){
+    				if (in_array($device, $deviceList[$device_name]))
+    					$device_rep = $device_name;
+    			}
+    			if(!array_key_exists($device_rep, $devices)) {
+    				$devices[$device_rep] = array_fill_keys($priority, 0);
+    			}
+    
+    			$devices[$device_rep][$row['plm_priority']] = $devices[$device_rep][$row['plm_priority']] + 1;
+    		}
+    	}
+    
+    	//     arsort($devices);
+    	uasort($devices, array($this, 'cmp'));
+    	$result = array();
+    	$result[] = array_merge((array)'', $priority);
+    	foreach (array_keys($devices) as $val) {
+    		$result[] = array_merge((array)$val, array_values($devices[$val]));
+    	}
+    
+    	// result modification for Highcharts data
+    	$result_transpose = $this->flipDiagonally($result);
+    	$app_name = array_slice($result_transpose[0], 1);
+    	$type_arr = array_slice($result_transpose,1);
+    	foreach($type_arr as $type){
+    		if (empty($type[0]))
+    			$chart_data[] = ['name' => 'Undefined', 'data'=> array_slice($type, 1)];
+    		else
+    			$chart_data[] = ['name' => $type[0], 'data'=> array_slice($type, 1)];
+    	}
+    	$highchart_par = array('cat' => $app_name, 'dat'=> array_reverse($chart_data));
+    	return $highchart_par;
+    }
+
+    public function get_issues_by_devices_per_app_all($resultSet){
+    	//$devices = $this->get_issues_by_device_all();
+    	$deviceList = $this->deviceList;
+    	$app = array();
+    	foreach($resultSet as $row){
+    		$devices_array = split(';', $row['devices']);
+    		foreach($devices_array as $device){
+    			// app array
+    			if(!array_key_exists($row['app'], $app)) {
+    				$app[$row['app']] = array_fill_keys(array_keys($deviceList), 0);
+    			}
+    
+    			$device = trim($device);
+    				
+    			foreach (array_keys($deviceList) as $device_name){
+    				if (in_array($device, $deviceList[$device_name]))
+    					$device_rep = $device_name;
+    			}
+    
+    			$app[$row['app']][$device_rep] = $app[$row['app']][$device_rep] + 1;
+    		}
+    	}
+    
+    	uasort($app, array($this, 'cmp'));
+    	$result = array();
+    	$result[] = array_merge((array)'', array_keys($deviceList));
+    	foreach (array_keys($app) as $val) {
+    		$result[] = array_merge((array)$val, array_values($app[$val]));
+    	}
+
+    	// result modification for Highcharts data
+    	$result_transpose = $this->flipDiagonally($result);
+    	$app_name = array_slice($result_transpose[0], 1);
+    	$type_arr = array_slice($result_transpose,1);
+    	foreach($type_arr as $type){
+    		if (empty($type[0]))
+    			$chart_data[] = ['name' => 'Undefined', 'data'=> array_slice($type, 1)];
+    		else
+    			$chart_data[] = ['name' => $type[0], 'data'=> array_slice($type, 1)];
+    	}
+    	$highchart_par = array('cat' => $app_name, 'dat'=> array_reverse($chart_data));
+    	return $highchart_par;
+    }
+    
     protected function cmp($a, $b)
     {
     	$suma = 0;

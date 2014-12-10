@@ -160,6 +160,21 @@
             Taed_highcharts('#chart_device_all',catA, datA, 'Total # of Issues per Device');
             Taed_highcharts('#chart_type_per_device',catB, datB, 'Issues by Type per Device');
             Taed_highcharts('#chart_type_per_app',catC, datC, 'Issue by Type per Application');
+
+            hparD = chartData.D;
+            catD = hparD.cat;
+            datD = hparD.dat;
+            hparE = chartData.E;
+            catE = hparE.cat;
+            datE = hparE.dat;
+            hparF = chartData.F;
+            catF = hparF.cat;
+            datF = hparF.dat;
+            Taed_highcharts('#chart_priority_per_device',catD, datD, 'Issues by Priority per Device');
+            Taed_highcharts('#chart_priority_per_app',catE, datE, 'Issues by Priority per App');
+            Taed_highcharts('#chart_all_issues_per_app',catF, datF, 'All Issues per App');
+            
+            
             if (catA.length == 1){
 		        $('#chart_issues_by_device').css({'height':'0px'});
             }
