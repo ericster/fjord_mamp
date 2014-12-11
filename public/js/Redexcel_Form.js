@@ -43,6 +43,80 @@
 	}
 	
 
+	function Taed_multi_piecharts(container, cat, dat, chart_title){
+		
+        console.log(dat);
+
+	    for (var j = 0; j < dat.length; j++) {
+			var chartData=[];
+			var total_issues = 0;
+			for( var i=0; i<cat.length; i++){
+				   total_issues = total_issues + dat[j]['data'][i]; 
+			}
+			for( var i=0; i<cat.length; i++){
+				   chartData.push( [ cat[i], dat[j]['data'][i]*100/total_issues ] );
+			}
+			//console.log(chartData);
+	
+			j_thcontainer = container.concat(j);
+	        console.log(j_thcontainer);
+	        console.log(chartData);
+		    $(j_thcontainer).highcharts({
+		        chart: {
+		            type: 'pie',
+		            options3d: {
+		                enabled: true,
+		                alpha: 45,
+		                beta: 0
+		            }
+		        },
+		        title: {
+		            text: chart_title
+		        },
+		        tooltip: {
+		            pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+		        },
+		        plotOptions: {
+		            pie: {
+		                allowPointSelect: true,
+		                cursor: 'pointer',
+		                depth: 35,
+		                dataLabels: {
+		                    enabled: true,
+		                    format: '<b>{point.name}</b>: {point.percentage:.1f} %'
+		                }
+		            },
+			        colors: [
+			                 '#4572A7', 
+			                 '#A47D7C', 
+			                 '#80699B', 
+			                 '#3D96AE', 
+			                 '#B5CA92',
+			                 '#92A8CD', 
+			                 '#89A54E', 
+			                 '#DB843D',
+			                 '#AA4643' 
+			                 ],
+		            series: {
+		                allowPointSelect: true,
+		                slicedOffset: 20,
+		                states: {
+		                    select: {
+		                        color: '#666'
+		                    }
+		                }
+		            }
+		        },
+		        series: [{
+		            type: 'pie',
+		            name: 'issue percent',
+		            data: 
+		            	chartData
+		        }]
+			});
+	    }
+
+	}
 	function Taed_piechart(container, cat, dat, chart_title){
 		var chartData=[];
 		var total_issues = 0;
@@ -182,6 +256,8 @@
 		        $('#chart_issues_by_device').css({'height':'400px'});
 	            Taed_piechart('#chart_issues_by_device', catA, datA, 'Total Issues per Device');
             }
+            //Taed_piechart('#chart_all_issues_per_app_pie',catF, datF, 'All Issues per App in Pie');
+            Taed_multi_piecharts('#chart_all_issues_per_app_pie-',catF, datF, 'All Issues per App in Pie');
 	}
 
 	function ConvertFormToJSON(form){

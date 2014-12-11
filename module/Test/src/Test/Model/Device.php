@@ -270,9 +270,8 @@ class Device implements InputFilterAwareInterface
     	}
     
     	// result modification for Highcharts data
-    	$issue_type = array_slice($result[0], 1);
     	$result_transpose = $this->flipDiagonally($result);
-    	$app_name = array_slice($result_transpose[0], 1);
+    	$dev_name = array_slice($result_transpose[0], 1);
     	$type_arr = array_slice($result_transpose,1);
     	foreach($type_arr as $type){
     		if (empty($type[0]))
@@ -280,7 +279,7 @@ class Device implements InputFilterAwareInterface
     		else
     			$chart_data[] = ['name' => $type[0], 'data'=> array_slice($type, 1)];
     	}
-    	$highchart_par = array('cat' => $app_name, 'dat'=> array_reverse($chart_data));
+    	$highchart_par = array('cat' => $dev_name, 'dat'=> array_reverse($chart_data));
     	return $highchart_par;
     }
     
