@@ -45,22 +45,29 @@
 
 	function Taed_multi_piecharts(container, cat, dat, chart_title){
 		
+		console.log("cat");
+        console.log(cat);
+		console.log("dat");
         console.log(dat);
 
 	    for (var j = 0; j < dat.length; j++) {
-			var chartData=[];
+			var pieChartData=[];
 			var total_issues = 0;
 			for( var i=0; i<cat.length; i++){
 				   total_issues = total_issues + dat[j]['data'][i]; 
 			}
 			for( var i=0; i<cat.length; i++){
-				   chartData.push( [ cat[i], dat[j]['data'][i]*100/total_issues ] );
+					var cdata = "chartdata";
+					console.log( cdata.concat(dat[j]['data'][i])); 
+					if(dat[j]['data'][i] != 0) {
+					   pieChartData.push( [ cat[i], dat[j]['data'][i]*100/total_issues ] );
+					}
 			}
-			//console.log(chartData);
+			//console.log(pieChartData);
 	
 			j_thcontainer = container.concat(j);
 	        console.log(j_thcontainer);
-	        console.log(chartData);
+	        console.log(pieChartData);
 		    $(j_thcontainer).highcharts({
 		        chart: {
 		            type: 'pie',
@@ -71,7 +78,7 @@
 		            }
 		        },
 		        title: {
-		            text: chart_title
+		            text: chart_title.concat(dat[j]['name'])
 		        },
 		        tooltip: {
 		            pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
@@ -111,22 +118,22 @@
 		            type: 'pie',
 		            name: 'issue percent',
 		            data: 
-		            	chartData
+		            	pieChartData
 		        }]
 			});
 	    }
 
 	}
 	function Taed_piechart(container, cat, dat, chart_title){
-		var chartData=[];
+		var pieChartData=[];
 		var total_issues = 0;
 		for( var i=0; i<cat.length; i++){
 			   total_issues = total_issues + dat[0]['data'][i]; 
 		}
 		for( var i=0; i<cat.length; i++){
-			   chartData.push( [ cat[i], dat[0]['data'][i]*100/total_issues ] );
+			   pieChartData.push( [ cat[i], dat[0]['data'][i]*100/total_issues ] );
 		}
-		//console.log(chartData);
+		//console.log(pieChartData);
 
 	    $(container).highcharts({
 	        chart: {
@@ -178,7 +185,7 @@
 	            type: 'pie',
 	            name: 'issue percent',
 	            data: 
-	            	chartData
+	            	pieChartData
 	        }]
 		});
 	}
@@ -257,7 +264,7 @@
 	            Taed_piechart('#chart_issues_by_device', catA, datA, 'Total Issues per Device');
             }
             //Taed_piechart('#chart_all_issues_per_app_pie',catF, datF, 'All Issues per App in Pie');
-            Taed_multi_piecharts('#chart_all_issues_per_app_pie-',catF, datF, 'All Issues per App in Pie');
+            Taed_multi_piecharts('#chart_all_issues_per_app_pie-',catF, datF, 'All Issues per App: ');
 	}
 
 	function ConvertFormToJSON(form){
