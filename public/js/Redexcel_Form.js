@@ -264,7 +264,7 @@
 	            Taed_piechart('#chart_issues_by_device', catA, datA, 'Total Issues per Device');
             }
             //Taed_piechart('#chart_all_issues_per_app_pie',catF, datF, 'All Issues per App in Pie');
-            Taed_multi_piecharts('#chart_all_issues_per_app_pie-',catF, datF, 'All Issues per App: ');
+            Taed_multi_piecharts('#chart_all_issues_per_app_pie-',catF, datF.reverse(), 'All Issues per App: ');
 	}
 
 	function ConvertFormToJSON(form){
