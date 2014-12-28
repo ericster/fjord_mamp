@@ -44,11 +44,6 @@
 	
 
 	function Taed_multi_piecharts(container, cat, dat, chart_title){
-		
-		console.log("cat");
-        console.log(cat);
-		console.log("dat");
-        console.log(dat);
 
 	    for (var j = 0; j < dat.length; j++) {
 			var pieChartData=[];
@@ -58,16 +53,12 @@
 			}
 			for( var i=0; i<cat.length; i++){
 					var cdata = "chartdata";
-					console.log( cdata.concat(dat[j]['data'][i])); 
 					if(dat[j]['data'][i] != 0) {
 					   pieChartData.push( [ cat[i], dat[j]['data'][i]*100/total_issues ] );
 					}
 			}
-			//console.log(pieChartData);
 	
 			j_thcontainer = container.concat(j);
-	        console.log(j_thcontainer);
-	        console.log(pieChartData);
 		    $(j_thcontainer).highcharts({
 		        chart: {
 		            type: 'pie',
@@ -355,16 +346,36 @@
 		    .autocomplete({
 			  maxShowItems: 8, // Make list height fit to 5 items when items are over 5.
 		      source: function( request, response ) {
-		        $.getJSON( "/device/device-list", {
-		          term: extractLast( request.term )
-		        }, response );
+		            $.ajax({ 
+		                  //dataType: "json", 
+		                  data: { term: request.term, }, 
+		                  type: 'Get', 
+		                  //contentType: 'application/json; charset=utf-8', 
+		                  //xhrFields: { withCredentials: true }, 
+		                  //crossDomain: true, 
+		                  cache: false, 
+		                  url: "/device/device-list",
+		                  success: function (data) {
+		                      var array = $.map(data, function (item) {
+		                          return {
+		                              label: item,
+		                              value: item
+		                          };
+		                      });
+
+		                      //call the filter here
+		                      response($.ui.autocomplete.filter(array, extractLast(request.term)));
+		                  },
+		            });
 		      },
 		      search: function() {
 		        // custom minLength
 		        var term = extractLast( this.value );
+		        /*
 		        if ( term.length < 2 ) {
 		          return false;
 		        }
+		        */
 		      },
 		      focus: function (event, ui) {
 		                $(".ui-helper-hidden-accessible").hide();
@@ -598,9 +609,37 @@ $(document).ready(function() {
 	.autocomplete({
 		  maxShowItems: 8, // Make list height fit to 5 items when items are over 5.
 	      source: function( request, response ) {
+	    	/*
 	        $.getJSON( "/device/device-list", {
 	          term: extractLast( request.term )
 	        }, response );
+	        */
+	    	console.log(request);
+	    	console.log(response);
+            $.ajax({ 
+                  //dataType: "json", 
+                  data: { term: request.term, }, 
+                  type: 'Get', 
+                  //contentType: 'application/json; charset=utf-8', 
+                  //xhrFields: { withCredentials: true }, 
+                  //crossDomain: true, 
+                  cache: false, 
+                  url: "/device/device-list",
+                  success: function (data) {
+                	  // fetched data from server
+                	  console.log(data);
+                	  console.log(data.length);
+                      var array = $.map(data, function (item) {
+                          return {
+                              label: item,
+                              value: item
+                          };
+                      });
+
+                      //call the filter here
+                      response($.ui.autocomplete.filter(array, extractLast(request.term)));
+                  },
+            });
 	      },
 	      search: function() {
 	        // custom minLength
